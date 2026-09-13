@@ -48,7 +48,8 @@
       "sameAs": [
         "https://github.com/prabhatbhattarai11",
         "https://www.linkedin.com/in/prabhat-bhattarai-b45b7b378",
-        "https://www.instagram.com/prabhat_bhattarai_"
+        "https://www.instagram.com/prabhat_bhattarai_",
+        "https://www.tiktok.com/@prabhat_277"
       ]
     }
   }
@@ -216,14 +217,43 @@ html[data-theme="dark"] .logo::before{color:#04121a;box-shadow:0 6px 18px rgba(3
 #themeToggleBtn{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--border);background:var(--card);font-size:1.1rem;transition:all .4s cubic-bezier(.2,.8,.2,1);margin-left:.4rem}
 #themeToggleBtn:hover{border-color:var(--accent);transform:translateY(-2px) rotate(15deg);box-shadow:0 8px 22px rgba(8,145,178,.22)}
 #themeToggleBtn .icon{display:inline-block;transition:transform .55s cubic-bezier(.2,.8,.2,1)}
+
+/* ============================================================
+   MOBILE NAV DROPDOWN (REDESIGNED)
+   ============================================================ */
 .mobile-nav-dropdown{position:relative;display:none}
-.mobile-nav-dropdown summary{list-style:none;cursor:pointer;padding:.5rem .9rem;border-radius:10px;border:1px solid var(--border);background:var(--card);font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:.4rem;transition:.25s}
+.mobile-nav-dropdown summary{list-style:none;cursor:pointer;padding:.6rem 1.1rem;border-radius:12px;border:1px solid var(--border-strong);background:var(--card);font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:.5rem;transition:.3s cubic-bezier(.2,.8,.2,1);color:var(--text);backdrop-filter:blur(10px)}
 .mobile-nav-dropdown summary::-webkit-details-marker{display:none}
-.mobile-nav-dropdown summary:hover{border-color:var(--accent);color:var(--accent)}
-.mobile-dropdown-links{position:absolute;top:calc(100% + 8px);right:0;list-style:none;background:var(--bg-elev);border:1px solid var(--border);border-radius:16px;padding:.55rem;box-shadow:var(--shadow-lg);min-width:210px;animation:dropIn .3s cubic-bezier(.2,.8,.2,1);z-index:10}
-@keyframes dropIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
-.mobile-dropdown-links li a{display:block;padding:.7rem 1rem;border-radius:10px;font-size:.9rem;font-weight:500;color:var(--muted);transition:.2s}
-.mobile-dropdown-links li a:hover{background:var(--accent-soft);color:var(--accent)}
+.mobile-nav-dropdown[open] summary{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);box-shadow:0 4px 12px rgba(8,145,178,.15)}
+.mobile-dropdown-links{
+  position:absolute;top:calc(100% + 12px);right:0;list-style:none;
+  background:var(--bg-elev);border:1px solid var(--border);border-radius:20px;
+  padding:.6rem;box-shadow:var(--shadow-lg);min-width:240px;
+  animation:dropIn .35s cubic-bezier(.2,.8,.2,1);z-index:10;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+/* Little beak pointing to the button */
+.mobile-dropdown-links::before {
+  content: ''; position: absolute; top: -6px; right: 24px;
+  width: 12px; height: 12px; background: var(--bg-elev);
+  border-top: 1px solid var(--border); border-left: 1px solid var(--border);
+  transform: rotate(45deg);
+}
+@keyframes dropIn{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:none}}
+.mobile-dropdown-links li a{
+  display:flex;align-items:center;gap:.85rem;
+  padding:.75rem 1rem;border-radius:14px;font-size:.92rem;
+  font-weight:500;color:var(--muted);transition:.25s cubic-bezier(.2,.8,.2,1);
+}
+.mobile-dropdown-links li a span { font-size: 1.1rem; transition: transform .3s; }
+.mobile-dropdown-links li a:hover, .mobile-dropdown-links li a:active {
+  background:var(--accent-soft);color:var(--accent);transform:translateX(4px);
+}
+.mobile-dropdown-links li a:hover span { transform: scale(1.15); }
+.mobile-dropdown-links li.theme-item {
+  margin-top: .4rem; padding-top: .4rem; border-top: 1px dashed var(--border);
+}
+.mobile-dropdown-links li.theme-item a { font-weight: 600; }
 
 /* ============================================================
    BUTTONS & SHARED
@@ -585,6 +615,12 @@ html[data-theme="dark"] .project-tag.study{background:rgba(167,139,250,.14);colo
 .contact-card.instagram:hover .contact-card-icon{border-color:var(--accent-3);box-shadow:0 8px 22px rgba(236,72,153,.22)}
 .contact-card.instagram:hover .contact-card-arrow{color:var(--accent-3)}
 
+/* TikTok Accent */
+.contact-card.tiktok::before{background:linear-gradient(90deg, #25F4EE, #FE2C55)}
+.contact-card.tiktok .contact-card-icon{background:rgba(37,244,238,.1)}
+.contact-card.tiktok:hover .contact-card-icon{border-color:#25F4EE;box-shadow:0 8px 22px rgba(37,244,238,.22)}
+.contact-card.tiktok:hover .contact-card-arrow{color:#25F4EE}
+
 /* footer note under cards */
 .contact-note{
   display:flex;
@@ -730,17 +766,19 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
       <li><a href="#contact">Contact</a></li>
       <li><button id="themeToggleBtn" type="button" aria-label="Toggle Theme" title="Switch to dark mode"><span class="icon" id="themeIcon">☀️</span></button></li>
     </ul>
+    
+    <!-- REDESIGNED MOBILE MENU -->
     <details class="mobile-nav-dropdown" id="mobileMenuDetails">
       <summary class="more-toggle-btn">More <span>▾</span></summary>
       <ul class="mobile-dropdown-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#resume">Resume</a></li>
-        <li><a href="#certificates">Certificates</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="#" id="mobileThemeBtn" data-theme-toggle>🌙 Switch Theme</a></li>
+        <li><a href="#about"><span>👤</span> About</a></li>
+        <li><a href="#experience"><span>💼</span> Experience</a></li>
+        <li><a href="#skills"><span>🛠️</span> Skills</a></li>
+        <li><a href="#projects"><span>🚀</span> Projects</a></li>
+        <li><a href="#resume"><span>📄</span> Resume</a></li>
+        <li><a href="#certificates"><span>🏆</span> Certificates</a></li>
+        <li><a href="#contact"><span>✉️</span> Contact</a></li>
+        <li class="theme-item"><a href="#" id="mobileThemeBtn" data-theme-toggle><span>🌙</span> Switch Theme</a></li>
       </ul>
     </details>
   </div>
@@ -758,7 +796,7 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
         <p class="desc">Creative and self-driven Web Developer, Web Designer, and Video Editor pursuing a Bachelor of Information Technology (BIT). I turn ideas into clean, functional digital products and compelling visual stories.</p>
         <div class="btn-row">
           <a href="#projects" class="btn btn-primary"><span>Explore Work</span><span class="arrow">→</span></a>
-          <!-- UPDATED RESUME LINK to match your new file name -->
+          <!-- UPDATED RESUME LINK -->
           <a href="Prabhat_Bhattarai_Resume_IT.pdf" class="btn btn-ghost" target="_blank" rel="noopener"><span>Download Résumé</span><span class="arrow">↗</span></a>
         </div>
       </div>
@@ -1051,7 +1089,7 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
   </section>
 
   <!-- ============================================================
-       CONTACT — REDESIGNED
+       CONTACT — REDESIGNED (WITH TIKTOK ADDED)
        ============================================================ -->
   <section id="contact">
     <div class="wrap reveal">
@@ -1103,6 +1141,16 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
           <div class="contact-card-label">Instagram</div>
           <div class="contact-card-value">@prabhat_bhattarai_</div>
         </a>
+
+        <!-- NEW TIKTOK CARD -->
+        <a href="https://www.tiktok.com/@prabhat_277?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" class="contact-card tiktok">
+          <div class="contact-card-top">
+            <div class="contact-card-icon">🎵</div>
+            <span class="contact-card-arrow">↗</span>
+          </div>
+          <div class="contact-card-label">TikTok</div>
+          <div class="contact-card-value">@prabhat_277</div>
+        </a>
       </div>
 
       <div class="contact-note">
@@ -1134,7 +1182,7 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
     try { localStorage.setItem('pb-theme', t); } catch (e) {}
     if (themeIcon) themeIcon.textContent = t === 'dark' ? '🌙' : '☀️';
     if (themeBtn) themeBtn.title = t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
-    if (mobileThemeBtn) mobileThemeBtn.textContent = t === 'dark' ? '☀️ Switch to Light' : '🌙 Switch to Dark';
+    if (mobileThemeBtn) mobileThemeBtn.innerHTML = t === 'dark' ? '<span>☀️</span> Switch to Light' : '<span>🌙</span> Switch to Dark';
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', t === 'dark' ? '#070a12' : '#f7f9fc');
   }
@@ -1229,9 +1277,41 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
 
   const mobileMenu = document.getElementById('mobileMenuDetails');
   if (mobileMenu) {
-    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.removeAttribute('open')));
+    mobileMenu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        
+        // If it's an internal anchor link (starts with # and isn't just #)
+        if (href && href.startsWith('#') && href !== '#') {
+          e.preventDefault(); // Prevent default jump
+          const targetElement = document.querySelector(href);
+          
+          if (targetElement) {
+            // Close the menu first
+            mobileMenu.removeAttribute('open');
+            
+            // Smooth scroll with offset for fixed header
+            const headerOffset = 80; 
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
+          }
+        } else {
+          // For external links or theme toggle, just close the menu
+          mobileMenu.removeAttribute('open');
+        }
+      });
+    });
+
+    // Close menu when clicking outside
     document.addEventListener('click', e => {
-      if (mobileMenu.hasAttribute('open') && !mobileMenu.contains(e.target)) mobileMenu.removeAttribute('open');
+      if (mobileMenu.hasAttribute('open') && !mobileMenu.contains(e.target)) {
+        mobileMenu.removeAttribute('open');
+      }
     });
   }
 })();
