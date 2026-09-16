@@ -487,6 +487,57 @@ html[data-theme="dark"] .project-tag.study{background:rgba(167,139,250,.14);colo
 .cert-card:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);transform:translateY(-4px)}
 .cert-card:hover::before{background:var(--accent-soft);border-color:var(--accent);transform:rotate(90deg)}
 
+/* Real Certificate Card Styles */
+.cert-card.real {
+  padding: 1rem;
+  text-align: left;
+  border-style: solid;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Hide the '+' placeholder sign for real certificates */
+.cert-card.real::before {
+  display: none;
+}
+
+.cert-card.real img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  transition: transform .4s cubic-bezier(.2,.8,.2,1);
+}
+
+.cert-card.real:hover img {
+  transform: scale(1.02);
+}
+
+.cert-info h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: .25rem;
+}
+
+.cert-info p {
+  font-size: .85rem;
+  color: var(--muted);
+  margin-bottom: .5rem;
+}
+
+.cert-info .verify-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .75rem;
+  color: var(--accent);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+}
+
 /* ============================================================
    CONTACT — REDESIGNED
    ============================================================ */
@@ -1082,8 +1133,20 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
       <div class="eyebrow">// CERTIFICATIONS</div>
       <h2 class="section-title">Coursework &amp; Training</h2>
       <div class="cert-grid">
-        <div class="cert-card glass-card">Certification Slot 1</div>
-        <div class="cert-card glass-card">Certification Slot 2</div>
+        
+        <!-- NEW REAL CERTIFICATE CARD -->
+        <a href="https://coursera.org/verify/3MAW4BCY97HU" target="_blank" rel="noopener" class="cert-card glass-card real">
+          <img src="jira-certificate.jpg" alt="Coursera Get Started with Jira Certificate" loading="lazy">
+          <div class="cert-info">
+            <h4>Get Started with Jira</h4>
+            <p>Coursera • Sep 2026</p>
+            <span class="verify-link">Verify Certificate ↗</span>
+          </div>
+        </a>
+
+        <!-- You can keep one placeholder or add more real certificates later -->
+        <!-- <div class="cert-card glass-card">Certification Slot 2</div> -->
+        
       </div>
     </div>
   </section>
