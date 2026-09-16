@@ -481,61 +481,124 @@ html[data-theme="dark"] .project-tag.study{background:rgba(167,139,250,.14);colo
 /* ============================================================
    CERTIFICATES
    ============================================================ */
-.cert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.4rem}
-.cert-card{padding:2.2rem 1.6rem;text-align:center;font-size:.95rem;font-weight:600;color:var(--muted);border-style:dashed;cursor:pointer}
-.cert-card::before{content:'+';width:52px;height:52px;border-radius:16px;display:grid;place-items:center;margin:0 auto 1rem;border:1px solid var(--border-strong);color:var(--accent);font-size:1.5rem;font-weight:300;transition:.3s}
-.cert-card:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);transform:translateY(-4px)}
-.cert-card:hover::before{background:var(--accent-soft);border-color:var(--accent);transform:rotate(90deg)}
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
 
-/* Real Certificate Card Styles */
+/* Base placeholder style */
+.cert-card {
+  padding: 2.2rem 1.6rem;
+  text-align: center;
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--muted);
+  border-style: dashed;
+  cursor: pointer;
+}
+.cert-card::before {
+  content: '+';
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 1rem;
+  border: 1px solid var(--border-strong);
+  color: var(--accent);
+  font-size: 1.5rem;
+  font-weight: 300;
+  transition: .3s;
+}
+.cert-card:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+  transform: translateY(-4px);
+}
+.cert-card:hover::before {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  transform: rotate(90deg);
+}
+
+/* Real Certificate Card Styles (Horizontal Layout) */
 .cert-card.real {
-  padding: 1rem;
+  padding: 1.5rem;
   text-align: left;
   border-style: solid;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
 }
-
-/* Hide the '+' placeholder sign for real certificates */
 .cert-card.real::before {
-  display: none;
+  display: none; /* Hide the + sign */
 }
 
+/* Constrain the image size */
 .cert-card.real img {
-  width: 100%;
+  width: 220px; 
   height: auto;
   border-radius: 12px;
   border: 1px solid var(--border);
+  flex-shrink: 0;
   transition: transform .4s cubic-bezier(.2,.8,.2,1);
 }
-
 .cert-card.real:hover img {
-  transform: scale(1.02);
+  transform: scale(1.03);
+}
+
+.cert-info {
+  flex: 1;
 }
 
 .cert-info h4 {
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 800;
   color: var(--text);
   margin-bottom: .25rem;
+  letter-spacing: -.02em;
 }
 
 .cert-info p {
-  font-size: .85rem;
-  color: var(--muted);
-  margin-bottom: .5rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .8rem;
+  color: var(--accent-2);
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
 
 .cert-info .verify-link {
   font-family: 'JetBrains Mono', monospace;
-  font-size: .75rem;
+  font-size: .8rem;
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
-  gap: .3rem;
+  gap: .4rem;
+  transition: gap .25s, color .25s;
+}
+
+.cert-info .verify-link:hover {
+  gap: .7rem;
+  color: var(--accent-3);
+}
+
+/* Mobile responsive for certificate cards */
+@media (max-width: 640px) {
+  .cert-card.real {
+    flex-direction: column;
+    text-align: center;
+  }
+  .cert-card.real img {
+    width: 100%;
+    max-width: 300px;
+  }
 }
 
 /* ============================================================
@@ -1128,13 +1191,16 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
     </div>
   </section>
 
+  <!-- ============================================================
+       CERTIFICATIONS SECTION - UPDATED
+       ============================================================ -->
   <section id="certificates">
     <div class="wrap reveal">
       <div class="eyebrow">// CERTIFICATIONS</div>
       <h2 class="section-title">Coursework &amp; Training</h2>
       <div class="cert-grid">
         
-        <!-- NEW REAL CERTIFICATE CARD -->
+        <!-- REAL CERTIFICATE CARD -->
         <a href="https://coursera.org/verify/3MAW4BCY97HU" target="_blank" rel="noopener" class="cert-card glass-card real">
           <img src="jira.jpg" alt="Coursera Get Started with Jira Certificate" loading="lazy">
           <div class="cert-info">
@@ -1144,9 +1210,6 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
           </div>
         </a>
 
-        <!-- You can keep one placeholder or add more real certificates later -->
-        <!-- <div class="cert-card glass-card">Certification Slot 2</div> -->
-        
       </div>
     </div>
   </section>
@@ -1187,7 +1250,7 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
           <div class="contact-card-value">prabhat-bhattarai</div>
         </a>
 
-        <!-- UPDATED GITHUB LINK HERE -->
+        <!-- UPDATED GITHUB LINK -->
         <a href="https://github.com/prabhatbhattarai-dev" target="_blank" rel="noopener" class="contact-card github">
           <div class="contact-card-top">
             <div class="contact-card-icon">🐙</div>
