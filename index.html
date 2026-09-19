@@ -219,7 +219,7 @@ html[data-theme="dark"] .logo::before{color:#04121a;box-shadow:0 6px 18px rgba(3
 #themeToggleBtn .icon{display:inline-block;transition:transform .55s cubic-bezier(.2,.8,.2,1)}
 
 /* ============================================================
-   MOBILE NAV DROPDOWN (REDESIGNED)
+   MOBILE NAV DROPDOWN
    ============================================================ */
 .mobile-nav-dropdown{position:relative;display:none}
 .mobile-nav-dropdown summary{list-style:none;cursor:pointer;padding:.6rem 1.1rem;border-radius:12px;border:1px solid var(--border-strong);background:var(--card);font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:.5rem;transition:.3s cubic-bezier(.2,.8,.2,1);color:var(--text);backdrop-filter:blur(10px)}
@@ -232,7 +232,6 @@ html[data-theme="dark"] .logo::before{color:#04121a;box-shadow:0 6px 18px rgba(3
   animation:dropIn .35s cubic-bezier(.2,.8,.2,1);z-index:10;
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 }
-/* Little beak pointing to the button */
 .mobile-dropdown-links::before {
   content: ''; position: absolute; top: -6px; right: 24px;
   width: 12px; height: 12px; background: var(--bg-elev);
@@ -489,7 +488,6 @@ html[data-theme="dark"] .project-tag.study{background:rgba(167,139,250,.14);colo
   margin: 0 auto;
 }
 
-/* Base placeholder style */
 .cert-card {
   padding: 2.2rem 1.6rem;
   text-align: center;
@@ -525,7 +523,6 @@ html[data-theme="dark"] .project-tag.study{background:rgba(167,139,250,.14);colo
   transform: rotate(90deg);
 }
 
-/* Real Certificate Card Styles (Horizontal Layout) */
 .cert-card.real {
   padding: 1.5rem;
   text-align: left;
@@ -537,10 +534,8 @@ html[data-theme="dark"] .project-tag.study{background:rgba(167,139,250,.14);colo
   gap: 1.5rem;
 }
 .cert-card.real::before {
-  display: none; /* Hide the + sign */
+  display: none;
 }
-
-/* Constrain the image size */
 .cert-card.real img {
   width: 220px; 
   height: auto;
@@ -552,11 +547,9 @@ html[data-theme="dark"] .project-tag.study{background:rgba(167,139,250,.14);colo
 .cert-card.real:hover img {
   transform: scale(1.03);
 }
-
 .cert-info {
   flex: 1;
 }
-
 .cert-info h4 {
   font-size: 1.25rem;
   font-weight: 800;
@@ -564,7 +557,6 @@ html[data-theme="dark"] .project-tag.study{background:rgba(167,139,250,.14);colo
   margin-bottom: .25rem;
   letter-spacing: -.02em;
 }
-
 .cert-info p {
   font-family: 'JetBrains Mono', monospace;
   font-size: .8rem;
@@ -572,7 +564,6 @@ html[data-theme="dark"] .project-tag.study{background:rgba(167,139,250,.14);colo
   font-weight: 600;
   margin-bottom: 1rem;
 }
-
 .cert-info .verify-link {
   font-family: 'JetBrains Mono', monospace;
   font-size: .8rem;
@@ -583,13 +574,10 @@ html[data-theme="dark"] .project-tag.study{background:rgba(167,139,250,.14);colo
   gap: .4rem;
   transition: gap .25s, color .25s;
 }
-
 .cert-info .verify-link:hover {
   gap: .7rem;
   color: var(--accent-3);
 }
-
-/* Mobile responsive for certificate cards */
 @media (max-width: 640px) {
   .cert-card.real {
     flex-direction: column;
@@ -735,6 +723,12 @@ html[data-theme="dark"] .project-tag.study{background:rgba(167,139,250,.14);colo
 .contact-card.tiktok:hover .contact-card-icon{border-color:#25F4EE;box-shadow:0 8px 22px rgba(37,244,238,.22)}
 .contact-card.tiktok:hover .contact-card-arrow{color:#25F4EE}
 
+/* WhatsApp Accent (ready for when card is enabled) */
+.contact-card.whatsapp::before{background:linear-gradient(90deg, #25D366, var(--accent))}
+.contact-card.whatsapp .contact-card-icon{background:rgba(37,211,102,.1)}
+.contact-card.whatsapp:hover .contact-card-icon{border-color:#25D366;box-shadow:0 8px 22px rgba(37,211,102,.22)}
+.contact-card.whatsapp:hover .contact-card-arrow{color:#25D366}
+
 /* footer note under cards */
 .contact-note{
   display:flex;
@@ -760,6 +754,36 @@ html[data-theme="dark"] .project-tag.study{background:rgba(167,139,250,.14);colo
   background:#34d399;opacity:.45;
   animation:pulse 2s infinite;
 }
+
+/* copy email button */
+.copy-email{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.72rem;
+  letter-spacing:.06em;
+  font-weight:600;
+  padding:.42rem .9rem;
+  border-radius:99px;
+  border:1px solid var(--border-strong);
+  background:var(--card);
+  color:var(--text);
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+  transition:.3s cubic-bezier(.2,.8,.2,1);
+  white-space:nowrap;
+}
+.copy-email:hover{
+  border-color:var(--accent);
+  color:var(--accent);
+  background:var(--accent-soft);
+  transform:translateY(-2px);
+}
+.copy-email.copied{
+  border-color:#34d399;
+  color:#047857;
+  background:rgba(52,211,153,.12);
+}
+html[data-theme="dark"] .copy-email.copied{color:#34d399}
 
 @media (max-width:820px){
   .contact-grid{grid-template-columns:1fr}
@@ -881,7 +905,7 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
       <li><button id="themeToggleBtn" type="button" aria-label="Toggle Theme" title="Switch to dark mode"><span class="icon" id="themeIcon">☀️</span></button></li>
     </ul>
     
-    <!-- REDESIGNED MOBILE MENU -->
+    <!-- MOBILE MENU -->
     <details class="mobile-nav-dropdown" id="mobileMenuDetails">
       <summary class="more-toggle-btn">More <span>▾</span></summary>
       <ul class="mobile-dropdown-links">
@@ -910,7 +934,6 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
         <p class="desc">Creative and self-driven Web Developer, Web Designer, and Video Editor pursuing a Bachelor of Information Technology (BIT). I turn ideas into clean, functional digital products and compelling visual stories.</p>
         <div class="btn-row">
           <a href="#projects" class="btn btn-primary"><span>Explore Work</span><span class="arrow">→</span></a>
-          <!-- UPDATED RESUME LINK -->
           <a href="Prabhat_Bhattarai_Resume_IT.pdf" class="btn btn-ghost" target="_blank" rel="noopener"><span>Download Résumé</span><span class="arrow">↗</span></a>
         </div>
       </div>
@@ -1119,9 +1142,6 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
     </div>
   </section>
 
-  <!-- ============================================================
-       RESUME SECTION
-       ============================================================ -->
   <section id="resume">
     <div class="wrap reveal">
       <div class="eyebrow">// RESUME</div>
@@ -1191,9 +1211,6 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
     </div>
   </section>
 
-  <!-- ============================================================
-       CERTIFICATIONS SECTION - UPDATED
-       ============================================================ -->
   <section id="certificates">
     <div class="wrap reveal">
       <div class="eyebrow">// CERTIFICATIONS</div>
@@ -1201,7 +1218,7 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
       <div class="cert-grid">
         
         <!-- REAL CERTIFICATE CARD -->
-        <a href="https://coursera.org/verify/3MAW4BCY97HU" target="_blank" rel="noopener" class="cert-card glass-card real">
+        <a href="https://coursera.org/verify/3MAW4BCY97HU" target="_blank" rel="noopener" class="cert-card glass-card real" aria-label="Verify Get Started with Jira certificate on Coursera">
           <img src="jira.jpg" alt="Coursera Get Started with Jira Certificate" loading="lazy">
           <div class="cert-info">
             <h4>Get Started with Jira</h4>
@@ -1215,7 +1232,7 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
   </section>
 
   <!-- ============================================================
-       CONTACT — REDESIGNED (WITH TIKTOK ADDED)
+       CONTACT
        ============================================================ -->
   <section id="contact">
     <div class="wrap reveal">
@@ -1232,16 +1249,19 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
       </div>
 
       <div class="contact-grid">
-        <a href="mailto:prabhatbhattarai456@gmail.com" class="contact-card email">
+        <!-- EMAIL — href is entity-encoded to reduce bot scraping; still works without JS -->
+        <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;prabhatbhattarai456&#64;gmail&#46;com"
+           class="contact-card email"
+           aria-label="Send email to Prabhat Bhattarai">
           <div class="contact-card-top">
             <div class="contact-card-icon">✉️</div>
             <span class="contact-card-arrow">↗</span>
           </div>
           <div class="contact-card-label">Email</div>
-          <div class="contact-card-value">prabhatbhattarai456@gmail.com</div>
+          <div class="contact-card-value">prabhatbhattarai456&#64;gmail&#46;com</div>
         </a>
 
-        <a href="https://www.linkedin.com/in/prabhat-bhattarai-b45b7b378" target="_blank" rel="noopener" class="contact-card linkedin">
+        <a href="https://www.linkedin.com/in/prabhat-bhattarai-b45b7b378" target="_blank" rel="noopener" class="contact-card linkedin" aria-label="Prabhat Bhattarai on LinkedIn">
           <div class="contact-card-top">
             <div class="contact-card-icon">💼</div>
             <span class="contact-card-arrow">↗</span>
@@ -1250,8 +1270,7 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
           <div class="contact-card-value">prabhat-bhattarai</div>
         </a>
 
-        <!-- UPDATED GITHUB LINK -->
-        <a href="https://github.com/prabhatbhattarai-dev" target="_blank" rel="noopener" class="contact-card github">
+        <a href="https://github.com/prabhatbhattarai-dev" target="_blank" rel="noopener" class="contact-card github" aria-label="Prabhat Bhattarai on GitHub at prabhatbhattarai-dev">
           <div class="contact-card-top">
             <div class="contact-card-icon">🐙</div>
             <span class="contact-card-arrow">↗</span>
@@ -1260,7 +1279,7 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
           <div class="contact-card-value">@prabhatbhattarai-dev</div>
         </a>
 
-        <a href="https://www.instagram.com/prabhat_bhattarai_" target="_blank" rel="noopener" class="contact-card instagram">
+        <a href="https://www.instagram.com/prabhat_bhattarai_" target="_blank" rel="noopener" class="contact-card instagram" aria-label="Prabhat Bhattarai on Instagram at prabhat_bhattarai_">
           <div class="contact-card-top">
             <div class="contact-card-icon">📸</div>
             <span class="contact-card-arrow">↗</span>
@@ -1269,8 +1288,8 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
           <div class="contact-card-value">@prabhat_bhattarai_</div>
         </a>
 
-        <!-- NEW TIKTOK CARD -->
-        <a href="https://www.tiktok.com/@prabhat_277?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener" class="contact-card tiktok">
+        <!-- TikTok — cleaned URL (removed tracking params) -->
+        <a href="https://www.tiktok.com/@prabhat_277" target="_blank" rel="noopener" class="contact-card tiktok" aria-label="Prabhat Bhattarai on TikTok at prabhat_277">
           <div class="contact-card-top">
             <div class="contact-card-icon">🎵</div>
             <span class="contact-card-arrow">↗</span>
@@ -1278,11 +1297,29 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
           <div class="contact-card-label">TikTok</div>
           <div class="contact-card-value">@prabhat_277</div>
         </a>
+
+        <!-- ============================================================
+             WHATSAPP CARD — ready to enable.
+             Uncomment the block below and replace 977XXXXXXXXXX with
+             your full number in international format, no + or spaces.
+             Example: https://wa.me/9779812345678
+             ============================================================ -->
+        <!--
+        <a href="https://wa.me/977XXXXXXXXXX" target="_blank" rel="noopener" class="contact-card whatsapp" aria-label="Message Prabhat Bhattarai on WhatsApp">
+          <div class="contact-card-top">
+            <div class="contact-card-icon">💬</div>
+            <span class="contact-card-arrow">↗</span>
+          </div>
+          <div class="contact-card-label">WhatsApp</div>
+          <div class="contact-card-value">Chat / Quick reply</div>
+        </a>
+        -->
       </div>
 
       <div class="contact-note">
         <span class="note-dot"></span>
         Currently accepting new freelance projects
+        <button class="copy-email" id="copyEmail" type="button" aria-label="Copy email address to clipboard">📋 Copy email</button>
       </div>
     </div>
   </section>
@@ -1291,7 +1328,7 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
 
 <footer>
   <div class="wrap">
-    <p>© 2026 Prabhat Bhattarai. Designed &amp; Built in Kathmandu.</p>
+    <p>© <span id="footerYear">2026</span> Prabhat Bhattarai. Designed &amp; Built in Kathmandu.</p>
   </div>
 </footer>
 
@@ -1408,16 +1445,13 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
       a.addEventListener('click', function(e) {
         const href = this.getAttribute('href');
         
-        // If it's an internal anchor link (starts with # and isn't just #)
         if (href && href.startsWith('#') && href !== '#') {
-          e.preventDefault(); // Prevent default jump
+          e.preventDefault();
           const targetElement = document.querySelector(href);
           
           if (targetElement) {
-            // Close the menu first
             mobileMenu.removeAttribute('open');
             
-            // Smooth scroll with offset for fixed header
             const headerOffset = 80; 
             const elementPosition = targetElement.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -1428,19 +1462,61 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
             });
           }
         } else {
-          // For external links or theme toggle, just close the menu
           mobileMenu.removeAttribute('open');
         }
       });
     });
 
-    // Close menu when clicking outside
     document.addEventListener('click', e => {
       if (mobileMenu.hasAttribute('open') && !mobileMenu.contains(e.target)) {
         mobileMenu.removeAttribute('open');
       }
     });
   }
+
+  /* ------------------------------------------------------------
+     COPY EMAIL BUTTON — recovers mobile users whose mail app
+     isn't configured (silent mailto: failures).
+     ------------------------------------------------------------ */
+  const copyBtn = document.getElementById('copyEmail');
+  if (copyBtn) {
+    const EMAIL = 'prabhatbhattarai456@gmail.com';
+    copyBtn.addEventListener('click', async function () {
+      const original = this.innerHTML;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(EMAIL);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = EMAIL;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.top = '-9999px';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+        this.classList.add('copied');
+        this.innerHTML = '✓ Copied!';
+        setTimeout(() => {
+          this.innerHTML = original;
+          this.classList.remove('copied');
+        }, 2000);
+      } catch (err) {
+        this.innerHTML = '✗ Copy failed';
+        setTimeout(() => { this.innerHTML = original; }, 2200);
+      }
+    });
+  }
+
+  /* ------------------------------------------------------------
+     DYNAMIC FOOTER YEAR — never goes stale.
+     ------------------------------------------------------------ */
+  const yearEl = document.getElementById('footerYear');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+
 })();
 </script>
 </body>
