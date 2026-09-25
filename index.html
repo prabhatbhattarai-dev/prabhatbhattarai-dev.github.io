@@ -9,7 +9,7 @@
   <title>Prabhat Bhattarai — Web Developer & Designer | Video Editor</title>
 
   <link rel="canonical" href="https://www.prabhatbhattarai.info.np/">
-  
+
   <!-- FAVICON LINK -->
   <link rel="icon" type="image/jpeg" href="profile.jpg">
 
@@ -105,6 +105,7 @@ body{
   transition:background .45s ease,color .45s ease;
   -webkit-font-smoothing:antialiased;position:relative;min-height:100vh;
 }
+body.no-scroll{overflow:hidden}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
@@ -219,40 +220,167 @@ html[data-theme="dark"] .logo::before{color:#04121a;box-shadow:0 6px 18px rgba(3
 #themeToggleBtn .icon{display:inline-block;transition:transform .55s cubic-bezier(.2,.8,.2,1)}
 
 /* ============================================================
-   MOBILE NAV DROPDOWN
+   MOBILE BURGER BUTTON
    ============================================================ */
-.mobile-nav-dropdown{position:relative;display:none}
-.mobile-nav-dropdown summary{list-style:none;cursor:pointer;padding:.6rem 1.1rem;border-radius:12px;border:1px solid var(--border-strong);background:var(--card);font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:.5rem;transition:.3s cubic-bezier(.2,.8,.2,1);color:var(--text);backdrop-filter:blur(10px)}
-.mobile-nav-dropdown summary::-webkit-details-marker{display:none}
-.mobile-nav-dropdown[open] summary{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);box-shadow:0 4px 12px rgba(8,145,178,.15)}
-.mobile-dropdown-links{
-  position:absolute;top:calc(100% + 12px);right:0;list-style:none;
-  background:var(--bg-elev);border:1px solid var(--border);border-radius:20px;
-  padding:.6rem;box-shadow:var(--shadow-lg);min-width:240px;
-  animation:dropIn .35s cubic-bezier(.2,.8,.2,1);z-index:10;
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+.mobile-menu-btn{
+  display:none;
+  width:46px;height:46px;flex:none;
+  border-radius:14px;
+  border:1px solid var(--border-strong);
+  background:var(--card);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  transition:border-color .3s,background .3s,box-shadow .3s,transform .3s;
+  -webkit-tap-highlight-color:transparent;
 }
-.mobile-dropdown-links::before {
-  content: ''; position: absolute; top: -6px; right: 24px;
-  width: 12px; height: 12px; background: var(--bg-elev);
-  border-top: 1px solid var(--border); border-left: 1px solid var(--border);
-  transform: rotate(45deg);
+.mobile-menu-btn:active{transform:scale(.94)}
+.mobile-menu-btn .burger-line{
+  display:block;height:2px;border-radius:99px;background:var(--text);
+  transition:width .35s cubic-bezier(.2,.8,.2,1),background .3s;
 }
-@keyframes dropIn{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:none}}
-.mobile-dropdown-links li a{
-  display:flex;align-items:center;gap:.85rem;
-  padding:.75rem 1rem;border-radius:14px;font-size:.92rem;
-  font-weight:500;color:var(--muted);transition:.25s cubic-bezier(.2,.8,.2,1);
+.mobile-menu-btn .burger-line:nth-child(1){width:19px}
+.mobile-menu-btn .burger-line:nth-child(2){width:13px}
+.mobile-menu-btn .burger-line:nth-child(3){width:16px}
+.mobile-menu-btn:hover{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 8px 22px rgba(8,145,178,.18)}
+.mobile-menu-btn:hover .burger-line{background:var(--accent);width:19px}
+
+/* ============================================================
+   MOBILE DRAWER  (slide-in panel)
+   ============================================================ */
+.mobile-drawer{
+  position:fixed;inset:0;z-index:950;
+  visibility:hidden;
+  transition:visibility 0s linear .5s;
 }
-.mobile-dropdown-links li a span { font-size: 1.1rem; transition: transform .3s; }
-.mobile-dropdown-links li a:hover, .mobile-dropdown-links li a:active {
-  background:var(--accent-soft);color:var(--accent);transform:translateX(4px);
+.mobile-drawer.open{
+  visibility:visible;
+  transition-delay:0s;
 }
-.mobile-dropdown-links li a:hover span { transform: scale(1.15); }
-.mobile-dropdown-links li.theme-item {
-  margin-top: .4rem; padding-top: .4rem; border-top: 1px dashed var(--border);
+.mobile-drawer-backdrop{
+  position:absolute;inset:0;
+  background:rgba(7,10,18,.5);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  opacity:0;transition:opacity .4s ease;
 }
-.mobile-dropdown-links li.theme-item a { font-weight: 600; }
+.mobile-drawer.open .mobile-drawer-backdrop{opacity:1}
+
+.mobile-drawer-panel{
+  position:absolute;top:0;right:0;bottom:0;
+  width:min(370px,86vw);
+  background:var(--bg-elev);
+  border-left:1px solid var(--border);
+  box-shadow:-24px 0 70px rgba(0,0,0,.28);
+  display:flex;flex-direction:column;
+  padding:calc(1.15rem + env(safe-area-inset-top)) 1.25rem calc(1.5rem + env(safe-area-inset-bottom));
+  transform:translateX(100%);
+  transition:transform .48s cubic-bezier(.32,.72,0,1);
+  overflow-y:auto;overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+.mobile-drawer.open .mobile-drawer-panel{transform:translateX(0)}
+
+/* ---- drawer header ---- */
+.mobile-drawer-head{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding-bottom:1rem;margin-bottom:1.1rem;
+  border-bottom:1px dashed var(--border);
+}
+.mobile-drawer-logo{font-weight:800;font-size:1.06rem;letter-spacing:-.03em;display:flex;align-items:center;gap:.5rem}
+.mobile-drawer-logo::before{content:'</>';font-family:'JetBrains Mono',monospace;font-size:.72rem;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-weight:700}
+html[data-theme="dark"] .mobile-drawer-logo::before{color:#04121a}
+.mobile-drawer-close{
+  width:40px;height:40px;flex:none;border-radius:12px;
+  display:grid;place-items:center;font-size:1rem;line-height:1;
+  border:1px solid var(--border-strong);background:var(--bg-soft);color:var(--text-soft);
+  transition:.32s cubic-bezier(.2,.8,.2,1);
+  -webkit-tap-highlight-color:transparent;
+}
+.mobile-drawer-close:active{transform:scale(.92)}
+.mobile-drawer-close:hover{border-color:var(--accent-3);color:var(--accent-3);transform:rotate(90deg)}
+
+/* ---- drawer nav ---- */
+.mobile-drawer-nav{display:flex;flex-direction:column;gap:.35rem}
+.mobile-link{
+  display:flex;align-items:center;gap:.9rem;
+  padding:.72rem .85rem;border-radius:14px;
+  border:1px solid transparent;
+  font-size:.97rem;font-weight:600;color:var(--text-soft);
+  transition:background .25s,color .25s,border-color .25s,transform .25s;
+  -webkit-tap-highlight-color:transparent;
+}
+.mobile-link-icon{
+  width:38px;height:38px;flex:none;border-radius:11px;
+  display:grid;place-items:center;font-size:1.02rem;
+  background:var(--bg-soft);border:1px solid var(--border);
+  transition:.3s cubic-bezier(.2,.8,.2,1);
+}
+.mobile-link-text{flex:1;min-width:0}
+.mobile-link-arrow{
+  font-size:.9rem;color:var(--accent);
+  opacity:0;transform:translateX(-6px);
+  transition:opacity .3s,transform .3s;
+}
+.mobile-link:hover,.mobile-link:active{
+  background:var(--accent-soft);border-color:var(--border);color:var(--accent);
+}
+.mobile-link:hover .mobile-link-icon{border-color:var(--accent);transform:scale(1.06)}
+.mobile-link:hover .mobile-link-arrow{opacity:1;transform:translateX(0)}
+.mobile-link.active{background:var(--accent-soft);border-color:var(--border);color:var(--accent)}
+.mobile-link.active .mobile-link-arrow{opacity:1;transform:translateX(0)}
+.mobile-link.active .mobile-link-icon{border-color:var(--accent)}
+
+/* staggered entrance */
+@keyframes drawerItemIn{
+  from{opacity:0;transform:translateX(28px)}
+  to{opacity:1;transform:translateX(0)}
+}
+.mobile-drawer.open .mobile-link{
+  animation:drawerItemIn .5s cubic-bezier(.2,.8,.2,1) both;
+}
+.mobile-drawer.open .mobile-link:nth-child(1){animation-delay:.06s}
+.mobile-drawer.open .mobile-link:nth-child(2){animation-delay:.11s}
+.mobile-drawer.open .mobile-link:nth-child(3){animation-delay:.16s}
+.mobile-drawer.open .mobile-link:nth-child(4){animation-delay:.21s}
+.mobile-drawer.open .mobile-link:nth-child(5){animation-delay:.26s}
+.mobile-drawer.open .mobile-link:nth-child(6){animation-delay:.31s}
+.mobile-drawer.open .mobile-link:nth-child(7){animation-delay:.36s}
+
+/* ---- drawer footer ---- */
+.mobile-drawer-footer{
+  margin-top:auto;padding-top:1.4rem;
+  display:flex;flex-direction:column;gap:.85rem;
+}
+.mobile-drawer.open .mobile-drawer-footer{
+  animation:drawerItemIn .5s cubic-bezier(.2,.8,.2,1) .42s both;
+}
+.mobile-divider{height:1px;background:var(--border);margin:.15rem 0 .3rem}
+
+.mobile-theme-toggle{
+  display:flex;align-items:center;gap:.75rem;width:100%;
+  padding:.78rem .95rem;border-radius:14px;
+  border:1px solid var(--border);background:var(--bg-soft);
+  font-size:.9rem;font-weight:600;color:var(--text-soft);
+  transition:border-color .3s,color .3s,background .3s;
+  -webkit-tap-highlight-color:transparent;
+}
+.mobile-theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
+.mobile-theme-icon{font-size:1.05rem;line-height:1}
+.mobile-theme-label{flex:1;text-align:left}
+.theme-switch{
+  width:44px;height:24px;border-radius:99px;flex:none;
+  background:var(--border-strong);position:relative;
+  transition:background .35s ease;
+}
+.theme-knob{
+  position:absolute;top:3px;left:3px;
+  width:18px;height:18px;border-radius:50%;
+  background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.25);
+  transition:transform .38s cubic-bezier(.2,.8,.2,1);
+}
+.mobile-theme-toggle.is-dark .theme-switch{background:linear-gradient(120deg,var(--accent),var(--accent-2))}
+.mobile-theme-toggle.is-dark .theme-knob{transform:translateX(20px)}
+
+.mobile-cta{width:100%;justify-content:center}
 
 /* ============================================================
    BUTTONS & SHARED
@@ -808,18 +936,27 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
 }
 @media (max-width:820px){
   .desktop-nav-links{display:none}
-  .mobile-nav-dropdown{display:block}
+  .mobile-menu-btn{display:flex}
   .float-badge{font-size:.72rem;padding:.4rem .75rem}
   .badge-1{left:-4%}
   .badge-2{right:-6%}
 }
+@media (min-width:821px){
+  .mobile-drawer{display:none}
+}
 @media (max-width:640px){
   .wrap{width:min(1160px,100% - 36px)}
+  .nav-inner{width:min(1160px,100% - 36px)}
   section{padding:70px 0}
   .stat-grid{grid-template-columns:1fr 1fr}
   .skill-panel{padding:1.7rem}
   .panel-icon{width:46px;height:46px;font-size:1.15rem}
   .section-title{margin-bottom:1.2rem}
+}
+@media (max-width:400px){
+  .mobile-drawer-panel{width:min(340px,92vw);padding-left:1.05rem;padding-right:1.05rem}
+  .mobile-link{padding:.68rem .7rem;font-size:.93rem}
+  .mobile-link-icon{width:35px;height:35px;font-size:.95rem}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -894,6 +1031,7 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
 <header class="nav" id="nav">
   <div class="nav-inner">
     <a class="logo" href="#top" aria-label="Prabhat home">prabhat<span class="logo-accent">.dev</span></a>
+
     <ul class="desktop-nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#experience">Experience</a></li>
@@ -904,23 +1042,54 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
       <li><a href="#contact">Contact</a></li>
       <li><button id="themeToggleBtn" type="button" aria-label="Toggle Theme" title="Switch to dark mode"><span class="icon" id="themeIcon">☀️</span></button></li>
     </ul>
-    
-    <!-- MOBILE MENU -->
-    <details class="mobile-nav-dropdown" id="mobileMenuDetails">
-      <summary class="more-toggle-btn">More <span>▾</span></summary>
-      <ul class="mobile-dropdown-links">
-        <li><a href="#about"><span>👤</span> About</a></li>
-        <li><a href="#experience"><span>💼</span> Experience</a></li>
-        <li><a href="#skills"><span>🛠️</span> Skills</a></li>
-        <li><a href="#projects"><span>🚀</span> Projects</a></li>
-        <li><a href="#resume"><span>📄</span> Resume</a></li>
-        <li><a href="#certificates"><span>🏆</span> Certificates</a></li>
-        <li><a href="#contact"><span>✉️</span> Contact</a></li>
-        <li class="theme-item"><a href="#" id="mobileThemeBtn" data-theme-toggle><span>🌙</span> Switch Theme</a></li>
-      </ul>
-    </details>
+
+    <!-- MOBILE BURGER -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" type="button"
+            aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileDrawer">
+      <span class="burger-line"></span>
+      <span class="burger-line"></span>
+      <span class="burger-line"></span>
+    </button>
   </div>
 </header>
+
+<!-- ============================================================
+     MOBILE DRAWER
+     ============================================================ -->
+<div class="mobile-drawer" id="mobileDrawer" aria-hidden="true">
+  <div class="mobile-drawer-backdrop" data-close-drawer></div>
+
+  <aside class="mobile-drawer-panel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+    <div class="mobile-drawer-head">
+      <span class="mobile-drawer-logo">prabhat<span class="logo-accent">.dev</span></span>
+      <button class="mobile-drawer-close" type="button" aria-label="Close menu" data-close-drawer>✕</button>
+    </div>
+
+    <nav class="mobile-drawer-nav">
+      <a href="#about" class="mobile-link"><span class="mobile-link-icon">👤</span><span class="mobile-link-text">About</span><span class="mobile-link-arrow">→</span></a>
+      <a href="#experience" class="mobile-link"><span class="mobile-link-icon">💼</span><span class="mobile-link-text">Experience</span><span class="mobile-link-arrow">→</span></a>
+      <a href="#skills" class="mobile-link"><span class="mobile-link-icon">🛠️</span><span class="mobile-link-text">Skills</span><span class="mobile-link-arrow">→</span></a>
+      <a href="#projects" class="mobile-link"><span class="mobile-link-icon">🚀</span><span class="mobile-link-text">Projects</span><span class="mobile-link-arrow">→</span></a>
+      <a href="#resume" class="mobile-link"><span class="mobile-link-icon">📄</span><span class="mobile-link-text">Resume</span><span class="mobile-link-arrow">→</span></a>
+      <a href="#certificates" class="mobile-link"><span class="mobile-link-icon">🏆</span><span class="mobile-link-text">Certificates</span><span class="mobile-link-arrow">→</span></a>
+      <a href="#contact" class="mobile-link"><span class="mobile-link-icon">✉️</span><span class="mobile-link-text">Contact</span><span class="mobile-link-arrow">→</span></a>
+    </nav>
+
+    <div class="mobile-drawer-footer">
+      <div class="mobile-divider"></div>
+
+      <button class="mobile-theme-toggle" id="mobileThemeBtn" type="button" aria-label="Toggle colour theme">
+        <span class="mobile-theme-icon" id="mobileThemeIcon">🌙</span>
+        <span class="mobile-theme-label" id="mobileThemeLabel">Dark mode</span>
+        <span class="theme-switch"><span class="theme-knob"></span></span>
+      </button>
+
+      <a href="Prabhat_Bhattarai_Resume_IT.pdf" class="btn btn-primary mobile-cta" target="_blank" rel="noopener">
+        <span>Download Résumé</span><span class="arrow">↗</span>
+      </a>
+    </div>
+  </aside>
+</div>
 
 <main id="top">
 
@@ -1336,44 +1505,73 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
 (function () {
   'use strict';
 
+  /* ============================================================
+     THEME
+     ============================================================ */
   const root = document.documentElement;
   const themeBtn = document.getElementById('themeToggleBtn');
   const themeIcon = document.getElementById('themeIcon');
   const mobileThemeBtn = document.getElementById('mobileThemeBtn');
+  const mobileThemeIcon = document.getElementById('mobileThemeIcon');
+  const mobileThemeLabel = document.getElementById('mobileThemeLabel');
 
   function applyTheme(t) {
     root.setAttribute('data-theme', t);
     try { localStorage.setItem('pb-theme', t); } catch (e) {}
+
     if (themeIcon) themeIcon.textContent = t === 'dark' ? '🌙' : '☀️';
     if (themeBtn) themeBtn.title = t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
-    if (mobileThemeBtn) mobileThemeBtn.innerHTML = t === 'dark' ? '<span>☀️</span> Switch to Light' : '<span>🌙</span> Switch to Dark';
+
+    if (mobileThemeBtn) {
+      mobileThemeBtn.classList.toggle('is-dark', t === 'dark');
+      mobileThemeBtn.setAttribute('aria-pressed', t === 'dark' ? 'true' : 'false');
+    }
+    if (mobileThemeIcon) mobileThemeIcon.textContent = t === 'dark' ? '☀️' : '🌙';
+    if (mobileThemeLabel) mobileThemeLabel.textContent = t === 'dark' ? 'Light mode' : 'Dark mode';
+
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', t === 'dark' ? '#070a12' : '#f7f9fc');
   }
+
   function toggleTheme() {
     const current = root.getAttribute('data-theme') || 'light';
     applyTheme(current === 'dark' ? 'light' : 'dark');
   }
+
   let saved = null;
   try { saved = localStorage.getItem('pb-theme'); } catch (e) {}
   if (saved === 'dark' || saved === 'light') { applyTheme(saved); }
-  else { root.setAttribute('data-theme', 'light'); applyTheme('light'); }
+  else { applyTheme('light'); }
 
   if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
-  if (mobileThemeBtn) mobileThemeBtn.addEventListener('click', e => { e.preventDefault(); toggleTheme(); });
+  if (mobileThemeBtn) mobileThemeBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    toggleTheme();
+  });
 
+  /* ============================================================
+     REVEAL ALL (called by loader)
+     ============================================================ */
   window.revealAll = function() {
     document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
     document.querySelectorAll('.bar-fill').forEach(el => { el.style.width = el.dataset.w || '0%'; });
   };
 
+  /* ============================================================
+     NAV SCROLL STATE
+     ============================================================ */
   const nav = document.getElementById('nav');
   function onScroll() { nav.classList.toggle('scrolled', window.scrollY > 20); }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
+  /* ============================================================
+     ACTIVE SECTION HIGHLIGHT
+     ============================================================ */
   const sections = [...document.querySelectorAll('section[id]')];
-  const navAnchors = [...document.querySelectorAll('.desktop-nav-links a[href^="#"]')];
+  const navAnchors = [...document.querySelectorAll(
+    '.desktop-nav-links a[href^="#"], .mobile-drawer-nav a[href^="#"]'
+  )];
   const navObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -1384,6 +1582,9 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
   }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
   sections.forEach(s => navObserver.observe(s));
 
+  /* ============================================================
+     SCROLL REVEAL
+     ============================================================ */
   const revealObserver = new IntersectionObserver((entries, obs) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) { entry.target.classList.add('in'); obs.unobserve(entry.target); }
@@ -1391,6 +1592,9 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
   }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
   document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
+  /* ============================================================
+     SKILL BARS
+     ============================================================ */
   const barObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -1402,6 +1606,9 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
   }, { threshold: 0.4 });
   document.querySelectorAll('.bar-fill').forEach(el => barObserver.observe(el));
 
+  /* ============================================================
+     COUNTERS
+     ============================================================ */
   const counterObserver = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
@@ -1422,62 +1629,102 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
   }, { threshold: 0.6 });
   document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
 
+  /* ============================================================
+     TYPEWRITER
+     ============================================================ */
   const typeEl = document.getElementById('typeTarget');
   const roles = ['Web Developer & Designer | Video Editor','BIT Student — 2nd Semester','Building UIs & Editing Stories','Based in Kathmandu, Nepal'];
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduceMotion) { typeEl.textContent = roles[0]; }
-  else {
-    let roleIndex = 0, charIndex = 0, deleting = false;
-    function typeLoop() {
-      const current = roles[roleIndex];
-      typeEl.textContent = deleting ? current.slice(0, --charIndex) : current.slice(0, ++charIndex);
-      let delay = deleting ? 38 : 72;
-      if (!deleting && charIndex === current.length) { delay = 1900; deleting = true; }
-      else if (deleting && charIndex === 0) { deleting = false; roleIndex = (roleIndex + 1) % roles.length; delay = 380; }
-      setTimeout(typeLoop, delay);
+  if (typeEl) {
+    if (reduceMotion) { typeEl.textContent = roles[0]; }
+    else {
+      let roleIndex = 0, charIndex = 0, deleting = false;
+      (function typeLoop() {
+        const current = roles[roleIndex];
+        typeEl.textContent = deleting ? current.slice(0, --charIndex) : current.slice(0, ++charIndex);
+        let delay = deleting ? 38 : 72;
+        if (!deleting && charIndex === current.length) { delay = 1900; deleting = true; }
+        else if (deleting && charIndex === 0) { deleting = false; roleIndex = (roleIndex + 1) % roles.length; delay = 380; }
+        setTimeout(typeLoop, delay);
+      })();
     }
-    typeLoop();
   }
 
-  const mobileMenu = document.getElementById('mobileMenuDetails');
-  if (mobileMenu) {
-    mobileMenu.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', function(e) {
+  /* ============================================================
+     MOBILE DRAWER
+     ============================================================ */
+  const drawer   = document.getElementById('mobileDrawer');
+  const menuBtn  = document.getElementById('mobileMenuBtn');
+  let lastFocused = null;
+
+  function openDrawer() {
+    if (!drawer || drawer.classList.contains('open')) return;
+    lastFocused = document.activeElement;
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('no-scroll');
+    if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true');
+    const closeBtn = drawer.querySelector('.mobile-drawer-close');
+    if (closeBtn) setTimeout(() => closeBtn.focus({ preventScroll: true }), 340);
+  }
+
+  function closeDrawer() {
+    if (!drawer || !drawer.classList.contains('open')) return;
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('no-scroll');
+    if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+    if (lastFocused && typeof lastFocused.focus === 'function') {
+      lastFocused.focus({ preventScroll: true });
+    }
+  }
+
+  if (menuBtn) {
+    menuBtn.addEventListener('click', function () {
+      drawer && drawer.classList.contains('open') ? closeDrawer() : openDrawer();
+    });
+  }
+
+  if (drawer) {
+    // close triggers (backdrop + X button)
+    drawer.querySelectorAll('[data-close-drawer]').forEach(el => {
+      el.addEventListener('click', closeDrawer);
+    });
+
+    // link navigation inside drawer
+    drawer.querySelectorAll('.mobile-link').forEach(link => {
+      link.addEventListener('click', function (e) {
         const href = this.getAttribute('href');
-        
-        if (href && href.startsWith('#') && href !== '#') {
-          e.preventDefault();
-          const targetElement = document.querySelector(href);
-          
-          if (targetElement) {
-            mobileMenu.removeAttribute('open');
-            
-            const headerOffset = 80; 
-            const elementPosition = targetElement.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-            
-            window.scrollTo({
-              top: offsetPosition,
-              behavior: 'smooth'
-            });
-          }
-        } else {
-          mobileMenu.removeAttribute('open');
+        if (!href || !href.startsWith('#')) { closeDrawer(); return; }
+        e.preventDefault();
+        closeDrawer();
+        const target = document.querySelector(href);
+        if (target) {
+          const headerOffset = 80;
+          const y = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+          setTimeout(() => window.scrollTo({ top: y, behavior: 'smooth' }), 130);
         }
       });
     });
-
-    document.addEventListener('click', e => {
-      if (mobileMenu.hasAttribute('open') && !mobileMenu.contains(e.target)) {
-        mobileMenu.removeAttribute('open');
-      }
-    });
   }
 
-  /* ------------------------------------------------------------
-     COPY EMAIL BUTTON — recovers mobile users whose mail app
-     isn't configured (silent mailto: failures).
-     ------------------------------------------------------------ */
+  // Escape key closes drawer
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && drawer && drawer.classList.contains('open')) closeDrawer();
+  });
+
+  // Auto-close if resized to desktop
+  let resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      if (window.innerWidth > 820 && drawer && drawer.classList.contains('open')) closeDrawer();
+    }, 120);
+  });
+
+  /* ============================================================
+     COPY EMAIL BUTTON
+     ============================================================ */
   const copyBtn = document.getElementById('copyEmail');
   if (copyBtn) {
     const EMAIL = 'prabhatbhattarai456@gmail.com';
@@ -1511,9 +1758,9 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
     });
   }
 
-  /* ------------------------------------------------------------
-     DYNAMIC FOOTER YEAR — never goes stale.
-     ------------------------------------------------------------ */
+  /* ============================================================
+     DYNAMIC FOOTER YEAR
+     ============================================================ */
   const yearEl = document.getElementById('footerYear');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
