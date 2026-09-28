@@ -445,27 +445,112 @@ section{padding:100px 0;position:relative}
 .desc{color:var(--muted);font-size:1.02rem;line-height:1.75;max-width:56ch;margin-bottom:2.2rem}
 .btn-row{display:flex;flex-wrap:wrap;gap:.85rem}
 
-.hero-photo-col{display:flex;justify-content:center}
-.hero-card-frame{position:relative;width:100%;max-width:380px;padding:1.1rem;border-radius:28px;animation:frameFloat 6s ease-in-out infinite}
-@keyframes frameFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-12px) rotate(.6deg)}}
-.photo-container{position:relative;aspect-ratio:1/1;border-radius:22px;overflow:hidden;background:linear-gradient(135deg,var(--accent),var(--accent-2),var(--accent-3));display:grid;place-items:center}
-.hero-photo-img{width:100%;height:100%;object-fit:cover;border-radius:22px;transition:transform .6s ease}
-.hero-card-frame:hover .hero-photo-img{transform:scale(1.05)}
-.photo-fallback{display:none;font-size:4rem;font-weight:800;color:#fff;letter-spacing:-.04em;font-family:'JetBrains Mono',monospace}
-.photo-fallback.show{display:block}
-html[data-theme="dark"] .photo-fallback{color:#04121a}
-.float-badge{position:absolute;padding:.5rem .9rem;border-radius:99px;background:var(--bg-elev);border:1px solid var(--border-strong);font-size:.78rem;font-weight:600;box-shadow:var(--shadow-sm);white-space:nowrap;font-family:'JetBrains Mono',monospace}
-.badge-1{top:6%;left:-8%;animation:badgeFloat 5s ease-in-out infinite}
-.badge-2{top:45%;right:-10%;animation:badgeFloat 5.5s ease-in-out infinite .3s}
-.badge-3{bottom:6%;left:-4%;animation:badgeFloat 6s ease-in-out infinite .6s}
-@keyframes badgeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-@media (max-width:1024px){
-  .hero-grid{grid-template-columns:1fr;gap:3.5rem}
-  .hero{padding-top:130px}
-  .hero-photo-col{order:-1}
+/* --- HERO IMAGE 3D TILT & ANIMATIONS --- */
+.hero-photo-col {
+  display: flex;
+  justify-content: center;
+  perspective: 1200px; /* Essential for 3D tilt */
 }
-@media (max-width:640px){
-  .hero{padding-top:110px;padding-bottom:60px}
+
+.hero-card-frame {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  padding: 1.1rem;
+  border-radius: 28px;
+  /* Removed old float animation to allow JS to handle transform */
+  animation: none; 
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+  will-change: transform;
+}
+
+/* Enhanced Glow on Hover */
+.hero-card-frame:hover {
+  box-shadow: 0 30px 60px rgba(13, 21, 38, 0.15), 0 0 40px rgba(8, 145, 178, 0.2);
+  border-color: var(--accent);
+}
+html[data-theme="dark"] .hero-card-frame:hover {
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(34, 211, 238, 0.2);
+}
+
+/* Rotating Gradient Backlight */
+.glow-backlight {
+  position: absolute;
+  inset: -15px;
+  background: conic-gradient(from 0deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent));
+  border-radius: 30px;
+  filter: blur(25px);
+  opacity: 0.3;
+  z-index: -1;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  animation: spinGlow 10s linear infinite;
+}
+.hero-card-frame:hover .glow-backlight {
+  opacity: 0.65;
+  transform: scale(1.05);
+}
+@keyframes spinGlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.photo-container {
+  position: relative;
+  aspect-ratio: 1/1;
+  border-radius: 22px;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
+  display: grid;
+  place-items: center;
+  transform: translateZ(30px); /* Pops the image forward in 3D */
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+.hero-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 22px;
+  transition: transform 0.6s ease;
+}
+.hero-card-frame:hover .hero-photo-img {
+  transform: scale(1.05);
+}
+
+/* Floating Badges - Updated for 3D Parallax */
+.float-badge {
+  position: absolute;
+  padding: 0.5rem 0.9rem;
+  border-radius: 99px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-strong);
+  font-size: 0.78rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace;
+  /* Removed old CSS float animation so JS can control it */
+  animation: none; 
+  transform: translateZ(50px); /* Pops badges forward even more */
+  transition: transform 0.2s ease-out, box-shadow 0.3s ease;
+  will-change: transform;
+}
+
+.badge-1 { top: 6%; left: -8%; }
+.badge-2 { top: 45%; right: -10%; }
+.badge-3 { bottom: 6%; left: -4%; }
+
+@media (max-width: 1024px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 3.5rem; }
+  .hero { padding-top: 130px; }
+  .hero-photo-col { order: -1; }
+}
+@media (max-width: 640px) {
+  .hero { padding-top: 110px; padding-bottom: 60px; }
+  .float-badge { font-size: 0.72rem; padding: 0.4rem 0.75rem; }
+  .badge-1 { left: -4%; }
+  .badge-2 { right: -6%; }
 }
 
 /* ============================================================
@@ -1138,15 +1223,16 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
           <a href="Prabhat_Bhattarai_Resume_IT.pdf" class="btn btn-ghost" target="_blank" rel="noopener"><span>Download Résumé</span><span class="arrow">↗</span></a>
         </div>
       </div>
-      <div class="hero-photo-col">
-        <div class="hero-card-frame glass-card">
+      <div class="hero-photo-col" id="heroPhotoCol">
+        <div class="hero-card-frame glass-card" id="heroCardFrame">
+          <div class="glow-backlight"></div>
           <div class="photo-container">
             <img class="hero-photo-img" src="profilewebsite.jpg" alt="Prabhat Bhattarai" loading="eager" decoding="async" onerror="this.style.display='none'; this.nextElementSibling.classList.add('show');">
             <div class="photo-fallback" aria-hidden="true">PB</div>
           </div>
-          <div class="float-badge badge-1">💻 Web Dev</div>
-          <div class="float-badge badge-2">🎨 UI/UX Design</div>
-          <div class="float-badge badge-3">🎬 Video Editing</div>
+          <div class="float-badge badge-1" data-depth="25">💻 Web Dev</div>
+          <div class="float-badge badge-2" data-depth="15">🎨 UI/UX Design</div>
+          <div class="float-badge badge-3" data-depth="35">🎬 Video Editing</div>
         </div>
       </div>
     </div>
@@ -1734,6 +1820,63 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
       if (window.innerWidth > 820 && drawer && drawer.classList.contains('open')) closeDrawer();
     }, 120);
   });
+
+  /* ============================================================
+     HERO IMAGE 3D TILT & PARALLAX
+     ============================================================ */
+  (function initHeroTilt() {
+    const col = document.getElementById('heroPhotoCol');
+    const frame = document.getElementById('heroCardFrame');
+    const badges = document.querySelectorAll('.float-badge');
+    
+    // Check if elements exist and if user prefers reduced motion
+    if (!col || !frame || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    let isHovering = false;
+
+    // Make transition fast when entering to feel responsive
+    col.addEventListener('mouseenter', () => {
+      isHovering = true;
+      frame.style.transition = 'transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease';
+    });
+
+    col.addEventListener('mousemove', (e) => {
+      if (!isHovering) return;
+      
+      const rect = col.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      // Calculate rotation (Max 12 degrees for a subtle, premium feel)
+      const rotateX = ((y - centerY) / centerY) * -12;
+      const rotateY = ((x - centerX) / centerX) * 12;
+      
+      // Apply 3D transform to the frame
+      frame.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+      
+      // Apply Parallax to badges based on their data-depth
+      badges.forEach(badge => {
+        const depth = parseFloat(badge.dataset.depth) || 10;
+        const moveX = ((x - centerX) / centerX) * depth;
+        const moveY = ((y - centerY) / centerY) * depth;
+        badge.style.transform = `translate3d(${moveX}px, ${moveY}px, 50px)`;
+      });
+    });
+
+    // Smoothly reset everything when mouse leaves
+    col.addEventListener('mouseleave', () => {
+      isHovering = false;
+      frame.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease';
+      frame.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+      
+      badges.forEach(badge => {
+        badge.style.transform = `translate3d(0, 0, 50px)`;
+      });
+    });
+  })();
 
   /* ============================================================
      COPY EMAIL BUTTON
