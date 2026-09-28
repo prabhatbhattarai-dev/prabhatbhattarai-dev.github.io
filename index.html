@@ -47,9 +47,7 @@
       ],
       "sameAs": [
         "https://github.com/prabhatbhattarai-dev",
-        "https://www.linkedin.com/in/prabhat-bhattarai-b45b7b378",
-        "https://www.instagram.com/prabhat_bhattarai_",
-        "https://www.tiktok.com/@prabhat_277"
+        "https://www.linkedin.com/in/prabhat-bhattarai-b45b7b378"
       ]
     }
   }
@@ -127,77 +125,95 @@ html[data-theme="dark"] .orb-2{background:radial-gradient(circle,rgba(167,139,25
 @keyframes orbFloat2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-70px,-60px) scale(1.1)}}
 
 /* ============================================================
-   LOADER — "Orb + Ripples"
+   LOADER — Progress Ring
    ============================================================ */
 #pbLoader{
   position:fixed;inset:0;z-index:99999;
   background:var(--bg);
   display:flex;align-items:center;justify-content:center;
   overflow:hidden;
-  transition:opacity .8s ease, visibility .8s ease;
+  transition:opacity .7s ease, visibility .7s ease;
 }
 #pbLoader.exit{opacity:0;visibility:hidden}
 #pbLoader::before{
-  content:'';
-  position:absolute;top:50%;left:50%;
-  width:min(820px,95vw);height:min(820px,95vw);
+  content:'';position:absolute;top:50%;left:50%;
+  width:min(680px,92vw);height:min(680px,92vw);
   transform:translate(-50%,-50%);
-  background:radial-gradient(circle, var(--accent-soft) 0%, transparent 55%);
+  background:radial-gradient(circle, var(--accent-soft) 0%, transparent 62%);
   pointer-events:none;
-  animation:pbAmbient 5s ease-in-out infinite;
+  animation:pbAmbient 6s ease-in-out infinite;
 }
 @keyframes pbAmbient{
-  0%,100%{opacity:.45;transform:translate(-50%,-50%) scale(.92)}
-  50%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}
+  0%,100%{opacity:.45;transform:translate(-50%,-50%) scale(.95)}
+  50%{opacity:.9;transform:translate(-50%,-50%) scale(1.06)}
 }
-.pb-stage{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 28px}
-.pb-orb-zone{position:relative;width:200px;height:200px;display:grid;place-items:center;margin-bottom:2rem}
-.pb-ripple{position:absolute;width:110px;height:110px;border-radius:50%;border:1.5px solid var(--accent);opacity:0;animation:pbRipple 3s cubic-bezier(.2,.6,.4,1) infinite}
-.pb-ripple:nth-child(1){border-color:var(--accent);animation-delay:0s}
-.pb-ripple:nth-child(2){border-color:var(--accent-2);animation-delay:1s}
-.pb-ripple:nth-child(3){border-color:var(--accent-3);animation-delay:2s}
-@keyframes pbRipple{0%{transform:scale(.86);opacity:0}15%{opacity:.55}100%{transform:scale(1.85);opacity:0}}
-.pb-orb{position:relative;width:110px;height:110px;border-radius:50%;background:linear-gradient(135deg, var(--accent), var(--accent-2) 55%, var(--accent-3));display:grid;place-items:center;box-shadow:0 8px 30px rgba(8,145,178,.35),0 0 60px rgba(124,58,237,.28),inset 0 -6px 20px rgba(0,0,0,.15),inset 0 6px 18px rgba(255,255,255,.22);opacity:0;transform:scale(.4);animation:pbOrbIn 1s cubic-bezier(.34,1.4,.64,1) .15s forwards,pbOrbBreath 3s ease-in-out 1.2s infinite}
-html[data-theme="dark"] .pb-orb{box-shadow:0 8px 30px rgba(34,211,238,.45),0 0 70px rgba(167,139,250,.4),inset 0 -6px 20px rgba(0,0,0,.25),inset 0 6px 18px rgba(255,255,255,.25)}
-@keyframes pbOrbIn{0%{opacity:0;transform:scale(.4) rotate(-25deg)}60%{opacity:1;transform:scale(1.08) rotate(4deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
-@keyframes pbOrbBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-.pb-orb::after{content:'';position:absolute;inset:3px;border-radius:50%;background:linear-gradient(180deg, rgba(255,255,255,.28), transparent 45%, transparent 60%, rgba(0,0,0,.15));pointer-events:none}
-.pb-orb-text{position:relative;z-index:2;font-family:'Inter',system-ui,sans-serif;font-weight:800;font-size:2.4rem;letter-spacing:-.04em;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.25)}
-html[data-theme="dark"] .pb-orb-text{color:#04121a}
-.pb-name{font-family:'Inter',system-ui,sans-serif;font-weight:800;font-size:clamp(1.6rem, 5vw, 2.6rem);line-height:1.05;letter-spacing:-.035em;color:var(--text);display:flex;flex-wrap:wrap;justify-content:center;gap:0 .35em;margin-bottom:1rem}
-.pb-word{display:inline-flex;overflow:hidden;padding-bottom:.08em}
-.pb-word span{display:inline-block;transform:translateY(110%);opacity:0}
-.pb-word.w1 span{animation:pbLetter .8s cubic-bezier(.2,.8,.2,1) forwards}
-.pb-word.w2 span{animation:pbLetter .8s cubic-bezier(.2,.8,.2,1) forwards;background:linear-gradient(110deg, var(--accent), var(--accent-2) 55%, var(--accent-3));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 200%}
-.pb-word.w1 span:nth-child(1){animation-delay:.55s}
-.pb-word.w1 span:nth-child(2){animation-delay:.60s}
-.pb-word.w1 span:nth-child(3){animation-delay:.65s}
-.pb-word.w1 span:nth-child(4){animation-delay:.70s}
-.pb-word.w1 span:nth-child(5){animation-delay:.75s}
-.pb-word.w1 span:nth-child(6){animation-delay:.80s}
-.pb-word.w1 span:nth-child(7){animation-delay:.85s}
-.pb-word.w2 span:nth-child(1){animation-delay:.98s}
-.pb-word.w2 span:nth-child(2){animation-delay:1.03s}
-.pb-word.w2 span:nth-child(3){animation-delay:1.08s}
-.pb-word.w2 span:nth-child(4){animation-delay:1.13s}
-.pb-word.w2 span:nth-child(5){animation-delay:1.18s}
-.pb-word.w2 span:nth-child(6){animation-delay:1.23s}
-.pb-word.w2 span:nth-child(7){animation-delay:1.28s}
-.pb-word.w2 span:nth-child(8){animation-delay:1.33s}
-.pb-word.w2 span:nth-child(9){animation-delay:1.38s}
-@keyframes pbLetter{to{transform:translateY(0);opacity:1}}
-.pb-underline{width:0;height:2px;border-radius:99px;background:linear-gradient(90deg, transparent, var(--accent), var(--accent-2), var(--accent-3), transparent);animation:pbUnderline 1.1s cubic-bezier(.2,.8,.2,1) 1.5s forwards;margin-bottom:1rem}
-@keyframes pbUnderline{to{width:min(220px, 60vw)}}
-.pb-role{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.68rem;letter-spacing:.34em;text-transform:uppercase;color:var(--muted);opacity:0;animation:pbFadeUp .8s ease 1.9s forwards}
-.pb-role .sep{display:inline-block;color:var(--accent);margin:0 .55em;opacity:.8}
-@keyframes pbFadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.pb-stage{
+  position:relative;display:flex;flex-direction:column;align-items:center;
+  text-align:center;padding:0 24px;
+}
+
+/* ---- progress ring ---- */
+.pb-ring-wrap{
+  position:relative;width:132px;height:132px;
+  display:grid;place-items:center;margin-bottom:1.7rem;
+  opacity:0;transform:scale(.9);
+  animation:pbRingIn .9s cubic-bezier(.2,.8,.2,1) .1s forwards;
+}
+@keyframes pbRingIn{to{opacity:1;transform:scale(1)}}
+
+.pb-ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.pb-ring-track{fill:none;stroke:var(--border);stroke-width:3}
+.pb-ring-fill{
+  fill:none;stroke:url(#pbGrad);stroke-width:3;stroke-linecap:round;
+  transition:stroke-dashoffset .45s cubic-bezier(.4,0,.2,1);
+  filter:drop-shadow(0 0 7px var(--accent-soft));
+}
+.pb-ring stop:nth-of-type(1){stop-color:var(--accent)}
+.pb-ring stop:nth-of-type(2){stop-color:var(--accent-2)}
+.pb-ring stop:nth-of-type(3){stop-color:var(--accent-3)}
+
+.pb-ring-center{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;align-items:center;gap:.2rem;
+}
+.pb-monogram{
+  font-size:1.65rem;font-weight:800;letter-spacing:-.05em;line-height:1;
+  background:linear-gradient(120deg,var(--accent),var(--accent-2) 55%,var(--accent-3));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  background-size:200% 200%;animation:gradientShift 6s ease infinite;
+}
+.pb-percent{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:600;
+  letter-spacing:.12em;color:var(--muted);
+}
+
+.pb-name{
+  font-size:clamp(1.15rem,3.6vw,1.5rem);font-weight:700;letter-spacing:-.02em;
+  color:var(--text);opacity:0;transform:translateY(10px);
+  animation:pbUp .9s cubic-bezier(.2,.8,.2,1) .3s forwards;
+}
+.pb-role{
+  margin-top:.6rem;font-family:'JetBrains Mono',monospace;
+  font-size:.63rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);
+  opacity:0;transform:translateY(8px);
+  animation:pbUp .9s cubic-bezier(.2,.8,.2,1) .5s forwards;
+}
+@keyframes pbUp{to{opacity:1;transform:translateY(0)}}
+
+/* ---- bottom progress line ---- */
 .pb-track{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--border);overflow:hidden}
-.pb-track-fill{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));transition:width .35s cubic-bezier(.4,0,.2,1);box-shadow:0 0 12px var(--accent)}
+.pb-track-fill{
+  height:100%;width:0%;border-radius:99px;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3));
+  transition:width .4s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 0 12px var(--accent);
+}
+
 @media (max-width:640px){
-  .pb-orb-zone{width:180px;height:180px}
-  .pb-orb{width:96px;height:96px}
-  .pb-orb-text{font-size:2.05rem}
-  .pb-role{letter-spacing:.24em;font-size:.62rem}
+  .pb-ring-wrap{width:112px;height:112px}
+  .pb-monogram{font-size:1.4rem}
+  .pb-role{letter-spacing:.2em;font-size:.58rem}
 }
 
 /* ============================================================
@@ -555,9 +571,9 @@ html[data-theme="dark"] .status-indicator{color:#34d399;background:rgba(52,211,1
 .skill-level{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:.3rem .7rem;border-radius:99px;color:var(--accent);background:var(--accent-soft);border:1px solid rgba(8,145,178,.22);white-space:nowrap}
 .skill-panel.creative .skill-level{color:var(--accent-3);background:var(--accent-3-soft);border-color:rgba(236,72,153,.22)}
 .skill-bar{height:5px;border-radius:99px;background:var(--bg-soft);border:1px solid var(--border);overflow:hidden;position:relative}
-.skill-bar-fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width 1.4s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden;box-shadow:0 0 10px rgba(8,145,178,.5)}
-.skill-panel.creative .skill-bar-fill{background:linear-gradient(90deg,var(--accent-3),var(--accent-2));box-shadow:0 0 10px rgba(236,72,153,.5)}
-.skill-bar-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.5) 50%,transparent 100%);animation:shimmer 2.6s ease-in-out infinite}
+.skill-bar-fill,.bar-fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width 1.4s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden;box-shadow:0 0 10px rgba(8,145,178,.5)}
+.skill-panel.creative .skill-bar-fill,.skill-panel.creative .bar-fill{background:linear-gradient(90deg,var(--accent-3),var(--accent-2));box-shadow:0 0 10px rgba(236,72,153,.5)}
+.skill-bar-fill::after,.bar-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.5) 50%,transparent 100%);animation:shimmer 2.6s ease-in-out infinite}
 @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 .toolbelt{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.9rem;padding-top:1.6rem;border-top:1px dashed var(--border);position:relative}
 .toolbelt::before{content:'TOOLS & PLATFORMS';position:absolute;top:-7px;left:0;padding:0 .6rem;background:var(--card);font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.2em;color:var(--muted);font-weight:600}
@@ -744,7 +760,7 @@ html[data-theme="dark"] .project-tag.study{background:rgba(167,139,250,.14);colo
 
 .contact-grid{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
   gap:1rem;
 }
 
@@ -839,17 +855,6 @@ html[data-theme="dark"] .project-tag.study{background:rgba(167,139,250,.14);colo
 .contact-card.github .contact-card-icon{background:var(--accent-2-soft)}
 .contact-card.github:hover .contact-card-icon{border-color:var(--accent-2);box-shadow:0 8px 22px rgba(124,58,237,.22)}
 .contact-card.github:hover .contact-card-arrow{color:var(--accent-2)}
-
-.contact-card.instagram::before{background:linear-gradient(90deg, var(--accent-3), #f59e0b)}
-.contact-card.instagram .contact-card-icon{background:var(--accent-3-soft)}
-.contact-card.instagram:hover .contact-card-icon{border-color:var(--accent-3);box-shadow:0 8px 22px rgba(236,72,153,.22)}
-.contact-card.instagram:hover .contact-card-arrow{color:var(--accent-3)}
-
-/* TikTok Accent */
-.contact-card.tiktok::before{background:linear-gradient(90deg, #25F4EE, #FE2C55)}
-.contact-card.tiktok .contact-card-icon{background:rgba(37,244,238,.1)}
-.contact-card.tiktok:hover .contact-card-icon{border-color:#25F4EE;box-shadow:0 8px 22px rgba(37,244,238,.22)}
-.contact-card.tiktok:hover .contact-card-arrow{color:#25F4EE}
 
 /* WhatsApp Accent (ready for when card is enabled) */
 .contact-card.whatsapp::before{background:linear-gradient(90deg, #25D366, var(--accent))}
@@ -968,21 +973,28 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
 </head>
 <body>
 
-<!-- LOADER — "Orb + Ripples" -->
+<!-- LOADER — Progress Ring -->
 <div id="pbLoader" aria-label="Loading">
   <div class="pb-stage">
-    <div class="pb-orb-zone">
-      <div class="pb-ripple"></div>
-      <div class="pb-ripple"></div>
-      <div class="pb-ripple"></div>
-      <div class="pb-orb"><span class="pb-orb-text">PB</span></div>
+    <div class="pb-ring-wrap">
+      <svg class="pb-ring" viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <linearGradient id="pbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"/>
+            <stop offset="50%"/>
+            <stop offset="100%"/>
+          </linearGradient>
+        </defs>
+        <circle class="pb-ring-track" cx="60" cy="60" r="52"/>
+        <circle class="pb-ring-fill" id="pbRing" cx="60" cy="60" r="52"/>
+      </svg>
+      <div class="pb-ring-center">
+        <span class="pb-monogram">PB</span>
+        <span class="pb-percent" id="pbPercent">0%</span>
+      </div>
     </div>
-    <div class="pb-name">
-      <span class="pb-word w1"><span>P</span><span>r</span><span>a</span><span>b</span><span>h</span><span>a</span><span>t</span></span>
-      <span class="pb-word w2"><span>B</span><span>h</span><span>a</span><span>t</span><span>t</span><span>a</span><span>r</span><span>a</span><span>i</span></span>
-    </div>
-    <div class="pb-underline"></div>
-    <div class="pb-role">Web Developer <span class="sep">·</span> Designer <span class="sep">·</span> Editor</div>
+    <div class="pb-name">Prabhat Bhattarai</div>
+    <div class="pb-role">Web Developer · Designer · Editor</div>
   </div>
   <div class="pb-track"><div class="pb-track-fill" id="pbBar"></div></div>
 </div>
@@ -991,31 +1003,51 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
 (function(){
   var loader = document.getElementById('pbLoader');
   var bar    = document.getElementById('pbBar');
+  var ring   = document.getElementById('pbRing');
+  var pct    = document.getElementById('pbPercent');
   if (!loader) return;
+
+  var CIRC = 2 * Math.PI * 52;
+  if (ring) {
+    ring.style.strokeDasharray  = CIRC;
+    ring.style.strokeDashoffset = CIRC;
+  }
+
   document.body.style.overflow = 'hidden';
-  var MIN_MS = 3500, MAX_MS = 5000;
+
+  var MIN_MS = 2000, MAX_MS = 3500;
   var startTime = performance.now(), done = false, progress = 0;
+
+  function paint(){
+    if (bar) bar.style.width = progress + '%';
+    if (ring) ring.style.strokeDashoffset = CIRC * (1 - progress / 100);
+    if (pct) pct.textContent = Math.round(progress) + '%';
+  }
 
   function finish(){
     if (done) return;
     var elapsed = performance.now() - startTime;
     if (elapsed < MIN_MS) { setTimeout(finish, MIN_MS - elapsed); return; }
     done = true;
+    progress = 100; paint();
     loader.classList.add('exit');
     document.body.style.overflow = '';
     setTimeout(function(){ loader.style.display = 'none'; }, 900);
     if (window.revealAll) window.revealAll();
   }
+
   function tick(){
     if (done) return;
     var step = progress < 60 ? Math.random()*16 + 12
              : progress < 88 ? Math.random()*7 + 3
              :                 Math.random()*3 + 1;
     progress = Math.min(progress + step, 100);
-    if (bar) bar.style.width = progress + '%';
+    paint();
     if (progress < 100) setTimeout(tick, Math.random()*130 + 70);
   }
-  setTimeout(tick, 200);
+
+  setTimeout(tick, 150);
+
   if (document.readyState === 'complete') {
     setTimeout(finish, 300);
   } else {
@@ -1446,25 +1478,6 @@ footer{border-top:1px solid var(--border);padding:2.2rem 0;text-align:center;fon
           </div>
           <div class="contact-card-label">GitHub</div>
           <div class="contact-card-value">@prabhatbhattarai-dev</div>
-        </a>
-
-        <a href="https://www.instagram.com/prabhat_bhattarai_" target="_blank" rel="noopener" class="contact-card instagram" aria-label="Prabhat Bhattarai on Instagram at prabhat_bhattarai_">
-          <div class="contact-card-top">
-            <div class="contact-card-icon">📸</div>
-            <span class="contact-card-arrow">↗</span>
-          </div>
-          <div class="contact-card-label">Instagram</div>
-          <div class="contact-card-value">@prabhat_bhattarai_</div>
-        </a>
-
-        <!-- TikTok — cleaned URL (removed tracking params) -->
-        <a href="https://www.tiktok.com/@prabhat_277" target="_blank" rel="noopener" class="contact-card tiktok" aria-label="Prabhat Bhattarai on TikTok at prabhat_277">
-          <div class="contact-card-top">
-            <div class="contact-card-icon">🎵</div>
-            <span class="contact-card-arrow">↗</span>
-          </div>
-          <div class="contact-card-label">TikTok</div>
-          <div class="contact-card-value">@prabhat_277</div>
         </a>
 
         <!-- ============================================================
