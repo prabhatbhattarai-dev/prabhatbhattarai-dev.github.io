@@ -1262,40 +1262,12 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
         document.body.style.overflow = '';
         if (window.revealAll) window.revealAll();
         
-        // Trigger Development Popup if not closed in this session
-        checkAndShowDevPopup();
+        // Call global popup check function
+        if (window.checkAndShowDevPopup) window.checkAndShowDevPopup();
 
         setTimeout(function(){ loader.style.display = 'none'; }, 800);
       }, 250);
     }, wait);
-  }
-
-  // Popup control functions
-  function checkAndShowDevPopup() {
-    var popup = document.getElementById('dev-popup');
-    if (!popup) return;
-    if (!sessionStorage.getItem('pbDevPopupClosed')) {
-      popup.style.display = 'flex';
-      setTimeout(function() {
-        popup.classList.add('open');
-        document.body.classList.add('no-scroll');
-      }, 50);
-    }
-  }
-
-  var closePopupBtn = document.getElementById('dev-popup-close');
-  if (closePopupBtn) {
-    closePopupBtn.addEventListener('click', function() {
-      var popup = document.getElementById('dev-popup');
-      if (popup) {
-        popup.classList.remove('open');
-        document.body.classList.remove('no-scroll');
-        sessionStorage.setItem('pbDevPopupClosed', 'true');
-        setTimeout(function() {
-          popup.style.display = 'none';
-        }, 300);
-      }
-    });
   }
 
   requestAnimationFrame(frame);
@@ -1795,6 +1767,34 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
     var cur = root.getAttribute('data-theme');
     applyTheme(cur === 'dark' ? 'light' : 'dark');
   });
+
+  /* ---- DEVELOPMENT POPUP ---- */
+  window.checkAndShowDevPopup = function() {
+    var popup = document.getElementById('dev-popup');
+    if (!popup) return;
+    if (!sessionStorage.getItem('pbDevPopupClosed')) {
+      popup.style.display = 'flex';
+      setTimeout(function() {
+        popup.classList.add('open');
+        document.body.classList.add('no-scroll');
+      }, 50);
+    }
+  };
+
+  var closePopupBtn = document.getElementById('dev-popup-close');
+  if (closePopupBtn) {
+    closePopupBtn.addEventListener('click', function() {
+      var popup = document.getElementById('dev-popup');
+      if (popup) {
+        popup.classList.remove('open');
+        document.body.classList.remove('no-scroll');
+        sessionStorage.setItem('pbDevPopupClosed', 'true');
+        setTimeout(function() {
+          popup.style.display = 'none';
+        }, 300);
+      }
+    });
+  }
 
   /* ---- REVEAL ---- */
   window.revealAll = function(){
