@@ -447,21 +447,21 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .overlay-foot a:hover{color:var(--text);gap:.5rem}
 
 /* ============================================================
-   DEVELOPMENT POPUP MODAL
+   DEVELOPMENT POPUP MODAL (UPGRADED ANIMATION & POLISH)
    ============================================================ */
 .dev-popup-overlay {
   position: fixed;
   inset: 0;
   z-index: 9995;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition: opacity 0.4s var(--ease-out), visibility 0.4s var(--ease-out);
 }
 .dev-popup-overlay.open {
   opacity: 1;
@@ -470,49 +470,52 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .dev-popup-card {
   background: var(--bg-2);
   color: var(--text);
-  border: 1px solid var(--line);
-  padding: 30px;
-  border-radius: 8px;
-  max-width: 380px;
+  border: 1px solid var(--line-2);
+  padding: 38px 32px;
+  border-radius: 6px;
+  max-width: 410px;
   width: 90%;
   text-align: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  transform: scale(0.95);
-  transition: transform 0.3s var(--ease-out);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+  transition: transform 0.45s var(--ease-out), opacity 0.45s var(--ease-out);
 }
 .dev-popup-overlay.open .dev-popup-card {
-  transform: scale(1);
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 .dev-popup-card h3 {
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 0.6rem;
+  letter-spacing: -0.022em;
+  margin-bottom: 0.75rem;
   color: var(--text);
 }
 .dev-popup-card p {
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   color: var(--muted);
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
+  line-height: 1.65;
+  margin-bottom: 1.75rem;
 }
 .dev-popup-btn {
   background: var(--text);
   color: var(--bg);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 500;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  padding: 0.6rem 1.4rem;
+  padding: 0.65rem 1.6rem;
   border-radius: 2px;
   cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: opacity 0.25s ease, transform 0.25s ease, background 0.25s ease;
   -webkit-tap-highlight-color: transparent;
 }
 .dev-popup-btn:hover {
-  opacity: 0.85;
-  transform: translateY(-1px);
+  background: var(--accent);
+  color: #ffffff;
+  transform: translateY(-2px);
 }
 .dev-popup-btn:active {
   transform: translateY(0) scale(0.97);
@@ -1768,159 +1771,4 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
     applyTheme(cur === 'dark' ? 'light' : 'dark');
   });
 
-  /* ---- DEVELOPMENT POPUP ---- */
-  window.checkAndShowDevPopup = function() {
-    var popup = document.getElementById('dev-popup');
-    if (!popup) return;
-    if (!sessionStorage.getItem('pbDevPopupClosed')) {
-      popup.style.display = 'flex';
-      setTimeout(function() {
-        popup.classList.add('open');
-        document.body.classList.add('no-scroll');
-      }, 50);
-    }
-  };
-
-  var closePopupBtn = document.getElementById('dev-popup-close');
-  if (closePopupBtn) {
-    closePopupBtn.addEventListener('click', function() {
-      var popup = document.getElementById('dev-popup');
-      if (popup) {
-        popup.classList.remove('open');
-        document.body.classList.remove('no-scroll');
-        sessionStorage.setItem('pbDevPopupClosed', 'true');
-        setTimeout(function() {
-          popup.style.display = 'none';
-        }, 300);
-      }
-    });
-  }
-
-  /* ---- REVEAL ---- */
-  window.revealAll = function(){
-    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
-  };
-
-  var nav = document.getElementById('nav');
-  function onScroll(){ if (nav) nav.classList.toggle('scrolled', window.scrollY > 12); }
-  window.addEventListener('scroll', onScroll, { passive:true });
-  onScroll();
-
-  if ('IntersectionObserver' in window){
-    var sections = [].slice.call(document.querySelectorAll('section[id]'));
-    var navLinks = [].slice.call(document.querySelectorAll('.nav-menu a[href^="#"]'));
-
-    var navObs = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if (e.isIntersecting){
-          var id = e.target.id;
-          navLinks.forEach(function(a){
-            a.classList.toggle('active', a.getAttribute('href') === '#' + id);
-          });
-        }
-      });
-    }, { rootMargin:'-45% 0px -50% 0px', threshold:0 });
-    sections.forEach(function(s){ navObs.observe(s); });
-
-    var revObs = new IntersectionObserver(function(entries, obs){
-      entries.forEach(function(e){
-        if (e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target); }
-      });
-    }, { threshold:.1, rootMargin:'0px 0px -60px 0px' });
-    document.querySelectorAll('.reveal').forEach(function(el){ revObs.observe(el); });
-  } else {
-    window.revealAll();
-  }
-
-  /* ---- OVERLAY ---- */
-  var overlay = document.getElementById('overlay');
-  var burger  = document.getElementById('burger');
-  var overlayClose = document.getElementById('overlayClose');
-  var lastFocus = null;
-
-  function openOverlay(){
-    if (!overlay) return;
-    lastFocus = document.activeElement;
-    overlay.classList.add('open');
-    overlay.setAttribute('aria-hidden','false');
-    document.body.classList.add('no-scroll');
-    if (burger) burger.setAttribute('aria-expanded','true');
-    setTimeout(function(){ if (overlayClose) overlayClose.focus({preventScroll:true}); }, 350);
-  }
-  function closeOverlay(){
-    if (!overlay) return;
-    overlay.classList.remove('open');
-    overlay.setAttribute('aria-hidden','true');
-    document.body.classList.remove('no-scroll');
-    if (burger) burger.setAttribute('aria-expanded','false');
-    if (lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true});
-  }
-
-  if (burger) burger.addEventListener('click', openOverlay);
-  if (overlayClose) overlayClose.addEventListener('click', closeOverlay);
-
-  if (overlay){
-    overlay.querySelectorAll('.overlay-nav a').forEach(function(a){
-      a.addEventListener('click', function(e){
-        var href = this.getAttribute('href');
-        if (!href || href.charAt(0) !== '#'){ closeOverlay(); return; }
-        e.preventDefault();
-        closeOverlay();
-        var target = document.querySelector(href);
-        if (target){
-          var y = target.getBoundingClientRect().top + window.pageYOffset - 70;
-          setTimeout(function(){ window.scrollTo({top:y, behavior:'smooth'}); }, 150);
-        }
-      });
-    });
-  }
-
-  document.addEventListener('keydown', function(e){
-    if (e.key === 'Escape' && overlay && overlay.classList.contains('open')) closeOverlay();
-  });
-
-  var rt;
-  window.addEventListener('resize', function(){
-    clearTimeout(rt);
-    rt = setTimeout(function(){
-      if (window.innerWidth > 940 && overlay && overlay.classList.contains('open')) closeOverlay();
-    }, 120);
-  });
-
-  /* ---- COPY EMAIL ---- */
-  var copyBtn = document.getElementById('copyEmail');
-  if (copyBtn){
-    var EMAIL = 'prabhatbhattarai456@gmail.com';
-    copyBtn.addEventListener('click', function(){
-      var btn = this;
-      var original = btn.textContent;
-      function ok(){
-        btn.classList.add('copied');
-        btn.textContent = 'Copied';
-        setTimeout(function(){ btn.textContent = original; btn.classList.remove('copied'); }, 1800);
-      }
-      if (navigator.clipboard && window.isSecureContext){
-        navigator.clipboard.writeText(EMAIL).then(ok).catch(function(){
-          btn.textContent = 'Failed';
-          setTimeout(function(){ btn.textContent = original; }, 1800);
-        });
-      } else {
-        var ta = document.createElement('textarea');
-        ta.value = EMAIL; ta.setAttribute('readonly','');
-        ta.style.position='fixed'; ta.style.top='-9999px'; ta.style.opacity='0';
-        document.body.appendChild(ta); ta.select();
-        try { document.execCommand('copy'); ok(); }
-        catch(e){ btn.textContent = 'Failed'; setTimeout(function(){ btn.textContent = original; }, 1800); }
-        document.body.removeChild(ta);
-      }
-    });
-  }
-
-  /* ---- FOOTER YEAR ---- */
-  var y = document.getElementById('footerYear');
-  if (y) y.textContent = new Date().getFullYear();
-})();
-</script>
-
-</body>
-</html>
+  /* ---- DEVELOPMENT
