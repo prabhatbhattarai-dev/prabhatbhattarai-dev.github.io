@@ -291,6 +291,12 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 }
 @keyframes pulse{0%{transform:scale(.7);opacity:.5}70%{transform:scale(2);opacity:0}100%{opacity:0}}
 
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
 .nav-menu{display:flex;align-items:center;gap:.15rem;list-style:none}
 .nav-menu a{
   position:relative;
@@ -315,6 +321,12 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .nav-menu a.active{color:var(--text)}
 .nav-menu a.active::after{transform:scaleX(1);transform-origin:left center}
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
 .theme-btn{
   position:relative;
   width:32px;height:32px;
@@ -322,7 +334,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
   border:1px solid var(--line);
   border-radius:50%;
   color:var(--muted);
-  margin-left:.4rem;
   transition:border-color .25s var(--ease), color .25s var(--ease), transform .45s var(--ease-out);
   -webkit-tap-highlight-color:transparent;
 }
@@ -364,6 +375,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 @media (max-width:940px){
   .nav-menu{display:none}
   .burger{display:flex}
+  .nav-right{gap: 0;}
 }
 
 /* ============================================================
@@ -385,6 +397,11 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 }
 .overlay-head .mono{
   font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);
+}
+.overlay-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
 }
 .overlay-close{
   display:flex;align-items:center;gap:.5rem;
@@ -1208,29 +1225,33 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
       Prabhat Bhattarai
     </a>
 
-    <nav>
-      <ul class="nav-menu">
-        <li><a href="#about">About</a></li>
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#resume">Resume</a></li>
-        <li><a href="#certificates">Certificates</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li>
-          <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle theme" title="Toggle theme">
-            <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="4"/>
-              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
-            </svg>
-          </button>
-        </li>
-      </ul>
-    </nav>
+    <div class="nav-right">
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="#about">About</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#resume">Resume</a></li>
+          <li><a href="#certificates">Certificates</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
 
-    <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
-      <span></span><span></span><span></span>
-    </button>
+      <div class="nav-actions">
+        <!-- Desktop Theme Button -->
+        <button class="theme-btn" type="button" aria-label="Toggle theme" title="Toggle theme">
+          <svg class="theme-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+          </svg>
+        </button>
+
+        <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -1238,9 +1259,18 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 <div class="overlay" id="overlay" aria-hidden="true">
   <div class="overlay-head">
     <span class="mono">Menu</span>
-    <button class="overlay-close" id="overlayClose" type="button" aria-label="Close menu">
-      Close <span aria-hidden="true">✕</span>
-    </button>
+    <div class="overlay-head-actions">
+      <!-- Mobile Menu Theme Button -->
+      <button class="theme-btn" type="button" aria-label="Toggle theme" title="Toggle theme">
+        <svg class="theme-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+      </button>
+      <button class="overlay-close" id="overlayClose" type="button" aria-label="Close menu">
+        Close <span aria-hidden="true">✕</span>
+      </button>
+    </div>
   </div>
 
   <nav class="overlay-nav">
@@ -1496,7 +1526,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
               </a>
             </article>
 
-            <!-- NEW PROJECT: Forex Academy -->
+            <!-- Project 05 -->
             <article class="project">
               <div class="idx">05</div>
               <div class="project-main">
@@ -1506,7 +1536,7 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
                   <span>React</span><span>Vercel</span><span>Responsive</span><span>UI/UX</span>
                 </div>
               </div>
-              <a class="project-link" href="https://forex-academy-iwjapk93u-digital-solution2.vercel.app/" target="_blank" rel="noopener">
+              <a class="project-link" href="https://forex-academy.vercel.app/" target="_blank" rel="noopener">
                 <span class="status"></span>Visit <span>↗</span>
               </a>
             </article>
@@ -1680,8 +1710,8 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 
   /* ---- THEME ---- */
   var root = document.documentElement;
-  var themeBtn = document.getElementById('themeBtn');
-  var themeIcon = document.getElementById('themeIcon');
+  var themeBtns = document.querySelectorAll('.theme-btn');
+  var themeIcons = document.querySelectorAll('.theme-icon-svg');
 
   var SUN = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>';
   var MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
@@ -1689,20 +1719,32 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
   function applyTheme(t){
     root.setAttribute('data-theme', t);
     try { localStorage.setItem('pb-theme', t); } catch(e){}
-    if (themeIcon) themeIcon.innerHTML = t === 'dark' ? MOON : SUN;
+    
+    // Update all icons (Desktop & Mobile)
+    themeIcons.forEach(function(icon) {
+      icon.innerHTML = t === 'dark' ? MOON : SUN;
+    });
+
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', t === 'dark' ? '#0d0d0c' : '#f5f4f0');
   }
 
   var saved = null;
   try { saved = localStorage.getItem('pb-theme'); } catch(e){}
-  if (saved === 'dark' || saved === 'light') applyTheme(saved);
-  else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) applyTheme('dark');
-  else applyTheme('light');
+  
+  // DEFAULT TO WHITE (LIGHT) THEME
+  if (saved === 'dark' || saved === 'light') {
+    applyTheme(saved);
+  } else {
+    applyTheme('light');
+  }
 
-  if (themeBtn) themeBtn.addEventListener('click', function(){
-    var cur = root.getAttribute('data-theme');
-    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  // Add click event to ALL theme buttons
+  themeBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var cur = root.getAttribute('data-theme');
+      applyTheme(cur === 'dark' ? 'light' : 'dark');
+    });
   });
 
   /* ---- REVEAL ---- */
