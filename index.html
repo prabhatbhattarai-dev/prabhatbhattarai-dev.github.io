@@ -447,82 +447,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 .overlay-foot a:hover{color:var(--text);gap:.5rem}
 
 /* ============================================================
-   DEVELOPMENT POPUP MODAL (BULLETPROOF DISPLAY TOGGLE)
-   ============================================================ */
-.dev-popup-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9995;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  display: none; /* Hidden by default */
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.4s var(--ease-out), visibility 0.4s var(--ease-out);
-}
-.dev-popup-overlay.open {
-  display: flex; /* Active display state */
-  opacity: 1;
-  visibility: visible;
-}
-.dev-popup-card {
-  background: var(--bg-2);
-  color: var(--text);
-  border: 1px solid var(--line-2);
-  padding: 38px 32px;
-  border-radius: 6px;
-  max-width: 410px;
-  width: 90%;
-  text-align: center;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.35);
-  opacity: 0;
-  transform: translateY(20px) scale(0.96);
-  transition: transform 0.45s var(--ease-out), opacity 0.45s var(--ease-out);
-}
-.dev-popup-overlay.open .dev-popup-card {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-.dev-popup-card h3 {
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: -0.022em;
-  margin-bottom: 0.75rem;
-  color: var(--text);
-}
-.dev-popup-card p {
-  font-size: 0.9rem;
-  color: var(--muted);
-  line-height: 1.65;
-  margin-bottom: 1.75rem;
-}
-.dev-popup-btn {
-  background: var(--text);
-  color: var(--bg);
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 0.65rem 1.6rem;
-  border-radius: 2px;
-  cursor: pointer;
-  transition: opacity 0.25s ease, transform 0.25s ease, background 0.25s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-.dev-popup-btn:hover {
-  background: var(--accent);
-  color: #ffffff;
-  transform: translateY(-2px);
-}
-.dev-popup-btn:active {
-  transform: translateY(0) scale(0.97);
-}
-
-/* ============================================================
    HERO
    ============================================================ */
 .hero{padding:140px 0 0}
@@ -1265,9 +1189,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
         loader.classList.add('exit');
         document.body.style.overflow = '';
         if (window.revealAll) window.revealAll();
-        
-        // Trigger Development Popup
-        if (window.checkAndShowDevPopup) window.checkAndShowDevPopup();
 
         setTimeout(function(){ loader.style.display = 'none'; }, 800);
       }, 250);
@@ -1335,15 +1256,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
   <div class="overlay-foot">
     <span class="mono">Kathmandu, Nepal</span>
     <a href="Prabhat_Bhattarai_Resume_IT.pdf" target="_blank" rel="noopener" class="mono">Résumé <span>↗</span></a>
-  </div>
-</div>
-
-<!-- DEVELOPMENT POPUP MODAL -->
-<div id="dev-popup" class="dev-popup-overlay" aria-hidden="true">
-  <div class="dev-popup-card">
-    <h3>🚧 Site Under Development</h3>
-    <p>Welcome to my portfolio! Some sections and features are still a work in progress. Thanks for stopping by!</p>
-    <button id="dev-popup-close" class="dev-popup-btn" type="button">Got it!</button>
   </div>
 </div>
 
@@ -1791,28 +1703,6 @@ button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
   if (themeBtn) themeBtn.addEventListener('click', function(){
     var cur = root.getAttribute('data-theme');
     applyTheme(cur === 'dark' ? 'light' : 'dark');
-  });
-
-  /* ---- DEVELOPMENT POPUP ---- */
-  window.checkAndShowDevPopup = function() {
-    var popup = document.getElementById('dev-popup');
-    if (!popup) return;
-    if (!sessionStorage.getItem('pbDevPopupClosed_v2')) {
-      popup.classList.add('open');
-      document.body.classList.add('no-scroll');
-    }
-  };
-
-  // Global click listener guarantees the close button works instantly
-  document.addEventListener('click', function(e) {
-    if (e.target && e.target.id === 'dev-popup-close') {
-      var popup = document.getElementById('dev-popup');
-      if (popup) {
-        popup.classList.remove('open');
-        document.body.classList.remove('no-scroll');
-        sessionStorage.setItem('pbDevPopupClosed_v2', 'true');
-      }
-    }
   });
 
   /* ---- REVEAL ---- */
