@@ -37,6 +37,19 @@
 }
 </script>
 
+<!-- THEME + JS FLAG (blocking, prevents FOUC) -->
+<script>
+  (function(){
+    document.documentElement.classList.add('js');
+    try {
+      var saved = localStorage.getItem('pb-theme');
+      if (saved === 'dark' || saved === 'light') {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+    } catch (e) {}
+  })();
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -46,21 +59,19 @@
    TOKENS — LUXURY WARM PALETTE
    ============================================================ */
 :root, html[data-theme="light"]{
-  /* Core Palette */
-  --bg: #FFF9F0;               /* Soft Ivory */
-  --bg-2: #FAF5EC;             /* Slightly warmer surface */
-  --text: #211A15;             /* Deep Espresso */
-  --text-2: #5B4632;           /* Mocha Brown */
-  --muted: #7A6858;            /* Muted text */
-  --faint: #A69483;            /* Faint lines/details */
-  --line: rgba(91, 70, 50, 0.15);   /* Subtle border */
-  --line-2: rgba(91, 70, 50, 0.3);  /* Stronger border */
-  
-  --accent: #CB792C;           /* Burnt Amber */
-  --accent-2: #F4D9A0;         /* Champagne Gold */
-  --green: #7A8B5E;            /* Muted olive for availability */
+  --bg: #FFF9F0;
+  --bg-2: #FAF5EC;
+  --text: #211A15;
+  --text-2: #5B4632;
+  --muted: #7A6858;
+  --faint: #A69483;
+  --line: rgba(91, 70, 50, 0.15);
+  --line-2: rgba(91, 70, 50, 0.3);
 
-  /* Typography & Layout */
+  --accent: #CB792C;
+  --accent-2: #F4D9A0;
+  --green: #7A8B5E;
+
   --max: 1200px;
   --gut: 32px;
   --aside: 180px;
@@ -75,18 +86,18 @@
 }
 
 html[data-theme="dark"]{
-  --bg: #211A15;               /* Deep Espresso */
-  --bg-2: #30251D;             /* Warm Dark Brown */
-  --text: #FFF9F0;             /* Soft Ivory */
-  --text-2: #E8D8C3;           /* Warm Beige */
-  --muted: #B7A895;            /* Muted Text */
-  --faint: #7A6858;            /* Faint details */
-  --line: rgba(244, 217, 160, 0.16); /* Subtle Champagne Border */
-  --line-2: rgba(244, 217, 160, 0.3); /* Stronger Champagne Border */
-  
-  --accent: #CB792C;           /* Burnt Amber */
-  --accent-2: #F4D9A0;         /* Champagne Gold */
-  --green: #9FB583;            /* Muted olive */
+  --bg: #211A15;
+  --bg-2: #30251D;
+  --text: #FFF9F0;
+  --text-2: #E8D8C3;
+  --muted: #B7A895;
+  --faint: #7A6858;
+  --line: rgba(244, 217, 160, 0.16);
+  --line-2: rgba(244, 217, 160, 0.3);
+
+  --accent: #CB792C;
+  --accent-2: #F4D9A0;
+  --green: #9FB583;
 }
 
 /* ============================================================
@@ -106,7 +117,7 @@ body{
   font-feature-settings:'ss01','cv11';
   transition:background .3s ease,color .3s ease;
 }
-body.no-scroll{overflow:hidden}
+body.no-scroll{position:fixed;width:100%;overflow:hidden;top:0;left:0;right:0}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
@@ -514,7 +525,7 @@ html[data-theme="light"] .nav-menu a.active{color:var(--accent)}
   font-style:italic;font-weight:400;
 }
 html[data-theme="light"] .hero-name em{
-  color:var(--accent); /* Burnt Amber for light mode elegance */
+  color:var(--accent);
 }
 
 .hero-role{
@@ -582,7 +593,20 @@ html[data-theme="light"] .hero-role em{color:var(--accent)}
 html[data-theme="dark"] .hero-photo {
   box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
+.hero-photo::after{
+  content:'PB';
+  position:absolute;inset:0;
+  display:grid;place-items:center;
+  font-family:var(--font-serif);
+  font-size:3rem;
+  color:var(--faint);
+  letter-spacing:-.02em;
+  z-index:0;
+  pointer-events:none;
+}
 .hero-photo img{
+  position:relative;
+  z-index:1;
   width:100%;height:100%;object-fit:cover;
   filter:grayscale(1) sepia(0.2) contrast(1.05);
   transition:filter .6s ease, transform .9s var(--ease);
@@ -590,6 +614,7 @@ html[data-theme="dark"] .hero-photo {
 .hero-photo:hover img{filter:grayscale(0) sepia(0) contrast(1);transform:scale(1.03)}
 .hero-photo-cap{
   position:absolute;left:12px;bottom:12px;
+  z-index:2;
   background:var(--bg);color:var(--text);
   font-family:var(--font-mono);
   font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
@@ -1139,13 +1164,14 @@ html[data-theme="light"] .foot-inner a:hover{color:var(--accent)}
 /* ============================================================
    REVEAL
    ============================================================ */
-.reveal{opacity:0;transform:translateY(14px);transition:opacity .65s ease, transform .65s var(--ease)}
-.reveal.in{opacity:1;transform:none}
+.reveal{opacity:1;transform:none;transition:opacity .65s ease, transform .65s var(--ease)}
+.js .reveal{opacity:0;transform:translateY(14px)}
+.js .reveal.in{opacity:1;transform:none}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;animation-iteration-count:1!important}
   html{scroll-behavior:auto}
-  .reveal{opacity:1;transform:none}
+  .reveal,.js .reveal{opacity:1;transform:none}
   #loader{transition:none}
 }
 </style>
@@ -1181,15 +1207,15 @@ html[data-theme="light"] .foot-inner a:hover{color:var(--accent)}
   if (!loader || !arc) return;
 
   if (tickG){
-    var cx = 120, cy = 120, R = 116;
+    var cx = 120, cy = 120, TICK_R = 116;
     for (var i = 0; i < 60; i++){
       var a = (i / 60) * Math.PI * 2 - Math.PI / 2;
       var isMajor = i % 5 === 0;
       var len = isMajor ? 6 : 3;
-      var x1 = cx + Math.cos(a) * R;
-      var y1 = cy + Math.sin(a) * R;
-      var x2 = cx + Math.cos(a) * (R - len);
-      var y2 = cy + Math.sin(a) * (R - len);
+      var x1 = cx + Math.cos(a) * TICK_R;
+      var y1 = cy + Math.sin(a) * TICK_R;
+      var x2 = cx + Math.cos(a) * (TICK_R - len);
+      var y2 = cy + Math.sin(a) * (TICK_R - len);
       var line = document.createElementNS('http://www.w3.org/2000/svg','line');
       line.setAttribute('x1', x1.toFixed(2));
       line.setAttribute('y1', y1.toFixed(2));
@@ -1270,7 +1296,6 @@ html[data-theme="light"] .foot-inner a:hover{color:var(--accent)}
       </nav>
 
       <div class="nav-actions">
-        <!-- Desktop Theme Button -->
         <button class="theme-btn" type="button" aria-label="Toggle theme" title="Toggle theme">
           <svg class="theme-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="4"/>
@@ -1291,7 +1316,6 @@ html[data-theme="light"] .foot-inner a:hover{color:var(--accent)}
   <div class="overlay-head">
     <span class="mono">Menu</span>
     <div class="overlay-head-actions">
-      <!-- Mobile Menu Theme Button -->
       <button class="theme-btn" type="button" aria-label="Toggle theme" title="Toggle theme">
         <svg class="theme-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="4"/>
@@ -1557,7 +1581,25 @@ html[data-theme="light"] .foot-inner a:hover{color:var(--accent)}
               </a>
             </article>
 
-            
+            <!-- ★ NEW PROJECT 05 — Koseli Collections -->
+            <article class="project">
+              <div class="idx">05</div>
+              <div class="project-main">
+                <h3>Koseli Collections — Premium Lifestyle Store</h3>
+                <p>A curated e-commerce destination for electronics, fashion, home &amp; living, and beauty products in Nepal. Features product filtering, cart functionality, and a clean, modern shopping experience with complimentary delivery inside Kathmandu Valley on orders above Rs. 5,000.</p>
+                <div class="project-stack">
+                  <span>React</span><span>Vercel</span><span>E-commerce</span><span>UI/UX</span>
+                </div>
+              </div>
+              <a class="project-link" href="https://koseli-collections.vercel.app/" target="_blank" rel="noopener">
+                <span class="status"></span>Visit <span>↗</span>
+              </a>
+            </article>
+
+          </div><!-- /.projects -->
+        </div><!-- /.sec-content -->
+      </div><!-- /.sec-grid -->
+    </div><!-- /.wrap -->
   </section>
 
   <!-- 05 / RESUME -->
@@ -1733,8 +1775,7 @@ html[data-theme="light"] .foot-inner a:hover{color:var(--accent)}
   function applyTheme(t){
     root.setAttribute('data-theme', t);
     try { localStorage.setItem('pb-theme', t); } catch(e){}
-    
-    // Update all icons (Desktop & Mobile)
+
     themeIcons.forEach(function(icon) {
       icon.innerHTML = t === 'dark' ? MOON : SUN;
     });
@@ -1745,15 +1786,12 @@ html[data-theme="light"] .foot-inner a:hover{color:var(--accent)}
 
   var saved = null;
   try { saved = localStorage.getItem('pb-theme'); } catch(e){}
-  
-  // DEFAULT TO LIGHT (IVORY) THEME
   if (saved === 'dark' || saved === 'light') {
     applyTheme(saved);
   } else {
     applyTheme('light');
   }
 
-  // Add click event to ALL theme buttons
   themeBtns.forEach(function(btn) {
     btn.addEventListener('click', function() {
       var cur = root.getAttribute('data-theme');
@@ -1784,28 +1822,31 @@ html[data-theme="light"] .foot-inner a:hover{color:var(--accent)}
           });
         }
       });
-    }, { rootMargin:'-45% 0px -50% 0px', threshold:0 });
+    }, { rootMargin:'-35% 0px -55% 0px', threshold:0 });
     sections.forEach(function(s){ navObs.observe(s); });
 
     var revObs = new IntersectionObserver(function(entries, obs){
       entries.forEach(function(e){
         if (e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target); }
       });
-    }, { threshold:.1, rootMargin:'0px 0px -60px 0px' });
+    }, { threshold:.05, rootMargin:'0px 0px -40px 0px' });
     document.querySelectorAll('.reveal').forEach(function(el){ revObs.observe(el); });
   } else {
     window.revealAll();
   }
 
-  /* ---- OVERLAY ---- */
+  /* ---- OVERLAY (with iOS-safe scroll lock) ---- */
   var overlay = document.getElementById('overlay');
   var burger  = document.getElementById('burger');
   var overlayClose = document.getElementById('overlayClose');
   var lastFocus = null;
+  var scrollY = 0;
 
   function openOverlay(){
     if (!overlay) return;
     lastFocus = document.activeElement;
+    scrollY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.top = '-' + scrollY + 'px';
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden','false');
     document.body.classList.add('no-scroll');
@@ -1817,7 +1858,9 @@ html[data-theme="light"] .foot-inner a:hover{color:var(--accent)}
     overlay.classList.remove('open');
     overlay.setAttribute('aria-hidden','true');
     document.body.classList.remove('no-scroll');
+    document.body.style.top = '';
     if (burger) burger.setAttribute('aria-expanded','false');
+    window.scrollTo(0, scrollY);
     if (lastFocus && lastFocus.focus) lastFocus.focus({preventScroll:true});
   }
 
