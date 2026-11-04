@@ -11,6 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+  <script>document.documentElement.classList.add('js');</script>
+
   <style>
     /* ----- TOKENS (light + dark) ----- */
     :root,
@@ -120,8 +122,6 @@
     .hdr__actions { display: flex; align-items: center; gap: 0.75rem; }
 
     /* ----- BUTTONS & ANIMATIONS ----- */
-    
-    /* Header Chips */
     .chip {
       display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
       border: 1px solid var(--line);
@@ -139,13 +139,10 @@
       transform: translateY(-2px) scale(1.02);
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-    .chip:active {
-      transform: translateY(0) scale(0.98);
-    }
+    .chip:active { transform: translateY(0) scale(0.98); }
     .theme-btn svg { width: 1rem; height: 1rem; transition: transform 0.4s var(--e-soft); }
     .theme-btn:hover svg { transform: rotate(30deg); }
 
-    /* Hero Pills */
     .pill {
       display: inline-flex; align-items: center; gap: 0.75rem;
       border-radius: var(--radius-pill);
@@ -158,8 +155,6 @@
     }
     .pill--dark { background: var(--foreground); color: var(--background); }
     .pill--outline { border: 1px solid var(--line); background: transparent; color: var(--foreground); }
-    
-    /* The Shine Effect */
     .pill::before {
       content: '';
       position: absolute;
@@ -170,21 +165,13 @@
       transition: left 0.7s var(--e-soft);
       z-index: -1;
     }
-    
     .pill:hover { 
       transform: translateY(-3px) scale(1.02); 
       box-shadow: 0 10px 20px -10px rgba(0,0,0,0.15);
     }
-    .pill:hover::before {
-      left: 150%;
-    }
-    .pill--outline:hover {
-      background: var(--surface);
-      border-color: var(--accent);
-    }
-    .pill:active {
-      transform: translateY(-1px) scale(0.97);
-    }
+    .pill:hover::before { left: 150%; }
+    .pill--outline:hover { background: var(--surface); border-color: var(--accent); }
+    .pill:active { transform: translateY(-1px) scale(0.97); }
 
     /* ----- HERO ----- */
     .hero {
@@ -238,7 +225,6 @@
       z-index: 2;
     }
 
-    /* Skills Strip */
     .skills-strip { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
     .skill-chip {
       background: var(--surface);
@@ -294,21 +280,14 @@
       display: flex; flex-wrap: wrap; gap: 0.4rem 0.8rem;
       font-size: 0.7rem; font-weight: 500; color: var(--subtle); margin-top: 0.75rem;
     }
-    
-    /* Project Link Animation */
     .project-card__link {
       display: inline-flex; align-items: center; gap: 0.3rem;
       font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
       margin-top: 1rem; color: var(--accent);
       transition: all 0.4s var(--e-soft);
     }
-    .project-card__link:hover { 
-      gap: 0.65rem; 
-      transform: translateX(4px);
-    }
-    .project-card__link:active {
-      transform: translateX(2px) scale(0.97);
-    }
+    .project-card__link:hover { gap: 0.65rem; transform: translateX(4px); }
+    .project-card__link:active { transform: translateX(2px) scale(0.97); }
 
     /* ----- STORY / TIMELINE ----- */
     .timeline { display: flex; flex-direction: column; gap: 2.5rem; }
@@ -355,7 +334,6 @@
     .contact-row .arr { font-size: 1rem; color: var(--subtle); transition: all 0.4s var(--e-soft); }
     .contact-row:hover .arr { transform: translate(4px, -4px); color: var(--accent); }
 
-    /* Copy Email Button */
     .copy-btn {
       display: inline-flex; align-items: center; justify-content: center;
       background: var(--foreground); color: var(--background);
@@ -388,6 +366,177 @@
     .foot__inner a { font-weight: 500; color: var(--foreground); transition: color 0.3s; }
     .foot__inner a:hover { color: var(--accent); }
 
+    /* ============================================================
+       3D / MOTION UPGRADE
+       ============================================================ */
+
+    .section { scroll-margin-top: 5rem; }
+
+    /* --- scroll progress bar --- */
+    .progress {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 3px; z-index: 1000;
+      background: linear-gradient(90deg, var(--accent), var(--subtle));
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    /* --- custom trailing cursor --- */
+    @media (pointer: fine) {
+      .cursor-ring {
+        position: fixed; top: 0; left: 0;
+        width: 34px; height: 34px;
+        margin: -17px 0 0 -17px;
+        border-radius: 50%;
+        border: 1.5px solid var(--accent);
+        opacity: 0.5;
+        pointer-events: none;
+        z-index: 9998;
+        will-change: transform;
+        transition: width .35s var(--e-soft), height .35s var(--e-soft),
+                    margin .35s var(--e-soft), opacity .35s var(--e-soft),
+                    background .35s var(--e-soft);
+      }
+      .cursor-ring.is-hot {
+        width: 60px; height: 60px;
+        margin: -30px 0 0 -30px;
+        opacity: 1;
+        background: color-mix(in srgb, var(--accent) 12%, transparent);
+      }
+    }
+
+    /* --- 3D tilt cards --- */
+    [data-tilt] {
+      --rx: 0deg;
+      --ry: 0deg;
+      --mx: 50%;
+      --my: 50%;
+      position: relative;
+      transform: perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry));
+      transform-style: preserve-3d;
+      transition: transform .7s var(--e-soft);
+      will-change: transform;
+    }
+    [data-tilt].is-tilting { transition: transform .1s linear; }
+
+    [data-tilt].glare::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      z-index: 3;
+      background: radial-gradient(320px circle at var(--mx) var(--my),
+                  rgba(255,255,255,.22), transparent 65%);
+      opacity: 0;
+      transition: opacity .45s var(--e-soft);
+    }
+    [data-tilt].glare:hover::before { opacity: 1; }
+
+    /* --- magnetic buttons --- */
+    .pill.magnet, .copy-btn.magnet, .chip.magnet {
+      transition: transform .3s var(--e-soft), box-shadow .3s var(--e-soft),
+                  background .3s var(--e-soft), border-color .3s var(--e-soft),
+                  color .3s var(--e-soft);
+    }
+
+    /* --- 3D character reveal (hero heading) --- */
+    .split { perspective: 800px; }
+    .js .split .ch {
+      display: inline-block;
+      transform-origin: 50% 100%;
+      transform: translateY(0.9em) rotateX(-90deg) scale(.92);
+      opacity: 0;
+      transition: transform .9s var(--e-soft), opacity .5s ease;
+      transition-delay: calc(var(--i) * 0.028s);
+      will-change: transform, opacity;
+    }
+    body.ready .split.in .ch { transform: none; opacity: 1; }
+
+    /* --- 3D word reveal (section headings) --- */
+    .js .split-words .word {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: bottom;
+      padding-bottom: .14em;
+      margin-bottom: -.14em;
+    }
+    .js .split-words .word__in {
+      display: inline-block;
+      transform-origin: 50% 100%;
+      transform: translateY(105%) rotateX(-70deg);
+      opacity: 0;
+      transition: transform .9s var(--e-soft), opacity .5s ease;
+      transition-delay: calc(var(--i) * 0.045s);
+      will-change: transform, opacity;
+    }
+    body.ready .split-words.in .word__in { transform: none; opacity: 1; }
+
+    /* --- rotating word slider --- */
+    .hero__rotator {
+      display: flex;
+      align-items: baseline;
+      gap: .55rem;
+      font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .rotator {
+      display: inline-grid;
+      perspective: 600px;
+      overflow: hidden;
+      padding-bottom: .1em;
+    }
+    .rotator b {
+      grid-area: 1 / 1;
+      font-weight: 600;
+      color: var(--accent);
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(110%);
+      transition: transform .75s var(--e-soft), opacity .45s var(--e-soft);
+    }
+    .rotator b.is-active { opacity: 1; transform: translateY(0); }
+    .rotator b.is-out { opacity: 0; transform: translateY(-110%); }
+
+    /* --- infinite marquee strip --- */
+    .marquee {
+      overflow: hidden;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+      padding: 1.1rem 0;
+      user-select: none;
+    }
+    .marquee__track {
+      display: flex;
+      align-items: center;
+      gap: 2.25rem;
+      width: max-content;
+      animation: marqueeScroll 30s linear infinite;
+      will-change: transform;
+    }
+    .marquee:hover .marquee__track { animation-play-state: paused; }
+    .marquee__track span {
+      font-size: clamp(.85rem, 1.6vw, 1.05rem);
+      font-weight: 500;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .marquee__track i {
+      font-style: normal;
+      color: var(--accent);
+      font-size: .8rem;
+    }
+    @keyframes marqueeScroll {
+      from { transform: translate3d(0, 0, 0); }
+      to   { transform: translate3d(-50%, 0, 0); }
+    }
+
     /* ----- RESPONSIVE ----- */
     @media (max-width: 900px) {
       .nav { display: none; }
@@ -395,6 +544,7 @@
       .hero__left { align-items: center; }
       .hero__role { margin-inline: auto; }
       .hero__ctas { justify-content: center; }
+      .hero__rotator { justify-content: center; }
       .skills-strip { justify-content: center; }
     }
     @media (max-width: 768px) {
@@ -404,15 +554,23 @@
       .contact-row { grid-template-columns: 1fr auto; gap: 0.25rem 0.75rem; }
       .contact-row .lbl { grid-column: 1 / -1; }
       .cert-card { flex-direction: column; align-items: flex-start; }
+      .cursor-ring { display: none; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
       .rv { opacity: 1; transform: none; }
+      .js .split .ch,
+      .js .split-words .word__in { opacity: 1; transform: none; }
+      .marquee__track { animation: none; }
+      .cursor-ring { display: none; }
     }
   </style>
 </head>
 <body>
+
+  <!-- SCROLL PROGRESS -->
+  <div class="progress" id="progress"></div>
 
   <!-- LOADER -->
   <div id="loader" aria-hidden="true">
@@ -435,10 +593,10 @@
       </nav>
 
       <div class="hdr__actions">
-        <button class="chip theme-btn" id="themeToggle" aria-label="Toggle theme">
+        <button class="chip theme-btn magnet" id="themeToggle" aria-label="Toggle theme">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
         </button>
-        <a href="#contact" class="chip">Hire me</a>
+        <a href="#contact" class="chip magnet">Hire me</a>
       </div>
     </div>
   </header>
@@ -448,14 +606,26 @@
     <section class="hero">
       <div class="shell hero__content">
         <div class="hero__left rv">
-          <p class="hero__greet">Hi, I'm Prabhat.</p>
+          <h1 class="hero__greet" data-split>Hi, I'm Prabhat.</h1>
+
+          <div class="hero__rotator">
+            <span>I build</span>
+            <span class="rotator" aria-label="websites, interfaces, experiences, videos">
+              <b class="is-active">websites</b>
+              <b>interfaces</b>
+              <b>experiences</b>
+              <b>videos</b>
+            </span>
+          </div>
+
           <p class="hero__role">
             Web developer, designer <em>&amp;</em> video editor —
             building clean digital products from Kathmandu, Nepal.
           </p>
+
           <div class="hero__ctas">
-            <a href="#work" class="pill pill--dark">View work</a>
-            <a href="Prabhat_Bhattarai_Resume_IT.pdf" target="_blank" class="pill pill--outline">Résumé ↗</a>
+            <a href="#work" class="pill pill--dark magnet">View work</a>
+            <a href="Prabhat_Bhattarai_Resume_IT.pdf" target="_blank" class="pill pill--outline magnet">Résumé ↗</a>
           </div>
           <div class="skills-strip">
             <span class="skill-chip">HTML5 / CSS3</span>
@@ -469,7 +639,7 @@
         </div>
 
         <div class="hero__right rv">
-          <div class="hero__photo">
+          <div class="hero__photo glare" data-tilt="10">
             <img src="profilewebsite.jpg" alt="Prabhat Bhattarai" loading="eager"
                  onerror="this.style.display='none';">
             <span class="hero__badge">KTM — NP</span>
@@ -478,14 +648,28 @@
       </div>
     </section>
 
+    <!-- MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" data-marquee>
+        <span>Web Development</span><i>✦</i>
+        <span>UI / UX Design</span><i>✦</i>
+        <span>Video Editing</span><i>✦</i>
+        <span>React</span><i>✦</i>
+        <span>Python</span><i>✦</i>
+        <span>FastAPI</span><i>✦</i>
+        <span>Figma</span><i>✦</i>
+        <span>Kathmandu, Nepal</span><i>✦</i>
+      </div>
+    </div>
+
     <!-- 01 / WORK -->
     <section class="section" id="work">
       <div class="shell">
         <p class="section__title rv">01 — Work</p>
-        <h2 class="section__heading rv">Projects I've <em>built</em></h2>
+        <h2 class="section__heading" data-words>Projects I've <em>built</em></h2>
 
         <div class="projects-grid">
-          <article class="project-card rv">
+          <article class="project-card rv" data-tilt="3">
             <div class="project-card__index">01</div>
             <div class="project-card__body">
               <h3>Sathi AI — Personal AI Assistant</h3>
@@ -497,7 +681,7 @@
             </div>
           </article>
 
-          <article class="project-card rv">
+          <article class="project-card rv" data-tilt="3">
             <div class="project-card__index">02</div>
             <div class="project-card__body">
               <h3>Chiya SAN — Cultural Tea Café</h3>
@@ -509,7 +693,7 @@
             </div>
           </article>
 
-          <article class="project-card rv">
+          <article class="project-card rv" data-tilt="3">
             <div class="project-card__index">03</div>
             <div class="project-card__body">
               <h3>Personal Portfolio Website</h3>
@@ -521,7 +705,7 @@
             </div>
           </article>
 
-          <article class="project-card rv">
+          <article class="project-card rv" data-tilt="3">
             <div class="project-card__index">04</div>
             <div class="project-card__body">
               <h3>BIT Student Skill Development Program</h3>
@@ -533,7 +717,7 @@
             </div>
           </article>
 
-          <article class="project-card rv">
+          <article class="project-card rv" data-tilt="3">
             <div class="project-card__index">05</div>
             <div class="project-card__body">
               <h3>Koseli Collections — Premium Lifestyle Store</h3>
@@ -552,7 +736,7 @@
     <section class="section" id="story">
       <div class="shell">
         <p class="section__title rv">02 — Story</p>
-        <h2 class="section__heading rv">Let's go back <em>in time.</em></h2>
+        <h2 class="section__heading" data-words>Let's go back <em>in time.</em></h2>
 
         <div class="timeline">
           <div class="tl-item rv">
@@ -580,9 +764,9 @@
     <section class="section" id="certificates">
       <div class="shell">
         <p class="section__title rv">03 — Certificates</p>
-        <h2 class="section__heading rv">Proof of <em>learning.</em></h2>
+        <h2 class="section__heading" data-words>Proof of <em>learning.</em></h2>
 
-        <a class="cert-card rv" href="https://coursera.org/verify/3MAW4BCY97HU" target="_blank" rel="noopener">
+        <a class="cert-card rv" href="https://coursera.org/verify/3MAW4BCY97HU" target="_blank" rel="noopener" data-tilt="6">
           <img src="jira.jpg" alt="Coursera Jira Certificate">
           <div class="cert-card__body">
             <h4>Get Started with Jira</h4>
@@ -597,7 +781,7 @@
     <section class="section" id="contact">
       <div class="shell">
         <p class="section__title rv">04 — Contact</p>
-        <h2 class="section__heading rv">Tell me what you need <em>built.</em></h2>
+        <h2 class="section__heading" data-words>Tell me what you need <em>built.</em></h2>
         <p class="contact-sub rv">Available for freelance web projects, video editing, and short‑term collaborations. I reply within a few hours.</p>
 
         <div class="contact-list">
@@ -618,7 +802,7 @@
           </a>
         </div>
 
-        <button class="copy-btn rv" id="copyEmail">Copy email</button>
+        <button class="copy-btn rv magnet" id="copyEmail">Copy email</button>
       </div>
     </section>
   </main>
@@ -634,26 +818,103 @@
     (function () {
       'use strict';
 
-      // ---- Theme toggle with localStorage ----
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const finePointer  = window.matchMedia('(pointer: fine)').matches;
+
+      /* =========================================================
+         1. THEME TOGGLE
+         ========================================================= */
       const root = document.documentElement;
       const themeBtn = document.getElementById('themeToggle');
       const saved = localStorage.getItem('pb-theme');
-      if (saved === 'dark' || saved === 'light') {
-        root.setAttribute('data-theme', saved);
-      } else {
-        root.setAttribute('data-theme', 'light');
-      }
+      root.setAttribute('data-theme', (saved === 'dark' || saved === 'light') ? saved : 'light');
 
       themeBtn.addEventListener('click', () => {
-        const current = root.getAttribute('data-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
+        const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
         root.setAttribute('data-theme', next);
         localStorage.setItem('pb-theme', next);
         const meta = document.querySelector('meta[name="theme-color"]');
         if (meta) meta.setAttribute('content', next === 'dark' ? '#1A1818' : '#E8E4E0');
       });
 
-      // ---- Loader ----
+      /* =========================================================
+         2. TEXT SPLITTING (3D reveal)
+         ========================================================= */
+      // Characters — for the hero heading
+      function splitChars(el) {
+        const text = el.textContent;
+        el.setAttribute('aria-label', text);
+        el.textContent = '';
+        const frag = document.createDocumentFragment();
+        [...text].forEach((ch, i) => {
+          const s = document.createElement('span');
+          s.className = 'ch';
+          s.setAttribute('aria-hidden', 'true');
+          s.style.setProperty('--i', i);
+          s.textContent = ch === ' ' ? '\u00A0' : ch;
+          frag.appendChild(s);
+        });
+        el.appendChild(frag);
+        el.classList.add('split');
+      }
+
+      // Words — for section headings (keeps <em> intact)
+      function splitWords(el) {
+        const nodes = [...el.childNodes];
+        el.textContent = '';
+        let i = 0;
+
+        const makeWord = (content) => {
+          const wrap = document.createElement('span');
+          wrap.className = 'word';
+          const inner = document.createElement('span');
+          inner.className = 'word__in';
+          inner.style.setProperty('--i', i++);
+          inner.appendChild(content);
+          wrap.appendChild(inner);
+          return wrap;
+        };
+
+        nodes.forEach((node) => {
+          if (node.nodeType === Node.TEXT_NODE) {
+            node.textContent.split(/(\s+)/).forEach((part) => {
+              if (!part) return;
+              if (!part.trim()) { el.appendChild(document.createTextNode(' ')); return; }
+              el.appendChild(makeWord(document.createTextNode(part)));
+            });
+          } else if (node.nodeType === Node.ELEMENT_NODE) {
+            el.appendChild(makeWord(node.cloneNode(true)));
+          }
+        });
+
+        el.classList.add('split-words');
+      }
+
+      document.querySelectorAll('[data-split]').forEach(splitChars);
+      document.querySelectorAll('[data-words]').forEach(splitWords);
+
+      /* =========================================================
+         3. INTERSECTION REVEAL FOR SPLIT TEXT
+         ========================================================= */
+      const splitTargets = document.querySelectorAll('.split, .split-words');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in');
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.25, rootMargin: '0px 0px -8% 0px' });
+
+        splitTargets.forEach((el) => io.observe(el));
+      } else {
+        splitTargets.forEach((el) => el.classList.add('in'));
+      }
+
+      /* =========================================================
+         4. LOADER
+         ========================================================= */
       const loader = document.getElementById('loader');
       if (loader) {
         setTimeout(() => {
@@ -663,34 +924,178 @@
         }, 1200);
       }
 
-      // ---- Copy email ----
+      /* =========================================================
+         5. ROTATING WORD SLIDER
+         ========================================================= */
+      const rotatorWords = [...document.querySelectorAll('.rotator b')];
+      if (rotatorWords.length > 1 && !reduceMotion) {
+        let ri = 0;
+        setInterval(() => {
+          const current = rotatorWords[ri];
+          ri = (ri + 1) % rotatorWords.length;
+          const next = rotatorWords[ri];
+
+          current.classList.remove('is-active');
+          current.classList.add('is-out');
+          next.classList.remove('is-out');
+          next.classList.add('is-active');
+
+          setTimeout(() => current.classList.remove('is-out'), 800);
+        }, 2600);
+      }
+
+      /* =========================================================
+         6. SCROLL PROGRESS BAR
+         ========================================================= */
+      const progressBar = document.getElementById('progress');
+      let progressTicking = false;
+
+      function updateProgress() {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const ratio = max > 0 ? Math.min(window.scrollY / max, 1) : 0;
+        progressBar.style.transform = `scaleX(${ratio})`;
+        progressTicking = false;
+      }
+
+      window.addEventListener('scroll', () => {
+        if (!progressTicking) {
+          requestAnimationFrame(updateProgress);
+          progressTicking = true;
+        }
+      }, { passive: true });
+      updateProgress();
+
+      /* =========================================================
+         7. 3D TILT CARDS
+         ========================================================= */
+      if (finePointer && !reduceMotion) {
+        document.querySelectorAll('[data-tilt]').forEach((el) => {
+          const strength = parseFloat(el.dataset.tilt) || 8;
+          let frame = null;
+
+          el.addEventListener('pointermove', (e) => {
+            if (e.pointerType === 'touch') return;
+            const rect = el.getBoundingClientRect();
+            const px = (e.clientX - rect.left) / rect.width - 0.5;
+            const py = (e.clientY - rect.top) / rect.height - 0.5;
+
+            el.classList.add('is-tilting');
+            if (frame) cancelAnimationFrame(frame);
+
+            frame = requestAnimationFrame(() => {
+              el.style.setProperty('--rx', `${(-py * strength).toFixed(2)}deg`);
+              el.style.setProperty('--ry', `${(px * strength).toFixed(2)}deg`);
+              el.style.setProperty('--mx', `${((px + 0.5) * 100).toFixed(1)}%`);
+              el.style.setProperty('--my', `${((py + 0.5) * 100).toFixed(1)}%`);
+            });
+          });
+
+          el.addEventListener('pointerleave', () => {
+            if (frame) cancelAnimationFrame(frame);
+            el.classList.remove('is-tilting');
+            el.style.setProperty('--rx', '0deg');
+            el.style.setProperty('--ry', '0deg');
+          });
+        });
+      }
+
+      /* =========================================================
+         8. MAGNETIC BUTTONS
+         ========================================================= */
+      if (finePointer && !reduceMotion) {
+        document.querySelectorAll('.magnet').forEach((el) => {
+          el.addEventListener('pointermove', (e) => {
+            if (e.pointerType === 'touch') return;
+            const rect = el.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            el.style.transform =
+              `translate(${(x * 0.28).toFixed(1)}px, ${(y * 0.42).toFixed(1)}px) scale(1.03)`;
+          });
+
+          el.addEventListener('pointerleave', () => {
+            el.style.transform = '';
+          });
+        });
+      }
+
+      /* =========================================================
+         9. CUSTOM TRAILING CURSOR
+         ========================================================= */
+      if (finePointer && !reduceMotion) {
+        const ring = document.createElement('div');
+        ring.className = 'cursor-ring';
+        ring.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(ring);
+
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let ringX = mouseX;
+        let ringY = mouseY;
+
+        window.addEventListener('pointermove', (e) => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+        }, { passive: true });
+
+        (function animateRing() {
+          ringX += (mouseX - ringX) * 0.16;
+          ringY += (mouseY - ringY) * 0.16;
+          ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+          requestAnimationFrame(animateRing);
+        })();
+
+        document.querySelectorAll('a, button, .project-card, .cert-card').forEach((el) => {
+          el.addEventListener('pointerenter', () => ring.classList.add('is-hot'));
+          el.addEventListener('pointerleave', () => ring.classList.remove('is-hot'));
+        });
+      }
+
+      /* =========================================================
+         10. MARQUEE (duplicate content for seamless loop)
+         ========================================================= */
+      const marquee = document.querySelector('[data-marquee]');
+      if (marquee) {
+        marquee.innerHTML += marquee.innerHTML;
+      }
+
+      /* =========================================================
+         11. COPY EMAIL
+         ========================================================= */
       const copyBtn = document.getElementById('copyEmail');
       if (copyBtn) {
         copyBtn.addEventListener('click', () => {
           const email = 'prabhatbhattarai456@gmail.com';
-          navigator.clipboard.writeText(email).then(() => {
+
+          const done = () => {
             copyBtn.textContent = 'Copied!';
             copyBtn.classList.add('copied');
             setTimeout(() => {
               copyBtn.textContent = 'Copy email';
               copyBtn.classList.remove('copied');
             }, 2000);
-          }).catch(() => {
+          };
+
+          navigator.clipboard.writeText(email).then(done).catch(() => {
             const ta = document.createElement('textarea');
             ta.value = email;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
             document.body.appendChild(ta);
             ta.select();
-            document.execCommand('copy');
+            try { document.execCommand('copy'); } catch (err) { /* noop */ }
             document.body.removeChild(ta);
-            copyBtn.textContent = 'Copied!';
-            setTimeout(() => { copyBtn.textContent = 'Copy email'; }, 2000);
+            done();
           });
         });
       }
 
-      // ---- Footer year ----
+      /* =========================================================
+         12. FOOTER YEAR
+         ========================================================= */
       const yearEl = document.getElementById('year');
       if (yearEl) yearEl.textContent = new Date().getFullYear();
+
     })();
   </script>
 </body>
