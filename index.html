@@ -108,14 +108,12 @@
                   visibility 0s linear 1.1s;
       will-change: transform;
     }
-    /* curtain lifts away on exit */
     #loader.exit {
       transform: translateY(-100%);
       border-radius: 0 0 50% 50% / 0 0 8vw 8vw;
       visibility: hidden; pointer-events: none;
     }
 
-    /* drifting gold glow */
     #loader::before {
       content: ''; position: absolute; pointer-events: none;
       width: 70vmax; height: 70vmax; left: 50%; top: 50%; margin: -35vmax 0 0 -35vmax;
@@ -149,7 +147,6 @@
     #loader.exit .ld-center,
     #loader.exit .ld-footer { opacity: 0; transform: translateY(-24px); }
 
-    /* avatar with spinning ring + radar pulses */
     .ld-avatar-wrap {
       position: relative; width: 110px; height: 110px; margin-bottom: 2rem;
       display: grid; place-items: center;
@@ -181,7 +178,6 @@
     }
     .ld-avatar img { width: 100%; height: 100%; object-fit: cover; z-index: 1; position: relative; }
 
-    /* pills: fly in from alternating sides, float, shimmer */
     .ld-pills { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; counter-reset: pill; }
     .ld-pill {
       position: relative; overflow: hidden;
@@ -217,7 +213,6 @@
     @keyframes ldPillFloat { from { translate: 0 -2px; } to { translate: 0 3px; } }
     @keyframes ldShimmer { 0% { transform: translateX(-120%); } 55%, 100% { transform: translateX(120%); } }
 
-    /* footer: status words, counter, progress bar */
     .ld-footer {
       position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.5rem;
       transition: opacity .5s ease, transform .8s var(--e-soft);
@@ -259,12 +254,15 @@
     }
 
     /* ==========================================================
-       THE ROPE (Theme Toggle) — animated
+       THE ROPE (Theme Toggle) — moved to the right gutter
        ========================================================== */
     .rope-container {
-      position: fixed; top: 0; left: 50%; margin-left: -20px; width: 40px; z-index: 9998;
+      position: fixed; top: 0; right: 1.5rem; left: auto; margin-left: 0;
+      width: 40px; z-index: 9998;
       display: flex; justify-content: center;
       cursor: grab; touch-action: none;
+      /* Container must not block page clicks — only the knob does */
+      pointer-events: none;
     }
     .rope-container:active { cursor: grabbing; }
 
@@ -272,6 +270,7 @@
       display: flex; flex-direction: column; align-items: center;
       transform-origin: top center;
       animation: ropeIdle 5s ease-in-out infinite;
+      pointer-events: none;
     }
     .rope-swing.is-dragging { animation: none; }
     .rope-swing.is-wobble { animation: ropeWobble 1.6s cubic-bezier(0.25, 1, 0.5, 1); }
@@ -302,6 +301,8 @@
       box-shadow: inset -2px -2px 4px rgba(0,0,0,0.3), 0 4px 10px rgba(0,0,0,0.3);
       margin-top: -4px; position: relative;
       transition: transform .3s var(--e-bounce), box-shadow .3s;
+      pointer-events: auto; /* only the knob is interactive */
+      cursor: grab;
     }
     .rope-knob::after {
       content: ''; position: absolute; top: 6px; left: 8px; width: 6px; height: 6px;
@@ -313,7 +314,6 @@
       box-shadow: inset -2px -2px 4px rgba(0,0,0,.3), 0 8px 18px rgba(201,147,46,.5);
     }
 
-    /* Circular reveal when the theme changes */
     ::view-transition-old(root),
     ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
 
@@ -394,6 +394,42 @@
     [data-theme="dark"] .theme-btn__icon--sun  { display: none; }
     [data-theme="dark"] .theme-btn__icon--moon { display: block; }
 
+    /* Mobile menu button */
+    .menu-btn {
+      display: none;
+      width: 2.4rem; height: 2.4rem; border-radius: 50%;
+      border: 1px solid var(--line); background: var(--surface);
+      position: relative; flex-shrink: 0;
+    }
+    .menu-btn span {
+      position: absolute; left: 50%; width: 1.05rem; height: 1.5px;
+      background: var(--fg); transform: translateX(-50%);
+      transition: transform .3s var(--e-soft), opacity .3s var(--e-soft), top .3s var(--e-soft);
+    }
+    .menu-btn span:nth-child(1) { top: 0.82rem; }
+    .menu-btn span:nth-child(2) { top: 1.16rem; }
+    .menu-btn span:nth-child(3) { top: 1.50rem; }
+    .menu-btn.open span:nth-child(1) { top: 1.16rem; transform: translateX(-50%) rotate(45deg); }
+    .menu-btn.open span:nth-child(2) { opacity: 0; }
+    .menu-btn.open span:nth-child(3) { top: 1.16rem; transform: translateX(-50%) rotate(-45deg); }
+
+    .mobile-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 890;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      padding: 5.5rem var(--gut) 2rem;
+      transform: translateY(-110%);
+      transition: transform .55s var(--e-soft);
+      pointer-events: none;
+      box-shadow: 0 24px 48px -24px rgba(0,0,0,.3);
+    }
+    .mobile-nav.open { transform: translateY(0); pointer-events: auto; }
+    .mobile-nav a {
+      display: block; font-family: var(--font-serif); font-size: 1.9rem;
+      padding: .55rem 0; border-bottom: 1px solid var(--line); color: var(--fg);
+    }
+    .mobile-nav a:last-child { border-bottom: none; }
+
     .btn {
       display: inline-flex; align-items: center; gap: .55rem; border-radius: var(--radius-pill);
       font-size: .9rem; font-weight: 500; padding: .75rem 1.5rem; transition: all .35s var(--e-soft);
@@ -407,6 +443,7 @@
     .btn--ghost:hover { background: var(--surface); border-color: var(--accent); color: var(--accent); }
     .hdr__cta { font-size: .85rem; padding: .55rem 1.1rem; }
     @media (max-width: 720px) { .hdr__cta { display: none; } .theme-btn__label { display: none; } .theme-btn { padding: .55rem; border-radius: 50%; } }
+    @media (max-width: 1000px) { .menu-btn { display: inline-flex; align-items: center; justify-content: center; } }
 
     /* ==========================================================
        HERO
@@ -587,7 +624,7 @@
     </div>
   </div>
 
-  <!-- THE ROPE THEME TOGGLE -->
+  <!-- THE ROPE THEME TOGGLE (right gutter) -->
   <div class="rope-container" id="rope">
     <div class="rope-swing" id="ropeSwing">
       <div class="rope-line" id="ropeLine"></div>
@@ -620,10 +657,21 @@
           <svg class="theme-btn__icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           <span class="theme-btn__label">Dark</span>
         </button>
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
+          <span></span><span></span><span></span>
+        </button>
         <a href="#contact" class="btn btn--accent hdr__cta">Hire me</a>
       </div>
     </div>
   </header>
+
+  <!-- MOBILE NAV -->
+  <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
+    <a href="#services">What I do</a>
+    <a href="#work">Work</a>
+    <a href="#story">Story</a>
+    <a href="#contact">Contact</a>
+  </nav>
 
   <main>
     <!-- HERO -->
@@ -776,18 +824,8 @@
             <span class="pitem__go">↗</span>
           </a>
 
-          <a href="https://koseli-collections.vercel.app/" target="_blank" rel="noopener" class="pitem rv">
-            <span class="pitem__num">04</span>
-            <div>
-              <h4>Koseli Collections</h4>
-              <p>A curated store for electronics, fashion, home &amp; beauty — filtering, cart and a clean shopping flow.</p>
-              <div class="pitem__tags"><span>React</span><span>Vercel</span><span>E-commerce</span></div>
-            </div>
-            <span class="pitem__go">↗</span>
-          </a>
-
           <a href="https://strapwear.vercel.app/" target="_blank" rel="noopener" class="pitem rv">
-            <span class="pitem__num">05</span>
+            <span class="pitem__num">04</span>
             <div>
               <h4>Strapwear</h4>
               <p>A modern e-commerce storefront for straps and accessories — clean product grids, filtering and a smooth, distraction-free shopping flow.</p>
@@ -922,8 +960,8 @@
       [100, 'Ready']
     ];
     let stage = -1;
-    const DURATION = 2800;                      // length of the count-up
-    const startAt = performance.now() + 400;    // let the intro animations begin first
+    const DURATION = 2800;
+    const startAt = performance.now() + 400;
     const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
     function setStage(p) {
@@ -933,7 +971,7 @@
       stage = idx;
       statusEl.textContent = stages[idx][1];
       statusEl.classList.remove('tick');
-      void statusEl.offsetWidth;                // restart the slide-in
+      void statusEl.offsetWidth;
       statusEl.classList.add('tick');
     }
 
@@ -950,14 +988,13 @@
       setTimeout(() => {
         loader.classList.add('exit');
         document.body.classList.remove('locked');
-        // Tells the CSS to show the hidden .rv elements
         document.body.classList.add('ready');
       }, 600);
     }
     requestAnimationFrame(loaderFrame);
 
     // ==========================================
-    // 2. PULL ROPE THEME TOGGLE (animated)
+    // 2. PULL ROPE THEME TOGGLE (right gutter)
     // ==========================================
     const rope = document.getElementById('rope');
     const ropeLine = document.getElementById('ropeLine');
@@ -986,7 +1023,6 @@
       const pull = Math.min(Math.max(currentY - startY, 0) * 0.8, 180);
       ropeLine.style.height = `${BASE + pull}px`;
 
-      // rope tilts toward the pointer
       const tilt = Math.max(-18, Math.min(18, (currentX - startX) * 0.12));
       ropeSwing.style.transform = `rotate(${tilt}deg)`;
     });
@@ -996,14 +1032,12 @@
       isDragging = false;
       const pulled = currentY - startY > threshold;
 
-      // springy snap-back with overshoot
       ropeLine.style.transition = 'height .7s cubic-bezier(0.34, 1.56, 0.64, 1)';
       ropeLine.style.height = BASE + 'px';
 
-      // clear drag tilt, play wobble, then resume idle sway
       ropeSwing.style.transform = '';
       ropeSwing.classList.remove('is-dragging');
-      void ropeSwing.offsetWidth; // restart animation
+      void ropeSwing.offsetWidth;
       ropeSwing.classList.add('is-wobble');
       ropeSwing.addEventListener('animationend', () => ropeSwing.classList.remove('is-wobble'), { once: true });
 
@@ -1024,24 +1058,60 @@
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!document.startViewTransition || reduce) { applyTheme(); return; }
 
+      // Find the knob position so the reveal radiates from the rope
+      const knob = document.querySelector('.rope-knob');
+      let originX = window.innerWidth / 2;
+      let originY = 0;
+      if (knob) {
+        const r = knob.getBoundingClientRect();
+        originX = r.left + r.width / 2;
+        originY = r.top + r.height / 2;
+      }
+      const radius = Math.hypot(
+        Math.max(originX, window.innerWidth - originX),
+        Math.max(originY, window.innerHeight - originY)
+      );
+
       const vt = document.startViewTransition(applyTheme);
       vt.ready.then(() => {
-        const r = Math.hypot(innerWidth, innerHeight);
         root.animate(
-          { clipPath: ['circle(0px at 50% 0px)', `circle(${r}px at 50% 0px)`] },
+          { clipPath: [`circle(0px at ${originX}px ${originY}px)`, `circle(${radius}px at ${originX}px ${originY}px)`] },
           { duration: 800, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', pseudoElement: '::view-transition-new(root)' }
         );
       });
     }
 
-    // Header toggle also works
     const themeBtn = document.getElementById('themeToggle');
     if (themeBtn) themeBtn.addEventListener('click', toggleTheme);
 
     // ==========================================
-    // 3. OTHER UI LOGIC (Reveal, Marquee, Copy)
+    // 3. MOBILE NAV
     // ==========================================
-    // Reveal animations
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileNav = document.getElementById('mobileNav');
+
+    function closeMobileNav() {
+      if (!mobileNav || !menuBtn) return;
+      mobileNav.classList.remove('open');
+      menuBtn.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    if (menuBtn && mobileNav) {
+      menuBtn.addEventListener('click', () => {
+        const open = mobileNav.classList.toggle('open');
+        menuBtn.classList.toggle('open', open);
+        menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+
+      mobileNav.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', closeMobileNav);
+      });
+    }
+
+    // ==========================================
+    // 4. OTHER UI LOGIC (Reveal, Marquee, Copy)
+    // ==========================================
     const rvs = document.querySelectorAll('.rv');
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
@@ -1054,11 +1124,9 @@
       rvs.forEach(el => el.classList.add('is-in'));
     }
 
-    // Marquee duplication
     const track = document.getElementById('marqueeTrack');
     if (track) track.innerHTML += track.innerHTML;
 
-    // Copy email
     const copyBtn = document.getElementById('copyEmail');
     if (copyBtn) {
       copyBtn.addEventListener('click', () => {
