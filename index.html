@@ -28,7 +28,7 @@
 <!-- Inline SVG favicon -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%231A1818'/><text x='50' y='73' font-family='Helvetica,Arial,sans-serif' font-size='60' font-weight='700' text-anchor='middle' fill='%23E9B44C'>P</text></svg>">
 
-<!-- Fonts: Space Grotesk (body grotesk) + Bricolage Grotesque (display) -->
+<!-- Fonts: Bricolage Grotesque (display) + Space Grotesk (body) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
@@ -36,21 +36,28 @@
 <style>
 /* ============================================================================
    ============================  DESIGN TOKENS  ================================
-   Change everything here — colors, fonts, spacing — and the whole site follows.
    ============================================================================ */
 :root{
   /* ---- Colors ------------------------------------------------------------ */
-  --bg:            #1A1818;   /* near-black warm background                  */
-  --bg-elev:       #211E1E;   /* elevated surface (cards, modal)             */
-  --bg-elev-2:     #2A2626;   /* higher surface / hover                       */
-  --fg:            #F4EFE7;   /* off-white text                               */
-  --muted:         #9C948B;   /* secondary text                               */
-  --line:          rgba(244,239,231,.13);
-  --line-strong:   rgba(244,239,231,.26);
+  --bg:            #1A1818;
+  --bg-elev:       #211E1E;
+  --bg-elev-2:     #2A2626;
+  --fg:            #F4EFE7;
+  --muted:         #9C948B;
+  --muted-2:       #6F6760;
+  --line:          rgba(244,239,231,.10);
+  --line-strong:   rgba(244,239,231,.20);
 
-  --accent:        #E9B44C;   /* THE accent color                             */
-  --accent-ink:    #191716;   /* text on top of the accent                    */
-  --ok:            #63E6A0;   /* availability dot                             */
+  --accent:        #E9B44C;
+  --accent-ink:    #1A1818;
+  --ok:            #7FE3A1;
+
+  /* Per-skill tints (used only as subtle accents) */
+  --skill-web:     #7B9EFF;
+  --skill-app:     #B585F0;
+  --skill-uiux:    #E9B44C;
+  --skill-graphic: #F08A7A;
+  --skill-photo:   #7FDBC0;
 
   /* ---- Typography -------------------------------------------------------- */
   --font-body:     'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -63,14 +70,15 @@
   --gutter:  clamp(1.25rem, 5vw, 4.5rem);
   --maxw:    1440px;
 
-  /* ---- Radii & motion ---------------------------------------------------- */
-  --radius-s: .75rem;
-  --radius-m: 1.25rem;
-  --radius-l: 2rem;
+  /* ---- Radii ------------------------------------------------------------- */
+  --radius-s: .6rem;
+  --radius-m: 1rem;
+  --radius-l: 1.5rem;
 
+  /* ---- Motion ------------------------------------------------------------ */
   --ease:     cubic-bezier(.22,1,.36,1);
   --ease-out: cubic-bezier(.16,1,.3,1);
-  --header-h: 76px;
+  --header-h: 72px;
 }
 
 /* ============================================================================
@@ -88,7 +96,6 @@ body{
   background:var(--bg);
   color:var(--fg);
   line-height:1.6;
-  font-weight:400;
   -webkit-font-smoothing:antialiased;
   overflow-x:clip;
   min-height:100svh;
@@ -98,7 +105,6 @@ img,svg{ display:block; max-width:100%; }
 a{ color:inherit; text-decoration:none; }
 button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
 ul,ol{ list-style:none; }
-input,textarea,select{ font:inherit; color:inherit; }
 ::selection{ background:var(--accent); color:var(--accent-ink); }
 
 :focus-visible{
@@ -107,7 +113,7 @@ input,textarea,select{ font:inherit; color:inherit; }
   border-radius:4px;
 }
 
-/* Utility layout wrapper */
+/* Layout wrapper */
 .wrap{
   width:100%;
   max-width:var(--maxw);
@@ -115,34 +121,32 @@ input,textarea,select{ font:inherit; color:inherit; }
   padding-inline:var(--gutter);
 }
 
-/* Skip link — first thing a keyboard user meets */
+/* Skip link */
 .skip{
   position:fixed; top:.5rem; left:.5rem; z-index:9999;
-  padding:.75rem 1.25rem; border-radius:999px;
+  padding:.7rem 1.2rem; border-radius:999px;
   background:var(--accent); color:var(--accent-ink);
   font-weight:600; font-size:.85rem;
-  transform:translateY(-150%);
+  transform:translateY(-160%);
   transition:transform .3s var(--ease);
 }
 .skip:focus-visible{ transform:none; }
 
-/* Subtle background texture (no images required) */
+/* Very subtle ambient light — not a pattern, just warmth */
 body::before{
   content:'';
   position:fixed; inset:0; pointer-events:none; z-index:0;
   background:
-    radial-gradient(70% 55% at 78% 6%, rgba(233,180,76,.10), transparent 60%),
-    radial-gradient(50% 40% at 8% 92%, rgba(233,180,76,.06), transparent 60%),
-    repeating-linear-gradient(0deg, rgba(244,239,231,.022) 0 1px, transparent 1px 96px),
-    repeating-linear-gradient(90deg, rgba(244,239,231,.022) 0 1px, transparent 1px 96px);
+    radial-gradient(60% 50% at 82% 4%, rgba(233,180,76,.07), transparent 65%),
+    radial-gradient(45% 35% at 6% 96%, rgba(233,180,76,.04), transparent 65%);
 }
 
 /* ============================================================================
-   SCROLL PROGRESS BAR
+   SCROLL PROGRESS
    ============================================================================ */
 .progress{
-  position:fixed; top:0; left:0; right:0; height:3px; z-index:1200;
-  background:linear-gradient(90deg, var(--accent), #F6D68C);
+  position:fixed; top:0; left:0; right:0; height:2px; z-index:1200;
+  background:var(--accent);
   transform:scaleX(0); transform-origin:0 50%;
   pointer-events:none;
   will-change:transform;
@@ -153,22 +157,20 @@ body::before{
    ============================================================================ */
 .cursor{
   position:fixed; top:0; left:0; z-index:3000;
-  width:10px; height:10px; border-radius:50%;
+  width:8px; height:8px; border-radius:50%;
   background:var(--accent);
   pointer-events:none;
   transform:translate3d(-100px,-100px,0);
   display:none;
-  transition:width .3s var(--ease), height .3s var(--ease), opacity .3s;
-  mix-blend-mode:difference;
+  transition:width .35s var(--ease), height .35s var(--ease),
+             background .35s, border-color .35s;
+  border:1px solid transparent;
 }
-.cursor__label{
-  position:absolute; inset:0; display:grid; place-items:center;
-  font-size:.5rem; font-weight:700; letter-spacing:.14em;
-  color:var(--accent-ink); opacity:0; transition:opacity .25s;
+.cursor.is-hover{
+  width:38px; height:38px;
+  background:transparent;
+  border-color:var(--accent);
 }
-.cursor.is-hover{ width:56px; height:56px; }
-.cursor.is-hover .cursor__label{ opacity:0; } /* label only if you want it */
-
 @media (pointer:fine){
   .cursor{ display:block; }
   body{ cursor:none; }
@@ -176,7 +178,7 @@ body::before{
 }
 
 /* ============================================================================
-   1. PRELOADER
+   1. PRELOADER — auto-transitions, no "Click to enter"
    ============================================================================ */
 .preloader{
   position:fixed; inset:0; z-index:5000;
@@ -188,29 +190,48 @@ body::before{
 .preloader.is-done{ opacity:0; visibility:hidden; pointer-events:none; }
 
 .preloader__inner{
-  width:min(520px,100%);
-  text-align:center;
+  width:min(460px,100%);
   display:flex; flex-direction:column; align-items:center; gap:var(--s5);
+  text-align:center;
+}
+.preloader__avatar{
+  width:88px; height:88px; border-radius:50%;
+  overflow:hidden; position:relative;
+  border:1px solid var(--line-strong);
+  background:var(--bg-elev-2);
+  display:grid; place-items:center;
+}
+.preloader__avatar::before{
+  content:'PB';
+  position:absolute; inset:0;
+  display:grid; place-items:center;
+  font-family:var(--font-display);
+  font-weight:700; font-size:1.5rem;
+  color:var(--accent);
+}
+.preloader__avatar img{
+  position:relative; z-index:1;
+  width:100%; height:100%; object-fit:cover;
 }
 .preloader__label{
-  font-size:.75rem; letter-spacing:.28em; text-transform:uppercase;
+  font-size:.7rem; letter-spacing:.26em; text-transform:uppercase;
   color:var(--muted);
 }
 .preloader__count{
   font-family:var(--font-display);
-  font-weight:800;
-  font-size:clamp(4.5rem,18vw,9rem);
+  font-weight:700;
+  font-size:clamp(4rem,16vw,7.5rem);
   line-height:.9;
   letter-spacing:-.05em;
   font-variant-numeric:tabular-nums;
   color:var(--fg);
 }
 .preloader__count sup{
-  font-size:.25em; vertical-align:super; color:var(--accent);
-  letter-spacing:0; margin-left:.1em;
+  font-size:.22em; vertical-align:super; color:var(--accent);
+  letter-spacing:0; margin-left:.12em; font-weight:600;
 }
 .preloader__bar{
-  width:100%; height:2px; background:var(--line); overflow:hidden; border-radius:2px;
+  width:100%; height:1px; background:var(--line); overflow:hidden;
 }
 .preloader__bar i{
   display:block; height:100%; width:100%;
@@ -218,32 +239,17 @@ body::before{
   transform:scaleX(0); transform-origin:0 50%;
   will-change:transform;
 }
-.preloader__enter{
-  margin-top:var(--s4);
-  padding:1rem 2.25rem;
-  border-radius:999px;
-  border:1px solid var(--line-strong);
-  font-weight:600; font-size:.95rem;
-  background:transparent;
-  opacity:0; transform:translateY(14px);
-  transition:opacity .5s var(--ease), transform .5s var(--ease),
-             background .3s, color .3s, border-color .3s;
-}
-.preloader__enter.is-visible{ opacity:1; transform:none; }
-.preloader__enter:hover{
-  background:var(--accent); color:var(--accent-ink); border-color:var(--accent);
-}
 
 /* ============================================================================
-   2. HEADER + MENU
+   2. HEADER
    ============================================================================ */
 .header{
   position:fixed; top:0; left:0; right:0; z-index:1100;
   height:var(--header-h);
   display:flex; align-items:center;
-  background:color-mix(in srgb, var(--bg) 78%, transparent);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
+  background:rgba(26,24,24,.72);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
   border-bottom:1px solid var(--line);
 }
 .header__inner{
@@ -253,32 +259,32 @@ body::before{
 }
 .logo{
   font-family:var(--font-display);
-  font-weight:700; font-size:1.15rem; letter-spacing:-.02em;
-  display:inline-flex; align-items:center; gap:.5rem;
+  font-weight:700; font-size:1.05rem; letter-spacing:-.02em;
+  display:inline-flex; align-items:center; gap:.55rem;
 }
 .logo__dot{ color:var(--accent); }
 .logo__mark{
-  width:1.9rem; height:1.9rem; border-radius:50%;
+  width:1.75rem; height:1.75rem; border-radius:50%;
   display:grid; place-items:center;
   background:var(--accent); color:var(--accent-ink);
-  font-size:.8rem; font-weight:700;
+  font-size:.72rem; font-weight:700;
   transition:transform .5s var(--ease);
 }
-.logo:hover .logo__mark{ transform:rotate(-16deg) scale(1.08); }
+.logo:hover .logo__mark{ transform:rotate(-14deg) scale(1.06); }
 
 .header__right{ display:flex; align-items:center; gap:var(--s3); }
 
 .menu-toggle{
   display:inline-flex; align-items:center; gap:.55rem;
-  padding:.55rem .95rem;
+  padding:.5rem .85rem;
   border:1px solid var(--line); border-radius:999px;
-  font-size:.8rem; font-weight:600; letter-spacing:.04em;
-  transition:background .3s, border-color .3s, color .3s;
+  font-size:.78rem; font-weight:500; letter-spacing:.02em;
+  transition:background .3s, border-color .3s;
 }
 .menu-toggle:hover{ background:var(--bg-elev-2); border-color:var(--line-strong); }
 .menu-toggle__bars{ display:inline-flex; flex-direction:column; gap:3px; }
 .menu-toggle__bars span{
-  display:block; width:14px; height:1.5px; background:currentColor;
+  display:block; width:13px; height:1.5px; background:currentColor;
   transition:transform .35s var(--ease), opacity .3s;
 }
 .menu-toggle[aria-expanded="true"] .menu-toggle__bars span:nth-child(1){ transform:translateY(4.5px) rotate(45deg); }
@@ -286,47 +292,54 @@ body::before{
 .menu-toggle[aria-expanded="true"] .menu-toggle__bars span:nth-child(3){ transform:translateY(-4.5px) rotate(-45deg); }
 
 .clock{
-  font-size:.78rem; color:var(--muted);
+  font-size:.74rem; color:var(--muted);
   font-variant-numeric:tabular-nums;
-  letter-spacing:.06em;
+  letter-spacing:.05em;
   white-space:nowrap;
+  display:inline-flex; align-items:baseline; gap:.4rem;
+}
+.clock__label{
+  font-size:.6rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted-2);
 }
 .clock b{ color:var(--fg); font-weight:500; }
 
-/* Shared button styles */
+/* Buttons */
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
-  padding:.8rem 1.5rem; border-radius:999px;
-  font-size:.88rem; font-weight:600; letter-spacing:.01em;
-  transition:transform .35s var(--ease), background .3s, color .3s, border-color .3s, box-shadow .35s;
+  padding:.75rem 1.4rem; border-radius:999px;
+  font-size:.85rem; font-weight:600; letter-spacing:.01em;
+  transition:transform .35s var(--ease), background .3s,
+             color .3s, border-color .3s;
   white-space:nowrap;
 }
 .btn--accent{
   background:var(--accent); color:var(--accent-ink);
-  box-shadow:0 10px 30px -14px rgba(233,180,76,.9);
 }
-.btn--accent:hover{ transform:translateY(-2px); box-shadow:0 16px 36px -14px rgba(233,180,76,.95); }
-.btn--ghost{ border:1px solid var(--line-strong); color:var(--fg); }
-.btn--ghost:hover{ transform:translateY(-2px); border-color:var(--accent); color:var(--accent); }
-.btn--sm{ padding:.55rem 1.05rem; font-size:.8rem; }
+.btn--accent:hover{ transform:translateY(-1px); background:#F2C36B; }
+.btn--ghost{
+  border:1px solid var(--line-strong); color:var(--fg);
+}
+.btn--ghost:hover{ transform:translateY(-1px); border-color:var(--accent); color:var(--accent); }
+.btn--sm{ padding:.5rem .95rem; font-size:.78rem; }
 
-/* Full-screen menu overlay */
+/* Full-screen menu */
 .menu{
   position:fixed; inset:0; z-index:1150;
   background:var(--bg);
   display:flex; flex-direction:column;
   padding:calc(var(--header-h) + var(--s6)) var(--gutter) var(--s6);
   opacity:0; visibility:hidden;
-  transition:opacity .5s var(--ease), visibility 0s linear .5s;
+  transition:opacity .45s var(--ease), visibility 0s linear .45s;
   overflow-y:auto;
 }
 .menu.is-open{ opacity:1; visibility:visible; transition-delay:0s; }
 
 .menu__close{
-  position:absolute; top:calc((var(--header-h) - 2.6rem)/2); right:var(--gutter);
-  width:2.6rem; height:2.6rem; border-radius:50%;
+  position:absolute; top:calc((var(--header-h) - 2.4rem)/2); right:var(--gutter);
+  width:2.4rem; height:2.4rem; border-radius:50%;
   border:1px solid var(--line); display:grid; place-items:center;
-  font-size:1rem;
+  font-size:.9rem;
   transition:background .3s, transform .3s, border-color .3s;
 }
 .menu__close:hover{ background:var(--bg-elev-2); transform:rotate(90deg); border-color:var(--line-strong); }
@@ -337,34 +350,38 @@ body::before{
   max-width:var(--maxw); width:100%; margin-inline:auto;
 }
 .menu__link{
-  display:flex; align-items:baseline; gap:1rem;
-  padding:.55rem 0;
+  display:flex; align-items:baseline; gap:1.1rem;
+  padding:.7rem 0;
   font-family:var(--font-display);
   font-weight:700;
-  font-size:clamp(1.9rem,6vw,3.6rem);
+  font-size:clamp(1.7rem,5.4vw,3.2rem);
   letter-spacing:-.03em;
   line-height:1.1;
   border-bottom:1px solid var(--line);
-  opacity:0; transform:translateY(28px);
-  transition:opacity .5s var(--ease), transform .6s var(--ease), color .3s;
-  transition-delay:calc(var(--i) * 55ms);
+  opacity:0; transform:translateY(22px);
+  transition:opacity .45s var(--ease), transform .55s var(--ease), color .3s;
+  transition-delay:0s;
 }
 .menu__link span{
   font-family:var(--font-body);
-  font-size:.7rem; font-weight:500; color:var(--accent);
+  font-size:.65rem; font-weight:500; color:var(--accent);
   letter-spacing:.16em; text-transform:uppercase;
 }
 .menu__link:hover{ color:var(--accent); }
-.menu.is-open .menu__link{ opacity:1; transform:none; }
+.menu.is-open .menu__link{
+  opacity:1; transform:none;
+  transition-delay:calc(var(--i) * 50ms);
+}
 
 .menu__foot{
   display:flex; justify-content:space-between; flex-wrap:wrap; gap:var(--s4);
   padding-top:var(--s5);
-  color:var(--muted); font-size:.8rem;
-  opacity:0; transition:opacity .5s var(--ease) .35s;
+  color:var(--muted); font-size:.78rem;
+  opacity:0; transition:opacity .4s var(--ease) .3s;
   max-width:var(--maxw); width:100%; margin-inline:auto;
 }
 .menu.is-open .menu__foot{ opacity:1; }
+.menu__foot a:hover{ color:var(--fg); }
 
 /* ============================================================================
    3. HERO
@@ -373,37 +390,36 @@ body::before{
   position:relative;
   min-height:100svh;
   display:flex; flex-direction:column; justify-content:center;
-  padding-top:calc(var(--header-h) + clamp(2rem,6vw,5rem));
+  padding-top:calc(var(--header-h) + clamp(2rem,5vw,4rem));
   padding-bottom:var(--s5);
   z-index:1;
 }
 .hero__grid{
   display:grid;
-  grid-template-columns:1.25fr .75fr;
+  grid-template-columns:1.15fr .85fr;
   gap:clamp(2rem,5vw,5rem);
   align-items:center;
 }
 .hero__eyebrow{
   display:inline-flex; align-items:center; gap:.6rem;
-  font-size:.72rem; letter-spacing:.22em; text-transform:uppercase;
+  font-size:.7rem; letter-spacing:.22em; text-transform:uppercase;
   color:var(--muted);
   margin-bottom:var(--s5);
 }
 .hero__eyebrow::before{
-  content:''; width:2rem; height:1px; background:var(--accent);
+  content:''; width:1.75rem; height:1px; background:var(--accent);
 }
 .hero__title{
   font-family:var(--font-display);
-  font-weight:800;
-  font-size:clamp(2.5rem,7.6vw,6.4rem);
-  line-height:.94;
+  font-weight:700;
+  font-size:clamp(2.4rem,6.6vw,5.4rem);
+  line-height:.96;
   letter-spacing:-.045em;
   margin-bottom:var(--s5);
 }
 .hero__title .line{ display:block; }
 .hero__title em{ font-style:normal; color:var(--accent); }
 
-/* Rotating role text-roll */
 .roll{
   display:inline-block;
   position:relative;
@@ -416,128 +432,138 @@ body::before{
 .roll__inner{ display:inline-block; will-change:transform; }
 
 .hero__lede{
-  font-size:clamp(1rem,1.3vw,1.12rem);
+  font-size:clamp(.98rem,1.2vw,1.08rem);
   color:var(--muted);
-  max-width:46ch;
+  max-width:44ch;
   margin-bottom:var(--s6);
 }
 .hero__lede strong{ color:var(--fg); font-weight:600; }
 
 .hero__actions{ display:flex; flex-wrap:wrap; gap:var(--s3); }
 
-/* --- Skills card (ID / ability card) ------------------------------------- */
+/* --- The ID card --------------------------------------------------------- */
 .card{
   position:relative;
-  width:min(420px,100%);
+  width:min(360px,100%);
   margin-inline:auto;
-  padding:var(--s5);
   border-radius:var(--radius-l);
-  background:linear-gradient(158deg, #2A2525 0%, #201D1D 45%, #1B1818 100%);
+  background:var(--bg-elev);
   border:1px solid var(--line-strong);
-  box-shadow:0 40px 80px -40px rgba(0,0,0,.9), 0 0 0 1px rgba(233,180,76,.06) inset;
-  transform-style:preserve-3d;
-  transition:transform .3s var(--ease);
-  will-change:transform;
   overflow:hidden;
+  box-shadow:0 40px 80px -40px rgba(0,0,0,.9);
+  transform-style:preserve-3d;
+  transition:transform .35s var(--ease);
+  will-change:transform;
 }
-.card__shine{
-  position:absolute; inset:-40%;
-  background:radial-gradient(circle at 30% 20%, rgba(233,180,76,.22), transparent 55%);
-  pointer-events:none;
-  transform:translateZ(0);
-}
-.card__top{
-  display:flex; align-items:center; justify-content:space-between; gap:var(--s3);
-  padding-bottom:var(--s4);
-  border-bottom:1px dashed var(--line);
-  position:relative;
+.card__head{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:.85rem 1.1rem;
+  border-bottom:1px solid var(--line);
 }
 .card__label{
-  font-size:.64rem; letter-spacing:.2em; text-transform:uppercase;
+  font-size:.58rem; letter-spacing:.22em; text-transform:uppercase;
   color:var(--accent); font-weight:600;
 }
-.card__chip{
-  font-size:.62rem; letter-spacing:.12em;
-  color:var(--muted);
+.card__id{
+  font-size:.58rem; letter-spacing:.14em;
+  color:var(--muted-2);
   border:1px solid var(--line); border-radius:999px;
-  padding:.18rem .5rem;
+  padding:.15rem .5rem;
 }
-.card__identity{
-  display:flex; align-items:center; gap:var(--s4);
-  padding:var(--s5) 0 var(--s4);
+
+.card__photo{
   position:relative;
+  aspect-ratio:1 / 1;
+  overflow:hidden;
+  background:var(--bg-elev-2);
 }
-.card__avatar{
-  width:3.4rem; height:3.4rem; border-radius:50%;
-  display:grid; place-items:center; flex:none;
-  background:var(--accent); color:var(--accent-ink);
-  font-family:var(--font-display); font-weight:800; font-size:1.15rem;
-  letter-spacing:-.02em;
+.card__photo::before{
+  content:'PB';
+  position:absolute; inset:0;
+  display:grid; place-items:center;
+  font-family:var(--font-display);
+  font-weight:700; font-size:3.5rem;
+  color:var(--accent);
+  opacity:.55;
+}
+.card__photo img{
+  position:relative; z-index:1;
+  width:100%; height:100%; object-fit:cover;
+  display:block;
+}
+.card__status{
+  position:absolute; z-index:2;
+  bottom:.75rem; left:.75rem;
+  display:inline-flex; align-items:center; gap:.4rem;
+  padding:.3rem .65rem .3rem .55rem;
+  border-radius:999px;
+  background:rgba(26,24,24,.78);
+  border:1px solid var(--line-strong);
+  font-size:.62rem; font-weight:500;
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+
+.card__body{
+  padding:1.1rem 1.15rem .35rem;
 }
 .card__name{
-  font-family:var(--font-display); font-weight:700;
-  font-size:1.15rem; letter-spacing:-.02em; line-height:1.2;
+  font-family:var(--font-display);
+  font-weight:700; font-size:1.1rem;
+  letter-spacing:-.02em; line-height:1.15;
 }
-.card__role{ font-size:.76rem; color:var(--muted); margin-top:.15rem; }
+.card__role{
+  font-size:.74rem; color:var(--muted);
+  margin-top:.2rem;
+}
 
-.card__rows{
-  display:flex; flex-direction:column; gap:.55rem;
-  padding-bottom:var(--s4);
-  border-bottom:1px dashed var(--line);
-  position:relative;
+.card__meta{
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:0;
+  margin-top:.9rem;
+  border-top:1px solid var(--line);
 }
-.card__row{
-  display:flex; align-items:center; justify-content:space-between;
-  font-size:.78rem;
+.card__meta > div{
+  padding:.65rem 1.15rem;
+  display:flex; flex-direction:column; gap:.1rem;
 }
-.card__row span{ color:var(--muted); }
-.card__row b{ font-weight:500; }
-.card__row b.ok{ color:var(--ok); }
+.card__meta > div + div{ border-left:1px solid var(--line); }
+.card__meta span{
+  font-size:.55rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--muted-2);
+}
+.card__meta b{
+  font-size:.78rem; font-weight:500;
+  color:var(--fg);
+}
 
-.card__barcode{
-  height:34px; margin:var(--s4) 0;
-  background:repeating-linear-gradient(90deg,
-    var(--fg) 0 1px, transparent 1px 3px,
-    var(--fg) 3px 5px, transparent 5px 9px,
-    var(--fg) 9px 10px, transparent 10px 14px);
-  opacity:.28; border-radius:2px;
-  position:relative;
-}
-.card__bottom{
-  display:flex; align-items:center; justify-content:space-between;
-  font-size:.68rem; letter-spacing:.1em; text-transform:uppercase;
-  color:var(--muted);
-  position:relative;
-}
-.card__bottom span:last-child{ color:var(--accent); letter-spacing:.18em; }
-
-/* --- Hero footer row ----------------------------------------------------- */
+/* --- Hero foot ----------------------------------------------------------- */
 .hero__foot{
   display:flex; align-items:center; justify-content:space-between;
   flex-wrap:wrap; gap:var(--s4);
-  margin-top:clamp(2rem,6vw,5rem);
+  margin-top:clamp(2rem,5vw,4rem);
   padding-top:var(--s4);
   border-top:1px solid var(--line);
-  font-size:.78rem; color:var(--muted);
+  font-size:.74rem; color:var(--muted);
 }
-.hero__foot-item{ display:inline-flex; align-items:center; gap:.55rem; }
+.hero__foot-item{ display:inline-flex; align-items:center; gap:.5rem; }
 .dot{
-  width:.5rem; height:.5rem; border-radius:50%;
+  width:.45rem; height:.45rem; border-radius:50%;
   background:var(--ok);
-  box-shadow:0 0 0 0 rgba(99,230,160,.55);
-  animation:pulse 2.2s var(--ease) infinite;
+  box-shadow:0 0 0 0 rgba(127,227,161,.5);
+  animation:pulse 2.4s var(--ease) infinite;
 }
 @keyframes pulse{
-  0%{ box-shadow:0 0 0 0 rgba(99,230,160,.5); }
-  70%{ box-shadow:0 0 0 10px rgba(99,230,160,0); }
-  100%{ box-shadow:0 0 0 0 rgba(99,230,160,0); }
+  0%{ box-shadow:0 0 0 0 rgba(127,227,161,.45); }
+  70%{ box-shadow:0 0 0 8px rgba(127,227,161,0); }
+  100%{ box-shadow:0 0 0 0 rgba(127,227,161,0); }
 }
-.scroll-hint{ display:inline-flex; align-items:center; gap:.5rem; }
-.scroll-hint svg{ animation:bob 2s var(--ease) infinite; }
-@keyframes bob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(4px); } }
+.scroll-hint{ display:inline-flex; align-items:center; gap:.45rem; }
+.scroll-hint svg{ animation:bob 2.2s var(--ease) infinite; }
+@keyframes bob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(3px); } }
 
-/* Intro animation (fires after "Click to enter") */
-.anim{ opacity:0; transform:translateY(26px); }
+/* Intro animation after preloader auto-dismisses */
+.anim{ opacity:0; transform:translateY(20px); }
 body.is-entered .anim{
   opacity:1; transform:none;
   transition:opacity .8s var(--ease), transform .9s var(--ease);
@@ -545,7 +571,7 @@ body.is-entered .anim{
 }
 
 /* ============================================================================
-   4. "ONE DOOR PER SKILL" — sticky horizontal wall
+   4. DOORS — sticky horizontal wall
    ============================================================================ */
 .doors{ position:relative; z-index:1; }
 .doors__sticky{
@@ -559,35 +585,34 @@ body.is-entered .anim{
   display:flex; align-items:flex-end; justify-content:space-between;
   flex-wrap:wrap; gap:var(--s3);
   padding-inline:var(--gutter);
-  margin-bottom:clamp(1.5rem,4vw,3rem);
+  margin-bottom:clamp(1.5rem,3.5vw,2.5rem);
 }
 .doors__title{
-  font-family:var(--font-display); font-weight:800;
-  font-size:clamp(1.75rem,4.4vw,3.4rem);
-  line-height:1; letter-spacing:-.035em;
-  max-width:18ch;
+  font-family:var(--font-display); font-weight:700;
+  font-size:clamp(1.6rem,3.8vw,2.8rem);
+  line-height:1.02; letter-spacing:-.035em;
+  max-width:20ch;
 }
 .doors__title em{ font-style:normal; color:var(--accent); }
-.doors__sub{ font-size:.85rem; color:var(--muted); max-width:28ch; }
+.doors__sub{ font-size:.8rem; color:var(--muted); max-width:26ch; }
 
 .doors__viewport{ width:100%; touch-action:pan-y; }
 .doors__track{
-  display:flex; gap:clamp(1rem,2vw,2rem);
+  display:flex; gap:clamp(.85rem,1.6vw,1.4rem);
   padding-inline:var(--gutter);
   width:max-content;
   will-change:transform;
 }
 
-/* --- A single door ------------------------------------------------------- */
+/* A single door */
 .door{
   position:relative;
-  flex:0 0 clamp(230px,25vw,330px);
-  height:clamp(360px,58vh,540px);
+  flex:0 0 clamp(220px,24vw,300px);
+  height:clamp(340px,54vh,480px);
   border-radius:var(--radius-m);
-  perspective:1300px;
+  perspective:1200px;
   background:var(--bg-elev);
 }
-/* The room behind the door (revealed preview) */
 .door__room{
   position:absolute; inset:0; overflow:hidden;
   border-radius:inherit;
@@ -595,41 +620,36 @@ body.is-entered .anim{
   padding:var(--s5);
   border:1px solid var(--line);
   background:
-    radial-gradient(120% 90% at 80% 10%, color-mix(in srgb, var(--g1) 55%, transparent), transparent 60%),
-    linear-gradient(165deg, var(--g2), #171515);
-}
-.door__room::after{
-  content:''; position:absolute; inset:0;
-  background:repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0 2px, transparent 2px 10px);
-  pointer-events:none;
+    linear-gradient(170deg,
+      color-mix(in srgb, var(--tint) 14%, var(--bg-elev)),
+      var(--bg-elev));
 }
 .door__room-top{
   display:flex; align-items:center; justify-content:space-between;
-  font-size:.62rem; letter-spacing:.18em; text-transform:uppercase;
-  color:rgba(244,239,231,.72);
+  font-size:.58rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted);
   position:relative; z-index:1;
 }
 .door__room-title{
-  font-family:var(--font-display); font-weight:800;
-  font-size:clamp(1.4rem,2.4vw,2rem);
+  font-family:var(--font-display); font-weight:700;
+  font-size:clamp(1.3rem,2.2vw,1.8rem);
   line-height:1; letter-spacing:-.03em;
   position:relative; z-index:1;
-  margin-bottom:.75rem;
+  margin-bottom:.65rem;
 }
 .door__room-link{
   position:relative; z-index:1;
-  display:inline-flex; align-items:center; gap:.45rem;
-  font-size:.8rem; font-weight:600; color:var(--accent);
+  display:inline-flex; align-items:center; gap:.4rem;
+  font-size:.76rem; font-weight:600; color:var(--accent);
 }
-.door__room-link:hover{ text-decoration:underline; text-underline-offset:4px; }
+.door__room-link:hover{ text-decoration:underline; text-underline-offset:3px; }
 
-/* The swinging leaf */
 .door__leaf{
   position:absolute; inset:0;
   border-radius:inherit;
   padding:var(--s5);
   display:flex; flex-direction:column; justify-content:space-between;
-  background:linear-gradient(165deg, #2B2626 0%, #201D1D 60%, #1B1818 100%);
+  background:var(--bg-elev-2);
   border:1px solid var(--line-strong);
   transform-origin:left center;
   transition:transform .85s var(--ease), box-shadow .85s var(--ease);
@@ -638,68 +658,69 @@ body.is-entered .anim{
   will-change:transform;
 }
 .door__leaf::before{
-  content:''; position:absolute; inset:10px;
+  content:'';
+  position:absolute; inset:.6rem;
   border:1px solid var(--line);
-  border-radius:calc(var(--radius-m) - 8px);
+  border-radius:calc(var(--radius-m) - 6px);
   pointer-events:none;
 }
 .door:hover .door__leaf,
 .door:focus-within .door__leaf,
 .door.is-open .door__leaf{
-  transform:rotateY(-118deg);
-  box-shadow:40px 0 70px -20px rgba(0,0,0,.85);
+  transform:rotateY(-98deg);
+  box-shadow:50px 8px 60px -18px rgba(0,0,0,.85);
 }
 .door__num{
-  font-family:var(--font-display); font-weight:800;
-  font-size:.85rem; letter-spacing:.1em;
+  font-family:var(--font-display); font-weight:700;
+  font-size:.8rem; letter-spacing:.1em;
   color:var(--accent);
 }
 .door__name{
-  font-family:var(--font-display); font-weight:800;
-  font-size:clamp(1.35rem,2.2vw,1.85rem);
-  line-height:1.02; letter-spacing:-.03em;
+  font-family:var(--font-display); font-weight:700;
+  font-size:clamp(1.25rem,2vw,1.6rem);
+  line-height:1.04; letter-spacing:-.03em;
 }
 .door__handle{
-  display:inline-flex; align-items:center; gap:.5rem;
-  font-size:.7rem; letter-spacing:.16em; text-transform:uppercase;
+  display:inline-flex; align-items:center; gap:.45rem;
+  font-size:.62rem; letter-spacing:.16em; text-transform:uppercase;
   color:var(--muted);
 }
 .door__handle i{
-  width:1.6rem; height:1.6rem; border-radius:50%;
+  width:1.5rem; height:1.5rem; border-radius:50%;
   border:1px solid var(--line-strong);
-  display:grid; place-items:center; font-style:normal; font-size:.75rem;
+  display:grid; place-items:center; font-style:normal; font-size:.7rem;
   transition:background .3s, color .3s, border-color .3s;
 }
 .door:hover .door__handle i{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
 
 .doors__hint{
   padding-inline:var(--gutter);
-  margin-top:clamp(1rem,3vw,2rem);
-  font-size:.72rem; letter-spacing:.2em; text-transform:uppercase;
-  color:var(--muted);
+  margin-top:clamp(1rem,2.5vw,1.5rem);
+  font-size:.64rem; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--muted-2);
 }
 
 /* ============================================================================
-   5. SECTION HEADINGS (shared)
+   5. SHARED SECTION HEADINGS
    ============================================================================ */
-.section{ position:relative; z-index:1; padding-block:clamp(4rem,9vw,7.5rem); }
+.section{ position:relative; z-index:1; padding-block:clamp(3.5rem,8vw,6.5rem); }
 .section__head{
   display:flex; align-items:flex-end; justify-content:space-between;
   flex-wrap:wrap; gap:var(--s4);
-  margin-bottom:clamp(2rem,4vw,3.5rem);
+  margin-bottom:clamp(2rem,4vw,3rem);
 }
 .section__label{
-  font-size:.7rem; letter-spacing:.24em; text-transform:uppercase;
+  font-size:.65rem; letter-spacing:.24em; text-transform:uppercase;
   color:var(--accent); font-weight:600;
-  display:block; margin-bottom:.75rem;
+  display:block; margin-bottom:.65rem;
 }
 .section__title{
-  font-family:var(--font-display); font-weight:800;
-  font-size:clamp(1.9rem,4.6vw,3.6rem);
+  font-family:var(--font-display); font-weight:700;
+  font-size:clamp(1.7rem,4vw,2.9rem);
   line-height:1; letter-spacing:-.035em;
 }
 .section__title em{ font-style:normal; color:var(--accent); }
-.section__sub{ font-size:.92rem; color:var(--muted); max-width:38ch; }
+.section__sub{ font-size:.86rem; color:var(--muted); max-width:36ch; }
 
 /* ============================================================================
    6. SKILL / PROJECT SECTIONS
@@ -707,8 +728,8 @@ body.is-entered .anim{
 .skill{ border-top:1px solid var(--line); }
 .skill__grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
-  gap:clamp(1rem,2vw,1.5rem);
+  grid-template-columns:repeat(auto-fill, minmax(250px,1fr));
+  gap:clamp(.85rem,1.6vw,1.25rem);
 }
 .proj{
   position:relative;
@@ -717,74 +738,74 @@ body.is-entered .anim{
   border-radius:var(--radius-m);
   background:var(--bg-elev);
   overflow:hidden;
-  transition:transform .5s var(--ease), border-color .4s, box-shadow .5s;
+  transition:border-color .4s, transform .5s var(--ease);
 }
 .proj:hover{
-  transform:translateY(-6px);
+  transform:translateY(-4px);
   border-color:var(--line-strong);
-  box-shadow:0 30px 60px -30px rgba(0,0,0,.85);
 }
 .proj__thumb{
   position:relative;
   aspect-ratio:16/10;
   display:grid; place-items:center;
   overflow:hidden;
-  background:
-    radial-gradient(120% 100% at 20% 10%, color-mix(in srgb, var(--g1) 80%, transparent), transparent 65%),
-    linear-gradient(150deg, var(--g2), #191616);
-}
-.proj__thumb::after{
-  content:''; position:absolute; inset:0;
-  background:repeating-linear-gradient(-45deg, rgba(255,255,255,.035) 0 1px, transparent 1px 12px);
+  background:color-mix(in srgb, var(--tint) 12%, var(--bg-elev));
+  border-bottom:1px solid var(--line);
 }
 .proj__mono{
-  position:relative; z-index:1;
-  font-family:var(--font-display); font-weight:800;
-  font-size:clamp(2.4rem,5vw,3.6rem);
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:clamp(2.2rem,4.5vw,3.2rem);
   letter-spacing:-.05em;
-  color:rgba(244,239,231,.92);
-  transition:transform .6s var(--ease), opacity .4s;
+  color:var(--tint);
+  opacity:.9;
+  transition:transform .6s var(--ease);
 }
-.proj:hover .proj__mono{ transform:scale(1.08) rotate(-4deg); }
+.proj:hover .proj__mono{ transform:scale(1.06) rotate(-3deg); }
 .proj__badge{
-  position:absolute; top:.85rem; left:.85rem; z-index:2;
-  font-size:.6rem; letter-spacing:.16em; text-transform:uppercase;
-  padding:.25rem .6rem; border-radius:999px;
-  background:rgba(26,24,24,.7); border:1px solid var(--line-strong);
+  position:absolute; top:.7rem; left:.7rem; z-index:2;
+  font-size:.56rem; letter-spacing:.14em; text-transform:uppercase;
+  padding:.22rem .55rem; border-radius:999px;
+  background:rgba(26,24,24,.78);
+  border:1px solid var(--line-strong);
   color:var(--fg);
   backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
 }
-.proj__body{ padding:var(--s4) var(--s4) var(--s5); display:flex; flex-direction:column; gap:.6rem; flex:1; }
+.proj__body{
+  padding:var(--s4) var(--s4) var(--s5);
+  display:flex; flex-direction:column; gap:.5rem; flex:1;
+}
 .proj__title{
   display:flex; align-items:center; justify-content:space-between; gap:var(--s3);
   font-family:var(--font-display); font-weight:700;
-  font-size:1.08rem; letter-spacing:-.02em;
+  font-size:1rem; letter-spacing:-.02em;
 }
 .proj__arrow{
-  font-size:.9rem; color:var(--muted);
+  font-size:.85rem; color:var(--muted);
   transition:transform .45s var(--ease), color .3s;
 }
 .proj:hover .proj__arrow{ transform:rotate(-45deg); color:var(--accent); }
-.proj__desc{ font-size:.84rem; color:var(--muted); line-height:1.55; }
-.proj__tags{ display:flex; flex-wrap:wrap; gap:.3rem; margin-top:auto; padding-top:.4rem; }
+.proj__desc{ font-size:.82rem; color:var(--muted); line-height:1.55; }
+.proj__tags{ display:flex; flex-wrap:wrap; gap:.3rem; margin-top:auto; padding-top:.5rem; }
 .proj__tags li{
-  font-size:.64rem; letter-spacing:.06em;
-  padding:.22rem .55rem; border-radius:999px;
-  border:1px solid var(--line); color:var(--muted);
+  font-size:.6rem; letter-spacing:.05em;
+  padding:.2rem .5rem; border-radius:999px;
+  border:1px solid var(--line); color:var(--muted-2);
 }
 
 /* ============================================================================
-   7. "MY STORY" TIMELINE
+   7. MY STORY
    ============================================================================ */
 .story{ border-top:1px solid var(--line); }
 .story__head{
   display:flex; align-items:flex-end; justify-content:space-between;
   flex-wrap:wrap; gap:var(--s4);
-  margin-bottom:clamp(2.5rem,5vw,4rem);
+  margin-bottom:clamp(2.5rem,4.5vw,3.5rem);
 }
 .story__title{
-  font-family:var(--font-display); font-weight:800;
-  font-size:clamp(1.9rem,4.6vw,3.6rem);
+  font-family:var(--font-display); font-weight:700;
+  font-size:clamp(1.7rem,4vw,2.9rem);
   line-height:1; letter-spacing:-.035em;
 }
 .story__title em{ font-style:normal; color:var(--accent); }
@@ -792,11 +813,12 @@ body.is-entered .anim{
 /* Slot-machine year roller */
 .slot{
   display:flex;
-  gap:.04em;
-  font-family:var(--font-display); font-weight:800;
-  font-size:clamp(2.6rem,8vw,5.5rem);
+  gap:.02em;
+  font-family:var(--font-display); font-weight:700;
+  font-size:clamp(2.2rem,6.5vw,4.5rem);
   line-height:1; letter-spacing:-.04em;
   color:var(--accent);
+  font-variant-numeric:tabular-nums;
 }
 .slot__col{ display:block; height:1em; overflow:hidden; }
 .slot__strip{
@@ -806,90 +828,89 @@ body.is-entered .anim{
 }
 .slot__strip span{
   display:block; height:1em; line-height:1; text-align:center;
-  font-variant-numeric:tabular-nums;
 }
 
 .story__grid{
   display:grid;
-  grid-template-columns:minmax(140px,200px) 1fr;
-  gap:clamp(1.5rem,4vw,4rem);
+  grid-template-columns:minmax(120px,170px) 1fr;
+  gap:clamp(1.5rem,4vw,3.5rem);
   align-items:start;
 }
 .story__aside{
   position:sticky;
-  top:calc(var(--header-h) + 2rem);
-  display:flex; flex-direction:column; gap:.35rem;
+  top:calc(var(--header-h) + 1.5rem);
+  display:flex; flex-direction:column; gap:.3rem;
 }
 .story__count{
-  font-family:var(--font-display); font-weight:800;
-  font-size:clamp(1.6rem,3vw,2.2rem);
+  font-family:var(--font-display); font-weight:700;
+  font-size:clamp(1.4rem,2.6vw,1.9rem);
   letter-spacing:-.03em;
   line-height:1;
   font-variant-numeric:tabular-nums;
 }
-.story__count em{ font-style:normal; color:var(--muted); font-size:.55em; }
-.story__range{ font-size:.82rem; color:var(--accent); letter-spacing:.04em; }
+.story__count em{ font-style:normal; color:var(--muted-2); font-size:.55em; }
+.story__range{ font-size:.76rem; color:var(--accent); letter-spacing:.03em; }
 
 .story__list{ display:flex; flex-direction:column; }
 .tl{
   display:grid;
-  grid-template-columns:minmax(120px,180px) 1fr;
+  grid-template-columns:minmax(110px,160px) 1fr;
   gap:clamp(1rem,3vw,2.5rem);
-  padding-block:clamp(1.5rem,3vw,2.5rem);
+  padding-block:clamp(1.35rem,2.6vw,2.2rem);
   border-top:1px solid var(--line);
-  opacity:.42;
+  opacity:.35;
   transition:opacity .6s var(--ease);
 }
 .tl.is-active{ opacity:1; }
-.tl__date{ font-size:.82rem; color:var(--muted); letter-spacing:.04em; white-space:nowrap; }
+.tl__date{ font-size:.76rem; color:var(--muted-2); letter-spacing:.02em; white-space:nowrap; }
 .tl.is-active .tl__date{ color:var(--accent); }
 .tl__role{
   font-family:var(--font-display); font-weight:700;
-  font-size:clamp(1.15rem,2.2vw,1.6rem);
-  letter-spacing:-.025em; line-height:1.15;
+  font-size:clamp(1.05rem,1.9vw,1.4rem);
+  letter-spacing:-.02em; line-height:1.15;
 }
-.tl__org{ font-size:.84rem; color:var(--muted); margin-top:.25rem; }
-.tl__list{ display:flex; flex-direction:column; gap:.45rem; margin-top:var(--s4); }
+.tl__org{ font-size:.8rem; color:var(--muted); margin-top:.2rem; }
+.tl__list{ display:flex; flex-direction:column; gap:.4rem; margin-top:var(--s4); }
 .tl__list li{
-  position:relative; padding-left:1.1rem;
-  font-size:.88rem; color:var(--muted); line-height:1.55;
+  position:relative; padding-left:1rem;
+  font-size:.84rem; color:var(--muted); line-height:1.55;
 }
 .tl__list li::before{
   content:''; position:absolute; left:0; top:.62em;
-  width:.4rem; height:1px; background:var(--accent);
+  width:.35rem; height:1px; background:var(--accent);
 }
 
 /* ============================================================================
-   8. CTA BAND
+   8. CTA
    ============================================================================ */
 .cta{ border-top:1px solid var(--line); }
 .cta__box{
   position:relative;
   border:1px solid var(--line-strong);
   border-radius:var(--radius-l);
-  padding:clamp(2rem,6vw,5rem);
-  background:
-    radial-gradient(90% 120% at 85% 0%, rgba(233,180,76,.16), transparent 60%),
-    linear-gradient(160deg, #242020, #1B1818);
+  padding:clamp(2rem,5vw,4rem);
+  background:var(--bg-elev);
   overflow:hidden;
 }
-.cta__box::after{
-  content:''; position:absolute; inset:0;
-  background:repeating-linear-gradient(90deg, rgba(244,239,231,.03) 0 1px, transparent 1px 90px);
+.cta__box::before{
+  content:'';
+  position:absolute; top:-40%; right:-15%;
+  width:60%; height:140%;
+  background:radial-gradient(circle, rgba(233,180,76,.10), transparent 65%);
   pointer-events:none;
 }
 .cta__title{
   position:relative; z-index:1;
-  font-family:var(--font-display); font-weight:800;
-  font-size:clamp(1.9rem,5vw,4rem);
-  line-height:.98; letter-spacing:-.04em;
+  font-family:var(--font-display); font-weight:700;
+  font-size:clamp(1.7rem,4.2vw,3.2rem);
+  line-height:1; letter-spacing:-.04em;
   max-width:20ch;
   margin-bottom:var(--s5);
 }
 .cta__title em{ font-style:normal; color:var(--accent); }
 .cta__text{
   position:relative; z-index:1;
-  color:var(--muted); max-width:52ch; font-size:.95rem;
+  color:var(--muted); max-width:50ch; font-size:.9rem;
   margin-bottom:var(--s6);
 }
 .cta__actions{ position:relative; z-index:1; display:flex; flex-wrap:wrap; gap:var(--s3); }
@@ -900,23 +921,22 @@ body.is-entered .anim{
 .footer{
   position:relative; z-index:1;
   border-top:1px solid var(--line);
-  padding-block:clamp(2.5rem,5vw,4rem) var(--s5);
-  background:var(--bg);
+  padding-block:clamp(2.5rem,4.5vw,3.5rem) var(--s5);
 }
 .footer__grid{
   display:grid;
   grid-template-columns:1.4fr 1fr 1fr 1fr;
-  gap:clamp(1.5rem,4vw,3rem);
+  gap:clamp(1.5rem,3.5vw,3rem);
   padding-bottom:var(--s6);
   border-bottom:1px solid var(--line);
 }
-.footer__brand p{ color:var(--muted); font-size:.85rem; max-width:28ch; margin-top:var(--s3); }
+.footer__brand p{ color:var(--muted); font-size:.82rem; max-width:28ch; margin-top:var(--s3); }
 .footer__col h3{
-  font-size:.68rem; letter-spacing:.2em; text-transform:uppercase;
+  font-size:.62rem; letter-spacing:.22em; text-transform:uppercase;
   color:var(--accent); font-weight:600; margin-bottom:var(--s4);
 }
-.footer__col ul{ display:flex; flex-direction:column; gap:.55rem; }
-.footer__col a, .footer__col span{ font-size:.85rem; color:var(--muted); transition:color .25s; }
+.footer__col ul{ display:flex; flex-direction:column; gap:.5rem; }
+.footer__col a, .footer__col span{ font-size:.82rem; color:var(--muted); transition:color .25s; }
 .footer__col a:hover{ color:var(--fg); }
 .footer__status li{ display:flex; align-items:center; gap:.5rem; }
 
@@ -924,27 +944,26 @@ body.is-entered .anim{
   display:flex; align-items:center; justify-content:space-between;
   flex-wrap:wrap; gap:var(--s3);
   padding-top:var(--s5);
-  font-size:.76rem; color:var(--muted);
+  font-size:.72rem; color:var(--muted-2);
 }
 .footer__bottom a{ transition:color .25s; }
 .footer__bottom a:hover{ color:var(--accent); }
 
-/* Floating back-to-top */
 .to-top{
   position:fixed; right:clamp(1rem,3vw,2rem); bottom:clamp(1rem,3vw,2rem);
   z-index:1000;
-  width:3rem; height:3rem; border-radius:50%;
+  width:2.8rem; height:2.8rem; border-radius:50%;
   display:grid; place-items:center;
   background:var(--accent); color:var(--accent-ink);
-  box-shadow:0 14px 30px -12px rgba(233,180,76,.9);
-  opacity:0; transform:translateY(20px) scale(.9); pointer-events:none;
+  font-size:.9rem;
+  opacity:0; transform:translateY(16px) scale(.92); pointer-events:none;
   transition:opacity .4s var(--ease), transform .4s var(--ease);
 }
 .to-top.is-visible{ opacity:1; transform:none; pointer-events:auto; }
-.to-top:hover{ transform:translateY(-3px); }
+.to-top:hover{ transform:translateY(-2px); }
 
 /* ============================================================================
-   10. CONTACT MODAL (multi-step)
+   10. CONTACT MODAL
    ============================================================================ */
 .modal{
   position:fixed; inset:0; z-index:4000;
@@ -956,37 +975,37 @@ body.is-entered .anim{
 .modal__backdrop{
   position:absolute; inset:0;
   background:rgba(12,10,10,.78);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
   opacity:0; transition:opacity .4s var(--ease);
 }
 .modal.is-open .modal__backdrop{ opacity:1; }
 
 .modal__dialog{
   position:relative;
-  width:min(620px,100%);
-  max-height:min(88svh,860px);
+  width:min(580px,100%);
+  max-height:min(88svh,820px);
   overflow-y:auto;
   background:var(--bg-elev);
   border:1px solid var(--line-strong);
   border-radius:var(--radius-l);
-  padding:clamp(1.5rem,4vw,2.75rem);
-  opacity:0; transform:translateY(26px) scale(.98);
-  transition:opacity .45s var(--ease), transform .55s var(--ease);
+  padding:clamp(1.5rem,3.5vw,2.5rem);
+  opacity:0; transform:translateY(20px) scale(.98);
+  transition:opacity .4s var(--ease), transform .5s var(--ease);
 }
 .modal.is-open .modal__dialog{ opacity:1; transform:none; }
 
 .modal__close{
-  position:absolute; top:1rem; right:1rem;
-  width:2.4rem; height:2.4rem; border-radius:50%;
+  position:absolute; top:.9rem; right:.9rem;
+  width:2.2rem; height:2.2rem; border-radius:50%;
   border:1px solid var(--line); display:grid; place-items:center;
-  font-size:.95rem;
+  font-size:.85rem;
   transition:background .3s, transform .3s, border-color .3s;
 }
 .modal__close:hover{ background:var(--bg-elev-2); transform:rotate(90deg); border-color:var(--line-strong); }
 
 .modal__progress{
-  height:3px; border-radius:3px; background:var(--line);
+  height:2px; border-radius:2px; background:var(--line);
   overflow:hidden; margin-bottom:var(--s5);
 }
 .modal__progress i{
@@ -996,57 +1015,60 @@ body.is-entered .anim{
   transition:transform .5s var(--ease);
 }
 .modal__step-label{
-  font-size:.66rem; letter-spacing:.2em; text-transform:uppercase;
-  color:var(--accent); font-weight:600; margin-bottom:var(--s3);
+  font-size:.6rem; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--accent); font-weight:600; margin-bottom:var(--s2);
 }
 .modal__title{
-  font-family:var(--font-display); font-weight:800;
-  font-size:clamp(1.4rem,3.4vw,2rem);
-  line-height:1.05; letter-spacing:-.03em;
+  font-family:var(--font-display); font-weight:700;
+  font-size:clamp(1.3rem,3vw,1.8rem);
+  line-height:1.06; letter-spacing:-.03em;
   margin-bottom:var(--s5);
-  padding-right:2.5rem;
+  padding-right:2.2rem;
 }
 
 .step{ display:none; }
-.step.is-active{ display:block; animation:stepIn .45s var(--ease) both; }
-@keyframes stepIn{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:none; } }
+.step.is-active{ display:block; animation:stepIn .4s var(--ease) both; }
+@keyframes stepIn{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
 
-/* Option chips */
-.chips{ display:flex; flex-wrap:wrap; gap:.5rem; }
+.chips{ display:flex; flex-wrap:wrap; gap:.4rem; }
 .chip{
-  padding:.6rem 1rem;
+  padding:.55rem .9rem;
   border-radius:999px;
   border:1px solid var(--line);
-  font-size:.82rem;
+  font-size:.78rem;
   color:var(--muted);
-  transition:background .25s, color .25s, border-color .25s, transform .25s;
+  transition:background .25s, color .25s, border-color .25s;
 }
-.chip:hover{ border-color:var(--line-strong); color:var(--fg); transform:translateY(-1px); }
+.chip:hover{ border-color:var(--line-strong); color:var(--fg); }
 .chip[aria-pressed="true"]{
   background:var(--accent); color:var(--accent-ink);
   border-color:var(--accent); font-weight:600;
 }
 
-/* Fields */
-.field{ display:flex; flex-direction:column; gap:.45rem; margin-bottom:var(--s4); }
-.field label{ font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+.field{ display:flex; flex-direction:column; gap:.4rem; margin-bottom:var(--s4); }
+.field label{ font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
 .field input, .field textarea{
   width:100%;
-  padding:.85rem 1rem;
+  padding:.8rem .95rem;
   border-radius:var(--radius-s);
   border:1px solid var(--line);
   background:var(--bg);
   color:var(--fg);
-  font-size:.92rem;
+  font-size:.88rem;
   transition:border-color .3s, background .3s;
 }
 .field input:focus, .field textarea:focus{
   outline:none; border-color:var(--accent); background:var(--bg-elev-2);
 }
-.field textarea{ min-height:120px; resize:vertical; }
-.field__error{ font-size:.72rem; color:#FF8B7B; display:none; }
+.field textarea{ min-height:110px; resize:vertical; }
+.field__error{ font-size:.68rem; color:#FF8B7B; display:none; }
 .field.has-error input, .field.has-error textarea{ border-color:#FF8B7B; }
 .field.has-error .field__error{ display:block; }
+
+.modal__error{
+  font-size:.72rem; color:#FF8B7B;
+  margin-top:var(--s3);
+}
 
 /* Honeypot — visually hidden but present for bots */
 .hp{
@@ -1059,37 +1081,36 @@ body.is-entered .anim{
   display:flex; align-items:center; justify-content:space-between;
   gap:var(--s3); margin-top:var(--s6);
 }
-.modal__note{ font-size:.76rem; color:var(--muted); }
+.modal__note{ font-size:.72rem; color:var(--muted-2); }
 
-/* Success screen */
 .success__icon{
-  width:3.2rem; height:3.2rem; border-radius:50%;
+  width:2.8rem; height:2.8rem; border-radius:50%;
   display:grid; place-items:center;
-  background:color-mix(in srgb, var(--ok) 18%, transparent);
-  color:var(--ok); font-size:1.3rem;
+  background:color-mix(in srgb, var(--ok) 16%, transparent);
+  color:var(--ok); font-size:1.1rem;
   margin-bottom:var(--s4);
 }
 .success__link{
-  color:var(--accent); text-decoration:underline; text-underline-offset:4px;
+  color:var(--accent); text-decoration:underline; text-underline-offset:3px;
 }
 
 /* ============================================================================
    11. SCROLL REVEAL
    ============================================================================ */
-.reveal{ opacity:0; transform:translateY(28px); }
+.reveal{ opacity:0; transform:translateY(22px); }
 .reveal.is-in{
   opacity:1; transform:none;
   transition:opacity .8s var(--ease), transform .9s var(--ease);
 }
 
-/* Anchor offset for the fixed header */
-section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
+/* Anchor offset for fixed header */
+section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
 
 /* ============================================================================
    12. RESPONSIVE
    ============================================================================ */
 @media (max-width:1024px){
-  .hero__grid{ grid-template-columns:1fr; gap:clamp(2rem,6vw,3rem); }
+  .hero__grid{ grid-template-columns:1fr; gap:clamp(2rem,5vw,3rem); }
   .hero__card-wrap{ order:-1; }
   .footer__grid{ grid-template-columns:1fr 1fr; }
 }
@@ -1102,7 +1123,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
     position:sticky; top:var(--header-h);
     flex-direction:row; align-items:baseline; gap:var(--s3);
     background:var(--bg);
-    padding-block:.75rem;
+    padding-block:.7rem;
     z-index:5;
   }
   .tl{ grid-template-columns:1fr; gap:.35rem; }
@@ -1113,10 +1134,11 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
   .hero__foot{ flex-direction:column; align-items:flex-start; }
   .doors__head{ flex-direction:column; align-items:flex-start; }
   .menu-toggle span:not(.menu-toggle__bars span){ display:none; }
+  .menu-toggle{ padding:.5rem; border-radius:50%; }
 }
 
 /* ============================================================================
-   13. REDUCED MOTION — respect the user's system preference
+   13. REDUCED MOTION
    ============================================================================ */
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior:auto; }
@@ -1125,7 +1147,6 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
     animation-iteration-count:1 !important;
     transition-duration:.001ms !important;
     transition-delay:0ms !important;
-    scroll-behavior:auto !important;
   }
   .anim, .reveal{ opacity:1 !important; transform:none !important; }
   .cursor{ display:none !important; }
@@ -1136,33 +1157,29 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
 
 <body class="is-locked">
 
-<!-- ============================================================
-     SKIP LINK
-     ============================================================ -->
+<!-- Skip link -->
 <a class="skip" href="#main">Skip to content</a>
 
-<!-- ============================================================
-     CUSTOM CURSOR
-     ============================================================ -->
-<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor__label">VIEW</span></div>
+<!-- Custom cursor -->
+<div class="cursor" id="cursor" aria-hidden="true"></div>
 
-<!-- ============================================================
-     SCROLL PROGRESS
-     ============================================================ -->
+<!-- Scroll progress -->
 <div class="progress" id="progress" role="progressbar" aria-label="Page scroll progress"
      aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 
 <!-- ============================================================
-     1. PRELOADER
+     1. PRELOADER — auto-transitions, no click gate
      ============================================================ -->
-<div class="preloader" id="preloader" role="dialog" aria-modal="true" aria-label="Loading">
+<div class="preloader" id="preloader" aria-label="Loading">
   <div class="preloader__inner">
+    <div class="preloader__avatar">
+      <img src="profilewebsite.jpg" alt="" onerror="this.style.display='none'">
+    </div>
     <p class="preloader__label">Loading the card</p>
     <div class="preloader__count">
       <span id="loadCount">0</span><sup>%</sup>
     </div>
     <div class="preloader__bar"><i id="loadBar"></i></div>
-    <button class="preloader__enter" id="enterBtn" type="button">Click to enter</button>
   </div>
 </div>
 
@@ -1186,7 +1203,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
       </button>
 
       <span class="clock" aria-label="Local time">
-        <b id="clock">--:--:--</b> NPT
+        <span class="clock__label">Local</span>
+        <b id="clock">--:--:--</b>
       </span>
 
       <button class="btn btn--accent btn--sm" type="button" data-open-contact>
@@ -1196,9 +1214,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
   </div>
 </header>
 
-<!-- ============================================================
-     FULL-SCREEN MENU
-     ============================================================ -->
+<!-- Full-screen menu -->
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Site menu">
   <button class="menu__close" id="menuClose" type="button" aria-label="Close menu">✕</button>
 
@@ -1251,48 +1267,49 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </div>
 
-        <!-- Skills card -->
+        <!-- ID card with your photo -->
         <div class="hero__card-wrap anim" style="--d:2">
           <div class="card" id="card">
-            <div class="card__shine" aria-hidden="true"></div>
-
-            <div class="card__top">
+            <div class="card__head">
               <span class="card__label">Independent Freelancer</span>
-              <span class="card__chip">ID—001</span>
+              <span class="card__id">ID—001</span>
             </div>
 
-            <div class="card__identity">
-              <div class="card__avatar" aria-hidden="true">PB</div>
+            <div class="card__photo">
+              <img src="profilewebsite.jpg" alt="Prabhat Bhattarai"
+                   onerror="this.style.display='none'">
+              <span class="card__status">
+                <span class="dot" aria-hidden="true"></span> Available
+              </span>
+            </div>
+
+            <div class="card__body">
+              <p class="card__name">Prabhat Bhattarai</p>
+              <p class="card__role">Designer · Developer · Photographer</p>
+            </div>
+
+            <div class="card__meta">
               <div>
-                <p class="card__name">Prabhat Bhattarai</p>
-                <p class="card__role">Designer · Developer · Photographer</p>
+                <span>Based in</span>
+                <b>Kathmandu, NP</b>
               </div>
-            </div>
-
-            <div class="card__rows">
-              <div class="card__row"><span>Based in</span><b>Kathmandu, NP</b></div>
-              <div class="card__row"><span>Experience</span><b>Since 2023</b></div>
-              <div class="card__row"><span>Status</span><b class="ok">Available</b></div>
-            </div>
-
-            <div class="card__barcode" aria-hidden="true"></div>
-
-            <div class="card__bottom">
-              <span>Remote-first</span>
-              <span>★★★★★</span>
+              <div>
+                <span>Experience</span>
+                <b>Since 2023</b>
+              </div>
             </div>
           </div>
         </div>
 
       </div>
 
-      <!-- Hero footer row -->
+      <!-- Hero foot -->
       <div class="hero__foot anim" style="--d:4">
         <span class="hero__foot-item"><span class="dot" aria-hidden="true"></span> Available for work</span>
         <span class="hero__foot-item">Remote-first, worldwide</span>
         <a class="hero__foot-item scroll-hint" href="#work">
           Scroll to explore
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M12 5v14M19 12l-7 7-7-7"/>
           </svg>
@@ -1313,13 +1330,12 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
       <div class="doors__viewport" id="doorsViewport">
         <div class="doors__track" id="doorsTrack">
 
-          <!-- Door 01 -->
-          <article class="door" style="--g1:#3D6BE9; --g2:#232B4A;">
+          <article class="door" style="--tint: var(--skill-web);">
             <div class="door__room">
               <div class="door__room-top"><span>Web</span><span>01</span></div>
               <div>
                 <h3 class="door__room-title">Web<br>Development</h3>
-                <a class="door__room-link" href="#web-dev">View projects <span aria-hidden="true">→</span></a>
+                <a class="door__room-link" href="#web-dev">View projects →</a>
               </div>
             </div>
             <div class="door__leaf">
@@ -1329,13 +1345,12 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
             </div>
           </article>
 
-          <!-- Door 02 -->
-          <article class="door" style="--g1:#9B5DE5; --g2:#2E2340;">
+          <article class="door" style="--tint: var(--skill-app);">
             <div class="door__room">
               <div class="door__room-top"><span>Apps</span><span>02</span></div>
               <div>
                 <h3 class="door__room-title">App<br>Development</h3>
-                <a class="door__room-link" href="#app-dev">View projects <span aria-hidden="true">→</span></a>
+                <a class="door__room-link" href="#app-dev">View projects →</a>
               </div>
             </div>
             <div class="door__leaf">
@@ -1345,13 +1360,12 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
             </div>
           </article>
 
-          <!-- Door 03 -->
-          <article class="door" style="--g1:#E9B44C; --g2:#3A2E1B;">
+          <article class="door" style="--tint: var(--skill-uiux);">
             <div class="door__room">
               <div class="door__room-top"><span>Product</span><span>03</span></div>
               <div>
                 <h3 class="door__room-title">UI/UX<br>Design</h3>
-                <a class="door__room-link" href="#uiux">View projects <span aria-hidden="true">→</span></a>
+                <a class="door__room-link" href="#uiux">View projects →</a>
               </div>
             </div>
             <div class="door__leaf">
@@ -1361,13 +1375,12 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
             </div>
           </article>
 
-          <!-- Door 04 -->
-          <article class="door" style="--g1:#E85D5D; --g2:#3D2222;">
+          <article class="door" style="--tint: var(--skill-graphic);">
             <div class="door__room">
               <div class="door__room-top"><span>Brand</span><span>04</span></div>
               <div>
                 <h3 class="door__room-title">Graphic<br>Design</h3>
-                <a class="door__room-link" href="#graphic">View projects <span aria-hidden="true">→</span></a>
+                <a class="door__room-link" href="#graphic">View projects →</a>
               </div>
             </div>
             <div class="door__leaf">
@@ -1377,13 +1390,12 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
             </div>
           </article>
 
-          <!-- Door 05 -->
-          <article class="door" style="--g1:#5DC7A8; --g2:#1E3830;">
+          <article class="door" style="--tint: var(--skill-photo);">
             <div class="door__room">
               <div class="door__room-top"><span>Light</span><span>05</span></div>
               <div>
                 <h3 class="door__room-title">Photo<br>graphy</h3>
-                <a class="door__room-link" href="#photography">View projects <span aria-hidden="true">→</span></a>
+                <a class="door__room-link" href="#photography">View projects →</a>
               </div>
             </div>
             <div class="door__leaf">
@@ -1400,7 +1412,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
     </div>
   </section>
 
-  <!-- ================= 6. SKILL SECTIONS ================= -->
+  <!-- ================= SKILL SECTIONS ================= -->
 
   <!-- Web Development -->
   <section class="section skill" id="web-dev">
@@ -1414,8 +1426,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
       </div>
 
       <div class="skill__grid">
-        <a class="proj reveal" href="https://sathi-ai-vbja.onrender.com" target="_blank" rel="noopener">
-          <div class="proj__thumb" style="--g1:#3D6BE9; --g2:#20283F;">
+        <a class="proj reveal" style="--tint: var(--skill-web);" href="https://sathi-ai-vbja.onrender.com" target="_blank" rel="noopener">
+          <div class="proj__thumb">
             <span class="proj__badge">AI · Full-stack</span>
             <span class="proj__mono">SA</span>
           </div>
@@ -1426,8 +1438,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="https://chiya-san.vercel.app/" target="_blank" rel="noopener">
-          <div class="proj__thumb" style="--g1:#5DC7A8; --g2:#1E3830;">
+        <a class="proj reveal" style="--tint: var(--skill-photo);" href="https://chiya-san.vercel.app/" target="_blank" rel="noopener">
+          <div class="proj__thumb">
             <span class="proj__badge">Culture · Site</span>
             <span class="proj__mono">CS</span>
           </div>
@@ -1438,8 +1450,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="https://strapwear.vercel.app/" target="_blank" rel="noopener">
-          <div class="proj__thumb" style="--g1:#E85D5D; --g2:#3D2222;">
+        <a class="proj reveal" style="--tint: var(--skill-graphic);" href="https://strapwear.vercel.app/" target="_blank" rel="noopener">
+          <div class="proj__thumb">
             <span class="proj__badge">E-commerce</span>
             <span class="proj__mono">SW</span>
           </div>
@@ -1450,8 +1462,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="https://prabhatbhattarai-dev.github.io" target="_blank" rel="noopener">
-          <div class="proj__thumb" style="--g1:#E9B44C; --g2:#3A2E1B;">
+        <a class="proj reveal" style="--tint: var(--skill-uiux);" href="https://prabhatbhattarai-dev.github.io" target="_blank" rel="noopener">
+          <div class="proj__thumb">
             <span class="proj__badge">Personal</span>
             <span class="proj__mono">PB</span>
           </div>
@@ -1477,8 +1489,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
       </div>
 
       <div class="skill__grid">
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#9B5DE5; --g2:#2E2340;">
+        <a class="proj reveal" style="--tint: var(--skill-app);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">iOS · Android</span>
             <span class="proj__mono">SM</span>
           </div>
@@ -1489,8 +1501,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#5DC7A8; --g2:#1E3830;">
+        <a class="proj reveal" style="--tint: var(--skill-photo);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">Travel</span>
             <span class="proj__mono">HT</span>
           </div>
@@ -1501,8 +1513,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#E9B44C; --g2:#3A2E1B;">
+        <a class="proj reveal" style="--tint: var(--skill-uiux);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">Point of sale</span>
             <span class="proj__mono">CP</span>
           </div>
@@ -1513,8 +1525,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#3D6BE9; --g2:#20283F;">
+        <a class="proj reveal" style="--tint: var(--skill-web);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">Utility</span>
             <span class="proj__mono">FN</span>
           </div>
@@ -1540,8 +1552,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
       </div>
 
       <div class="skill__grid">
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#E9B44C; --g2:#3A2E1B;">
+        <a class="proj reveal" style="--tint: var(--skill-uiux);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">Case study</span>
             <span class="proj__mono">01</span>
           </div>
@@ -1552,8 +1564,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#E85D5D; --g2:#3D2222;">
+        <a class="proj reveal" style="--tint: var(--skill-graphic);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">Case study</span>
             <span class="proj__mono">02</span>
           </div>
@@ -1564,8 +1576,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#5DC7A8; --g2:#1E3830;">
+        <a class="proj reveal" style="--tint: var(--skill-photo);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">System</span>
             <span class="proj__mono">03</span>
           </div>
@@ -1576,8 +1588,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#9B5DE5; --g2:#2E2340;">
+        <a class="proj reveal" style="--tint: var(--skill-app);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">Case study</span>
             <span class="proj__mono">04</span>
           </div>
@@ -1603,8 +1615,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
       </div>
 
       <div class="skill__grid">
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#E85D5D; --g2:#3D2222;">
+        <a class="proj reveal" style="--tint: var(--skill-graphic);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">Identity</span>
             <span class="proj__mono">Aa</span>
           </div>
@@ -1615,8 +1627,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#E9B44C; --g2:#3A2E1B;">
+        <a class="proj reveal" style="--tint: var(--skill-uiux);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">Posters</span>
             <span class="proj__mono">P</span>
           </div>
@@ -1627,8 +1639,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#5DC7A8; --g2:#1E3830;">
+        <a class="proj reveal" style="--tint: var(--skill-photo);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">Editorial</span>
             <span class="proj__mono">E</span>
           </div>
@@ -1639,8 +1651,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#3D6BE9; --g2:#20283F;">
+        <a class="proj reveal" style="--tint: var(--skill-web);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">Digital</span>
             <span class="proj__mono">S</span>
           </div>
@@ -1666,8 +1678,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
       </div>
 
       <div class="skill__grid">
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#E85D5D; --g2:#3D2222;">
+        <a class="proj reveal" style="--tint: var(--skill-graphic);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">Portrait</span>
             <span class="proj__mono">◐</span>
           </div>
@@ -1678,8 +1690,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#E9B44C; --g2:#3A2E1B;">
+        <a class="proj reveal" style="--tint: var(--skill-uiux);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">Street</span>
             <span class="proj__mono">◑</span>
           </div>
@@ -1690,8 +1702,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#5DC7A8; --g2:#1E3830;">
+        <a class="proj reveal" style="--tint: var(--skill-photo);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">Product</span>
             <span class="proj__mono">◒</span>
           </div>
@@ -1702,8 +1714,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           </div>
         </a>
 
-        <a class="proj reveal" href="#contact" data-open-contact>
-          <div class="proj__thumb" style="--g1:#3D6BE9; --g2:#20283F;">
+        <a class="proj reveal" style="--tint: var(--skill-web);" href="#contact" data-open-contact>
+          <div class="proj__thumb">
             <span class="proj__badge">Editorial</span>
             <span class="proj__mono">◓</span>
           </div>
@@ -1722,18 +1734,15 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
     <div class="wrap">
       <div class="story__head reveal">
         <h2 class="story__title">Let's go back <em>in time.</em></h2>
-        <!-- Slot-machine year roller (digits injected by JS) -->
         <div class="slot" id="slot" aria-hidden="true"></div>
       </div>
 
       <div class="story__grid">
-        <!-- Sticky counter -->
         <aside class="story__aside" aria-live="polite">
           <p class="story__count"><span id="tlIndex">01</span> <em>/ 05</em></p>
           <p class="story__range" id="tlRange">Oct 2026 — Now</p>
         </aside>
 
-        <!-- Timeline -->
         <div class="story__list" id="timeline">
 
           <article class="tl reveal" data-index="1" data-year="2026" data-range="Oct 2026 — Now">
@@ -1748,7 +1757,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
             </div>
           </article>
 
-          <article class="tl reveal" data-index="2" data-year="2026" data-range="Jun 2025 — Sep 2026">
+          <article class="tl reveal" data-index="2" data-year="2025" data-range="Jun 2025 — Sep 2026">
             <p class="tl__date">Jun 2025 — Sep 2026</p>
             <div>
               <h3 class="tl__role">Web Developer</h3>
@@ -1822,7 +1831,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
 </main>
 
 <!-- ============================================================
-     9. FOOTER
+     FOOTER
      ============================================================ -->
 <footer class="footer">
   <div class="wrap">
@@ -1875,11 +1884,10 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
   </div>
 </footer>
 
-<!-- Floating back-to-top -->
 <button class="to-top" id="toTop" type="button" aria-label="Back to top">↑</button>
 
 <!-- ============================================================
-     8. CONTACT MODAL — multi-step form
+     CONTACT MODAL
      ============================================================ -->
 <div class="modal" id="contactModal" aria-hidden="true">
   <div class="modal__backdrop" data-close-modal></div>
@@ -1891,7 +1899,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
 
     <form id="contactForm" novalidate>
 
-      <!-- ---------- STEP 1 ---------- -->
+      <!-- STEP 1 -->
       <section class="step is-active" data-step="1" aria-label="Step 1 of 5">
         <p class="modal__step-label">Step 1 of 5</p>
         <h2 class="modal__title" id="modalTitle">What do you need?</h2>
@@ -1903,13 +1911,14 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           <button class="chip" type="button" aria-pressed="false" data-value="Photography">Photography</button>
           <button class="chip" type="button" aria-pressed="false" data-value="I have a question about this website">I have a question about this website</button>
         </div>
+        <p class="modal__error" id="needsError" hidden>Please choose at least one option to continue.</p>
         <div class="modal__nav">
           <span class="modal__note">I reply within one business day.</span>
           <button class="btn btn--accent" type="button" data-next>Continue →</button>
         </div>
       </section>
 
-      <!-- ---------- STEP 2 ---------- -->
+      <!-- STEP 2 -->
       <section class="step" data-step="2" aria-label="Step 2 of 5">
         <p class="modal__step-label">Step 2 of 5</p>
         <h2 class="modal__title">Who am I talking to?</h2>
@@ -1920,7 +1929,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           <span class="field__error">Please tell me your name.</span>
         </div>
 
-        <!-- Honeypot: hidden from humans, tempting to bots -->
+        <!-- Honeypot -->
         <div class="hp" aria-hidden="true">
           <label for="inTrap">Leave this empty</label>
           <input id="inTrap" name="website_url" type="text" tabindex="-1" autocomplete="off">
@@ -1932,7 +1941,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
         </div>
       </section>
 
-      <!-- ---------- STEP 3 ---------- -->
+      <!-- STEP 3 -->
       <section class="step" data-step="3" aria-label="Step 3 of 5">
         <p class="modal__step-label">Step 3 of 5</p>
         <h2 class="modal__title">Where can I reach you?</h2>
@@ -1949,7 +1958,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
         </div>
       </section>
 
-      <!-- ---------- STEP 4 ---------- -->
+      <!-- STEP 4 -->
       <section class="step" data-step="4" aria-label="Step 4 of 5">
         <p class="modal__step-label">Step 4 of 5</p>
         <h2 class="modal__title">Tell me about the project.</h2>
@@ -1966,13 +1975,13 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
         </div>
       </section>
 
-      <!-- ---------- STEP 5 ---------- -->
+      <!-- STEP 5 -->
       <section class="step" data-step="5" aria-label="Step 5 of 5">
         <p class="modal__step-label">Step 5 of 5</p>
         <h2 class="modal__title">Budget &amp; timeline.</h2>
 
-        <p class="modal__note" style="margin-bottom:.75rem">Rough budget</p>
-        <div class="chips" role="group" aria-label="Budget" style="margin-bottom:1.5rem">
+        <p class="modal__note" style="margin-bottom:.6rem">Rough budget</p>
+        <div class="chips" role="group" aria-label="Budget" style="margin-bottom:1.25rem">
           <button class="chip" type="button" aria-pressed="false" data-budget="Under $500">Under $500</button>
           <button class="chip" type="button" aria-pressed="false" data-budget="$500 – $2k">$500 – $2k</button>
           <button class="chip" type="button" aria-pressed="false" data-budget="$2k – $5k">$2k – $5k</button>
@@ -1980,7 +1989,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
           <button class="chip" type="button" aria-pressed="false" data-budget="Not sure yet">Not sure yet</button>
         </div>
 
-        <p class="modal__note" style="margin-bottom:.75rem">Timeline</p>
+        <p class="modal__note" style="margin-bottom:.6rem">Timeline</p>
         <div class="chips" role="group" aria-label="Timeline">
           <button class="chip" type="button" aria-pressed="false" data-timeline="ASAP">ASAP</button>
           <button class="chip" type="button" aria-pressed="false" data-timeline="2–4 weeks">2–4 weeks</button>
@@ -1996,15 +2005,15 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
 
     </form>
 
-    <!-- ---------- SUCCESS ---------- -->
+    <!-- SUCCESS -->
     <section class="step" data-step="done" aria-label="Message ready" hidden>
       <div class="success__icon" aria-hidden="true">✓</div>
       <h2 class="modal__title">Almost there.</h2>
-      <p style="color:var(--muted); font-size:.95rem; margin-bottom:1.25rem">
+      <p style="color:var(--muted); font-size:.9rem; margin-bottom:1.1rem">
         Your email app has opened with your message ready to go. Press send there and I'll reply
         within one business day.
       </p>
-      <p style="font-size:.82rem; color:var(--muted)">
+      <p style="font-size:.8rem; color:var(--muted-2)">
         Email app didn't open?
         <a class="success__link" href="mailto:prabhatbhattarai456@gmail.com">Write to my email.</a>
       </p>
@@ -2035,21 +2044,35 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
   const isTouch = window.matchMedia('(hover: none)').matches;
 
   /* ==================================================================
-     1. PRELOADER — 0 → 100%, then "Click to enter"
+     1. PRELOADER — counts to 100% then auto-enters
      ================================================================== */
   const preloader = $('#preloader');
   const loadCount = $('#loadCount');
   const loadBar   = $('#loadBar');
-  const enterBtn  = $('#enterBtn');
 
   const LOAD_DURATION = prefersReducedMotion ? 200 : 1900;
+  const HOLD_AT_100   = 450;   // brief pause so the user sees the complete counter
+
+  function enterSite() {
+    preloader.classList.add('is-done');
+    document.body.classList.remove('is-locked');
+    document.body.classList.add('is-entered');
+
+    setTimeout(() => {
+      preloader.style.display = 'none';
+      preloader.setAttribute('aria-hidden', 'true');
+    }, 800);
+
+    // Re-measure the horizontal door wall once the page is interactive
+    setTimeout(sizeDoors, 120);
+  }
 
   (function runLoader() {
     const start = performance.now();
 
     function frame(now) {
       const t = clamp((now - start) / LOAD_DURATION, 0, 1);
-      const eased = 1 - Math.pow(1 - t, 3);           // easeOutCubic
+      const eased = 1 - Math.pow(1 - t, 3);   // easeOutCubic
       const value = Math.round(eased * 100);
 
       loadCount.textContent = value;
@@ -2058,32 +2081,19 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
       if (t < 1) {
         requestAnimationFrame(frame);
       } else {
-        enterBtn.classList.add('is-visible');
+        setTimeout(enterSite, HOLD_AT_100);
       }
     }
     requestAnimationFrame(frame);
   })();
 
-  enterBtn.addEventListener('click', () => {
-    preloader.classList.add('is-done');
-    document.body.classList.remove('is-locked');
-    document.body.classList.add('is-entered');
-
-    // Remove from the a11y tree once it's gone
-    setTimeout(() => { preloader.style.display = 'none'; }, 800);
-
-    // Kick off the door-section sizing after fonts/layout settle
-    setTimeout(sizeDoors, 60);
-  });
-
   /* ==================================================================
-     2. LIVE LOCAL CLOCK (header + footer)
+     2. LIVE LOCAL CLOCK
      ================================================================== */
   const clockEl     = $('#clock');
   const clockFootEl = $('#clockFoot');
 
-  function tick() {
-    // Kathmandu is UTC+05:45 — format in the visitor's local zone instead
+  function tickClock() {
     const now = new Date();
     const time = now.toLocaleTimeString([], {
       hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
@@ -2091,8 +2101,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
     if (clockEl) clockEl.textContent = time;
     if (clockFootEl) clockFootEl.textContent = time;
   }
-  tick();
-  setInterval(tick, 1000);
+  tickClock();
+  setInterval(tickClock, 1000);
 
   $('#year').textContent = new Date().getFullYear();
 
@@ -2112,11 +2122,11 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
     (function loop() {
       cx += (tx - cx) * 0.22;
       cy += (ty - cy) * 0.22;
-      cursor.style.transform = `translate3d(${cx}px, ${cy}px, 0) translate(-50%, -50%)`;
+      cursor.style.transform =
+        `translate3d(${cx}px, ${cy}px, 0) translate(-50%, -50%)`;
       requestAnimationFrame(loop);
     })();
 
-    // Grow over interactive elements
     const interactive = 'a, button, [role="button"], input, textarea, .door';
     document.addEventListener('mouseover', (e) => {
       if (e.target.closest(interactive)) cursor.classList.add('is-hover');
@@ -2132,21 +2142,22 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
   const menuToggle = $('#menuToggle');
   const menu       = $('#menu');
   const menuClose  = $('#menuClose');
-  let lastFocused  = null;
+  let menuLastFocus = null;
 
   function openMenu() {
-    lastFocused = document.activeElement;
+    menuLastFocus = document.activeElement;
     menu.classList.add('is-open');
     menuToggle.setAttribute('aria-expanded', 'true');
     document.body.classList.add('is-locked');
-    setTimeout(() => menuClose.focus(), 250);
+    setTimeout(() => menuClose.focus(), 220);
   }
 
   function closeMenu() {
+    if (!menu.classList.contains('is-open')) return;
     menu.classList.remove('is-open');
     menuToggle.setAttribute('aria-expanded', 'false');
     document.body.classList.remove('is-locked');
-    if (lastFocused) lastFocused.focus();
+    if (menuLastFocus) menuLastFocus.focus();
   }
 
   menuToggle.addEventListener('click', () => {
@@ -2154,17 +2165,15 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
   });
   menuClose.addEventListener('click', closeMenu);
 
-  // Any link inside the menu closes it
   $$('.menu__link', menu).forEach((link) => {
     link.addEventListener('click', () => {
-      // Let the contact modal open cleanly (it closes the menu itself)
-      if (link.hasAttribute('data-open-contact')) return;
+      if (link.hasAttribute('data-open-contact')) return; // modal handles it
       closeMenu();
     });
   });
 
   /* ==================================================================
-     5. SCROLL PROGRESS BAR
+     5. SCROLL PROGRESS
      ================================================================== */
   const progressBar = $('#progress');
 
@@ -2187,7 +2196,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
       const px = (e.clientX - rect.left) / rect.width - 0.5;
       const py = (e.clientY - rect.top) / rect.height - 0.5;
       card.style.transform =
-        `perspective(1100px) rotateY(${px * 11}deg) rotateX(${-py * 11}deg) translateZ(0)`;
+        `perspective(1100px) rotateY(${px * 9}deg) rotateX(${-py * 9}deg)`;
     });
 
     hero.addEventListener('mouseleave', () => {
@@ -2196,7 +2205,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
   }
 
   /* ==================================================================
-     7. ROTATING ROLE (text roll)
+     7. ROTATING ROLE
      ================================================================== */
   const roleEl = $('#roleRoll');
   const ROLES = ['photographer', 'graphic designer', 'UI/UX designer', 'developer'];
@@ -2215,7 +2224,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
       const out = roleEl.animate(
         [{ transform: 'translateY(0)', opacity: 1 },
          { transform: 'translateY(-70%)', opacity: 0 }],
-        { duration: 260, easing: 'cubic-bezier(.7,0,.3,1)', fill: 'forwards' }
+        { duration: 240, easing: 'cubic-bezier(.7,0,.3,1)', fill: 'forwards' }
       );
 
       out.onfinish = () => {
@@ -2223,55 +2232,55 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
         const inn = roleEl.animate(
           [{ transform: 'translateY(70%)', opacity: 0 },
            { transform: 'translateY(0)', opacity: 1 }],
-          { duration: 340, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'forwards' }
+          { duration: 320, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'forwards' }
         );
-        inn.onfinish = () => out.cancel(); // release the fill
+        inn.onfinish = () => out.cancel();
       };
     }, 2600);
   }
 
   /* ==================================================================
-     8. "ONE DOOR PER SKILL" — sticky horizontal wall
+     8. DOORS — sticky horizontal wall
      ================================================================== */
   const doorsSection  = $('#work');
   const doorsViewport = $('#doorsViewport');
   const doorsTrack    = $('#doorsTrack');
+  const doorsSticky   = $('.doors__sticky');
 
   let doorsMaxShift = 0;
+  let doorsStickyH  = 0;
 
-  /**
-   * Make the section tall enough that one pixel of vertical scroll
-   * equals one pixel of horizontal travel. Recomputed on resize.
-   */
   function sizeDoors() {
-    if (!doorsSection || !doorsTrack || !doorsViewport) return;
+    if (!doorsSection || !doorsTrack || !doorsViewport || !doorsSticky) return;
 
+    doorsStickyH  = doorsSticky.offsetHeight;
     doorsMaxShift = Math.max(0, doorsTrack.offsetWidth - doorsViewport.clientWidth);
 
-    // Height = one viewport (the sticky part) + the horizontal travel
-    doorsSection.style.height = (window.innerHeight + doorsMaxShift) + 'px';
-
+    doorsSection.style.height = (doorsStickyH + doorsMaxShift) + 'px';
     updateDoors();
   }
 
   function updateDoors() {
-    if (!doorsSection || !doorsTrack) return;
+    if (!doorsSection || !doorsTrack || !doorsStickyH) return;
 
-    const rect = doorsSection.getBoundingClientRect();
-    const travel = doorsSection.offsetHeight - window.innerHeight;
-    if (travel <= 0) return;
+    const rect   = doorsSection.getBoundingClientRect();
+    const travel = doorsSection.offsetHeight - doorsStickyH;
+    if (travel <= 0) {
+      doorsTrack.style.transform = 'translate3d(0,0,0)';
+      return;
+    }
 
     const p = clamp(-rect.top / travel, 0, 1);
     doorsTrack.style.transform = `translate3d(${-p * doorsMaxShift}px, 0, 0)`;
   }
 
-  // Touch / pointer drag → maps horizontal swipe onto vertical scroll,
-  // which keeps the sticky section perfectly in sync.
+  /* Touch / pointer swipe maps onto vertical scroll so the sticky
+     section stays perfectly in sync with the wall's translation. */
   if (doorsViewport) {
     let startX = null, startY = null, dragging = false;
 
     doorsViewport.addEventListener('pointerdown', (e) => {
-      if (e.pointerType === 'mouse') return;   // mouse users just scroll
+      if (e.pointerType === 'mouse') return;
       startX = e.clientX;
       startY = e.clientY;
       dragging = false;
@@ -2291,22 +2300,21 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
         }
       }
 
-      // Swipe left → scroll down → wall moves right-to-left
       window.scrollBy(0, -dx);
       startX = e.clientX;
       startY = e.clientY;
     }, { passive: true });
 
-    const endDrag = () => { startX = null; startY = null; dragging = false; };
+    const endDrag = () => { startX = startY = null; dragging = false; };
     doorsViewport.addEventListener('pointerup', endDrag);
     doorsViewport.addEventListener('pointercancel', endDrag);
     doorsViewport.addEventListener('pointerleave', endDrag);
   }
 
-  // Tap-to-open doors on touch devices
+  /* Tap-to-open on touch devices */
   $$('.door').forEach((door) => {
     door.addEventListener('click', (e) => {
-      if (e.target.closest('a')) return;       // let real links through
+      if (e.target.closest('a')) return;
       if (window.matchMedia('(hover: none)').matches) {
         door.classList.toggle('is-open');
       }
@@ -2336,23 +2344,22 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
   /* ==================================================================
      10. TIMELINE + SLOT-MACHINE YEAR ROLLER
      ================================================================== */
-  const slotEl   = $('#slot');
-  const tlIndex  = $('#tlIndex');
-  const tlRange  = $('#tlRange');
-  const tlItems  = $$('.tl');
+  const slotEl  = $('#slot');
+  const tlIndex = $('#tlIndex');
+  const tlRange = $('#tlRange');
+  const tlItems = $$('.tl');
 
-  /* Build four digit columns, each a vertical strip of 0–9 */
   function buildSlot() {
     if (!slotEl) return;
-
     slotEl.innerHTML = '';
+
     for (let i = 0; i < 4; i++) {
       const col = document.createElement('span');
       col.className = 'slot__col';
 
       const strip = document.createElement('span');
       strip.className = 'slot__strip';
-      strip.style.setProperty('--d', 2);       // start somewhere neutral
+      strip.style.setProperty('--d', 2);
 
       for (let d = 0; d <= 9; d++) {
         const digit = document.createElement('span');
@@ -2369,16 +2376,12 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
     if (!slotEl) return;
     const digits = String(year).padStart(4, '0').split('');
     const strips = $$('.slot__strip', slotEl);
-
-    strips.forEach((strip, i) => {
-      strip.style.setProperty('--d', digits[i]);
-    });
+    strips.forEach((strip, i) => strip.style.setProperty('--d', digits[i]));
   }
 
   buildSlot();
   setSlotYear(2026);
 
-  /* Highlight the timeline entry crossing the middle of the viewport */
   if ('IntersectionObserver' in window && tlItems.length) {
     const tlObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -2399,12 +2402,12 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
   /* ==================================================================
      11. CONTACT MODAL — multi-step form
      ================================================================== */
-  const modal       = $('#contactModal');
-  const modalDialog = $('.modal__dialog', modal);
-  const form        = $('#contactForm');
-  const steps       = $$('.step', modal);
+  const modal        = $('#contactModal');
+  const modalDialog  = $('.modal__dialog', modal);
+  const form         = $('#contactForm');
+  const steps        = $$('.step', modal);
   const progressFill = $('#modalProgress');
-  const TOTAL_STEPS = 5;
+  const TOTAL_STEPS  = 5;
 
   let currentStep = 1;
   let modalLastFocus = null;
@@ -2418,7 +2421,6 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
     timeline: 'Not specified'
   };
 
-  /* ---- open / close ---------------------------------------------- */
   function openModal() {
     modalLastFocus = document.activeElement;
     closeMenu();
@@ -2428,17 +2430,18 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
     document.body.classList.add('is-locked');
 
     showStep(1);
+
     setTimeout(() => {
       const firstChip = $('.step.is-active .chip', modal);
-      (firstChip || modalDialog).focus?.();
-    }, 350);
+      if (firstChip) firstChip.focus();
+    }, 300);
   }
 
   function closeModal() {
+    if (!modal.classList.contains('is-open')) return;
     modal.classList.remove('is-open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('is-locked');
-
     if (modalLastFocus) modalLastFocus.focus();
   }
 
@@ -2453,23 +2456,20 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
     btn.addEventListener('click', closeModal);
   });
 
-  /* ---- step navigation -------------------------------------------- */
+  /* Step navigation */
   function showStep(n) {
     currentStep = n;
 
     steps.forEach((step) => {
-      const isDone = step.dataset.step === 'done';
-      const active = isDone ? n === 'done' : Number(step.dataset.step) === n;
+      const isDoneStep = step.dataset.step === 'done';
+      const active = isDoneStep ? n === 'done' : Number(step.dataset.step) === n;
       step.classList.toggle('is-active', active);
-      step.hidden = !active && !isDone;
-      if (isDone) step.hidden = n !== 'done';
+      step.hidden = !active;
     });
 
-    // Progress bar
     const pct = n === 'done' ? 1 : n / TOTAL_STEPS;
     progressFill.style.transform = `scaleX(${pct})`;
 
-    // Focus the new step's heading for screen-reader users
     const activeStep = $('.step.is-active', modal);
     if (activeStep) {
       const title = $('.modal__title', activeStep);
@@ -2481,7 +2481,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
     }
   }
 
-  /* ---- validation -------------------------------------------------- */
+  /* Field-level validation */
   function setError(fieldId, on) {
     const field = $('#' + fieldId);
     if (field) field.classList.toggle('has-error', on);
@@ -2489,8 +2489,10 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
 
   function validateStep(n) {
     if (n === 1) {
-      // Nothing is strictly required — but nudge for at least one choice
-      return state.needs.length > 0;
+      const ok = state.needs.length > 0;
+      const err = $('#needsError');
+      if (err) err.hidden = ok;
+      return ok;
     }
     if (n === 2) {
       const ok = $('#inName').value.trim().length > 1;
@@ -2498,8 +2500,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
       return ok;
     }
     if (n === 3) {
-      const val = $('#inEmail').value.trim();
-      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val);
+      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($('#inEmail').value.trim());
       setError('field-email', !ok);
       return ok;
     }
@@ -2524,53 +2525,52 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
     });
   });
 
-  /* ---- chips (multi-select for needs, single for budget/timeline) -- */
+  /* Chips — multi-select for needs, single-select for budget/timeline */
   $$('.chip', modal).forEach((chip) => {
     chip.addEventListener('click', () => {
       const pressed = chip.getAttribute('aria-pressed') === 'true';
 
       if (chip.dataset.value) {
-        // Multi-select: services
         chip.setAttribute('aria-pressed', String(!pressed));
         const val = chip.dataset.value;
         state.needs = pressed
           ? state.needs.filter((v) => v !== val)
           : [...state.needs, val];
-      } else {
-        // Single-select groups
-        const group = chip.dataset.budget ? 'budget' : 'timeline';
-        const key = chip.dataset.budget ? 'budget' : 'timeline';
 
+        // clear the "please choose" hint as soon as something is picked
+        const err = $('#needsError');
+        if (err && state.needs.length > 0) err.hidden = true;
+      } else {
+        const key = chip.dataset.budget ? 'budget' : 'timeline';
         chip.closest('.chips').querySelectorAll('.chip').forEach((c) => {
           c.setAttribute('aria-pressed', 'false');
         });
         chip.setAttribute('aria-pressed', 'true');
-        state[key] = chip.dataset[key] || chip.dataset[group];
+        state[key] = chip.dataset[key] || 'Not specified';
       }
     });
   });
 
-  /* ---- submit → mailto → success ---------------------------------- */
+  /* Submit → mailto → success */
   const MY_EMAIL = 'prabhatbhattarai456@gmail.com';
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    // Honeypot check — silently drop bots
+    // Honeypot — silently drop bots
     const trap = $('#inTrap');
     if (trap && trap.value.trim() !== '') {
       showStep('done');
       return;
     }
 
-    if (!validateStep(4)) return;
+    if (!validateStep(4)) { showStep(4); return; }
 
     state.name    = $('#inName').value.trim();
     state.email   = $('#inEmail').value.trim();
     state.details = $('#inDetails').value.trim();
 
     const subject = `New project enquiry — ${state.name}`;
-
     const body = [
       `Name: ${state.name}`,
       `Email: ${state.email}`,
@@ -2587,22 +2587,24 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
 
     const mailto = `mailto:${MY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-    // Open the user's mail client
-    window.location.href = mailto;
+    // Open the user's mail client (uses an anchor so it never navigates away)
+    const a = document.createElement('a');
+    a.href = mailto;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 
-    // Show the success screen regardless of whether the client opened
     showStep('done');
   });
 
-  /* ---- keyboard + focus trap -------------------------------------- */
+  /* Keyboard + focus trap */
   document.addEventListener('keydown', (e) => {
-    // ESC closes whichever overlay is open
     if (e.key === 'Escape') {
       if (modal.classList.contains('is-open')) closeModal();
       else if (menu.classList.contains('is-open')) closeMenu();
     }
 
-    // Focus trap inside the modal
     if (e.key === 'Tab' && modal.classList.contains('is-open')) {
       const focusables = $$(
         'a[href], button:not([disabled]), input, textarea, select, [tabindex]:not([tabindex="-1"])',
@@ -2637,7 +2639,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
   if (backToTopBtn) backToTopBtn.addEventListener('click', scrollTop);
 
   /* ==================================================================
-     13. SCROLL ORCHESTRATION (single rAF loop)
+     13. SCROLL ORCHESTRATION (single rAF)
      ================================================================== */
   let ticking = false;
 
@@ -2649,8 +2651,9 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
       updateProgress();
       updateDoors();
 
-      // Floating back-to-top visibility
-      if (toTop) toTop.classList.toggle('is-visible', window.scrollY > window.innerHeight * 0.8);
+      if (toTop) {
+        toTop.classList.toggle('is-visible', window.scrollY > window.innerHeight * 0.8);
+      }
 
       ticking = false;
     });
@@ -2662,7 +2665,6 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + 1rem); }
     onScroll();
   });
 
-  // Re-measure once fonts have loaded (door widths change)
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(sizeDoors);
   }
