@@ -25,20 +25,17 @@
 <meta name="twitter:description" content="Websites, apps and identities built with care. Remote-first, worldwide.">
 <meta name="twitter:image" content="https://prabhatbhattarai.com/og-cover.jpg">
 
-<!-- Inline SVG favicon -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%231A1818'/><text x='50' y='73' font-family='Helvetica,Arial,sans-serif' font-size='60' font-weight='700' text-anchor='middle' fill='%23E9B44C'>P</text></svg>">
 
-<!-- Fonts: Bricolage Grotesque (display) + Space Grotesk (body) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================================
-   ============================  DESIGN TOKENS  ================================
+   DESIGN TOKENS
    ============================================================================ */
 :root{
-  /* ---- Colors ------------------------------------------------------------ */
   --bg:            #1A1818;
   --bg-elev:       #211E1E;
   --bg-elev-2:     #2A2626;
@@ -52,30 +49,25 @@
   --accent-ink:    #1A1818;
   --ok:            #7FE3A1;
 
-  /* Per-skill tints (used only as subtle accents) */
   --skill-web:     #7B9EFF;
   --skill-app:     #B585F0;
   --skill-uiux:    #E9B44C;
   --skill-graphic: #F08A7A;
   --skill-photo:   #7FDBC0;
 
-  /* ---- Typography -------------------------------------------------------- */
   --font-body:     'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display:  'Bricolage Grotesque', 'Space Grotesk', system-ui, sans-serif;
 
-  /* ---- Spacing scale ----------------------------------------------------- */
   --s1:.25rem; --s2:.5rem;  --s3:.75rem; --s4:1rem;  --s5:1.5rem;
   --s6:2rem;   --s7:3rem;   --s8:4rem;   --s9:6rem;  --s10:8rem;
 
   --gutter:  clamp(1.25rem, 5vw, 4.5rem);
   --maxw:    1440px;
 
-  /* ---- Radii ------------------------------------------------------------- */
   --radius-s: .6rem;
   --radius-m: 1rem;
   --radius-l: 1.5rem;
 
-  /* ---- Motion ------------------------------------------------------------ */
   --ease:     cubic-bezier(.22,1,.36,1);
   --ease-out: cubic-bezier(.16,1,.3,1);
   --header-h: 72px;
@@ -113,7 +105,6 @@ ul,ol{ list-style:none; }
   border-radius:4px;
 }
 
-/* Layout wrapper */
 .wrap{
   width:100%;
   max-width:var(--maxw);
@@ -121,7 +112,6 @@ ul,ol{ list-style:none; }
   padding-inline:var(--gutter);
 }
 
-/* Skip link */
 .skip{
   position:fixed; top:.5rem; left:.5rem; z-index:9999;
   padding:.7rem 1.2rem; border-radius:999px;
@@ -132,7 +122,6 @@ ul,ol{ list-style:none; }
 }
 .skip:focus-visible{ transform:none; }
 
-/* Very subtle ambient light — not a pattern, just warmth */
 body::before{
   content:'';
   position:fixed; inset:0; pointer-events:none; z-index:0;
@@ -178,66 +167,100 @@ body::before{
 }
 
 /* ============================================================================
-   1. PRELOADER — auto-transitions, no "Click to enter"
+   1. PRELOADER — premium, auto-transitions
    ============================================================================ */
 .preloader{
   position:fixed; inset:0; z-index:5000;
   background:var(--bg);
   display:grid; place-items:center;
   padding:var(--gutter);
-  transition:opacity .7s var(--ease), visibility 0s linear .7s;
+  transition:opacity .85s var(--ease),
+             visibility 0s linear .85s,
+             filter .85s var(--ease);
 }
-.preloader.is-done{ opacity:0; visibility:hidden; pointer-events:none; }
+.preloader.is-done{
+  opacity:0;
+  filter:blur(6px);
+  visibility:hidden;
+  pointer-events:none;
+}
 
 .preloader__inner{
-  width:min(460px,100%);
+  width:min(440px,100%);
   display:flex; flex-direction:column; align-items:center; gap:var(--s5);
   text-align:center;
 }
+
 .preloader__avatar{
-  width:88px; height:88px; border-radius:50%;
-  overflow:hidden; position:relative;
-  border:1px solid var(--line-strong);
-  background:var(--bg-elev-2);
+  position:relative;
+  width:92px; height:92px;
+  margin-bottom:var(--s2);
   display:grid; place-items:center;
 }
-.preloader__avatar::before{
+.preloader__ring{
+  position:absolute; inset:-6px;
+  border-radius:50%;
+  background:conic-gradient(from 0deg, transparent 0 62%, var(--accent) 100%);
+  -webkit-mask:radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
+          mask:radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1px));
+  animation:pRing 1.8s linear infinite;
+}
+@keyframes pRing{ to{ transform:rotate(360deg); } }
+
+.preloader__photo{
+  position:relative;
+  width:84px; height:84px; border-radius:50%;
+  overflow:hidden;
+  background:var(--bg-elev-2);
+  border:1px solid var(--line-strong);
+  display:grid; place-items:center;
+}
+.preloader__photo::before{
   content:'PB';
   position:absolute; inset:0;
   display:grid; place-items:center;
   font-family:var(--font-display);
-  font-weight:700; font-size:1.5rem;
+  font-weight:700; font-size:1.4rem;
   color:var(--accent);
 }
-.preloader__avatar img{
+.preloader__photo img{
   position:relative; z-index:1;
   width:100%; height:100%; object-fit:cover;
 }
+
 .preloader__label{
-  font-size:.7rem; letter-spacing:.26em; text-transform:uppercase;
+  font-size:.68rem; letter-spacing:.28em; text-transform:uppercase;
   color:var(--muted);
 }
 .preloader__count{
   font-family:var(--font-display);
   font-weight:700;
-  font-size:clamp(4rem,16vw,7.5rem);
-  line-height:.9;
+  font-size:clamp(3.8rem,15vw,7rem);
+  line-height:.86;
   letter-spacing:-.05em;
   font-variant-numeric:tabular-nums;
   color:var(--fg);
+  display:inline-flex; align-items:flex-start;
 }
 .preloader__count sup{
-  font-size:.22em; vertical-align:super; color:var(--accent);
-  letter-spacing:0; margin-left:.12em; font-weight:600;
+  font-size:.22em; color:var(--accent);
+  margin-left:.12em; margin-top:.35em;
+  letter-spacing:0; font-weight:600;
+  vertical-align:baseline;
 }
 .preloader__bar{
   width:100%; height:1px; background:var(--line); overflow:hidden;
+  margin-top:var(--s2);
 }
 .preloader__bar i{
   display:block; height:100%; width:100%;
-  background:var(--accent);
+  background:linear-gradient(90deg,var(--accent),#F2C36B);
   transform:scaleX(0); transform-origin:0 50%;
   will-change:transform;
+}
+.preloader__foot{
+  font-size:.66rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--muted-2);
 }
 
 /* ============================================================================
@@ -261,6 +284,7 @@ body::before{
   font-family:var(--font-display);
   font-weight:700; font-size:1.05rem; letter-spacing:-.02em;
   display:inline-flex; align-items:center; gap:.55rem;
+  flex-shrink:0;
 }
 .logo__dot{ color:var(--accent); }
 .logo__mark{
@@ -269,6 +293,7 @@ body::before{
   background:var(--accent); color:var(--accent-ink);
   font-size:.72rem; font-weight:700;
   transition:transform .5s var(--ease);
+  flex-shrink:0;
 }
 .logo:hover .logo__mark{ transform:rotate(-14deg) scale(1.06); }
 
@@ -280,6 +305,7 @@ body::before{
   border:1px solid var(--line); border-radius:999px;
   font-size:.78rem; font-weight:500; letter-spacing:.02em;
   transition:background .3s, border-color .3s;
+  flex-shrink:0;
 }
 .menu-toggle:hover{ background:var(--bg-elev-2); border-color:var(--line-strong); }
 .menu-toggle__bars{ display:inline-flex; flex-direction:column; gap:3px; }
@@ -304,7 +330,6 @@ body::before{
 }
 .clock b{ color:var(--fg); font-weight:500; }
 
-/* Buttons */
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:.5rem;
   padding:.75rem 1.4rem; border-radius:999px;
@@ -390,7 +415,7 @@ body::before{
   position:relative;
   min-height:100svh;
   display:flex; flex-direction:column; justify-content:center;
-  padding-top:calc(var(--header-h) + clamp(2rem,5vw,4rem));
+  padding-top:calc(var(--header-h) + clamp(1.5rem,4vw,4rem));
   padding-bottom:var(--s5);
   z-index:1;
 }
@@ -412,7 +437,7 @@ body::before{
 .hero__title{
   font-family:var(--font-display);
   font-weight:700;
-  font-size:clamp(2.4rem,6.6vw,5.4rem);
+  font-size:clamp(2.2rem,6.6vw,5.4rem);
   line-height:.96;
   letter-spacing:-.045em;
   margin-bottom:var(--s5);
@@ -441,7 +466,7 @@ body::before{
 
 .hero__actions{ display:flex; flex-wrap:wrap; gap:var(--s3); }
 
-/* --- The ID card --------------------------------------------------------- */
+/* ID card */
 .card{
   position:relative;
   width:min(360px,100%);
@@ -504,18 +529,13 @@ body::before{
   -webkit-backdrop-filter:blur(6px);
 }
 
-.card__body{
-  padding:1.1rem 1.15rem .35rem;
-}
+.card__body{ padding:1.1rem 1.15rem .35rem; }
 .card__name{
   font-family:var(--font-display);
   font-weight:700; font-size:1.1rem;
   letter-spacing:-.02em; line-height:1.15;
 }
-.card__role{
-  font-size:.74rem; color:var(--muted);
-  margin-top:.2rem;
-}
+.card__role{ font-size:.74rem; color:var(--muted); margin-top:.2rem; }
 
 .card__meta{
   display:grid; grid-template-columns:1fr 1fr;
@@ -532,12 +552,8 @@ body::before{
   font-size:.55rem; letter-spacing:.16em; text-transform:uppercase;
   color:var(--muted-2);
 }
-.card__meta b{
-  font-size:.78rem; font-weight:500;
-  color:var(--fg);
-}
+.card__meta b{ font-size:.78rem; font-weight:500; color:var(--fg); }
 
-/* --- Hero foot ----------------------------------------------------------- */
 .hero__foot{
   display:flex; align-items:center; justify-content:space-between;
   flex-wrap:wrap; gap:var(--s4);
@@ -552,6 +568,7 @@ body::before{
   background:var(--ok);
   box-shadow:0 0 0 0 rgba(127,227,161,.5);
   animation:pulse 2.4s var(--ease) infinite;
+  flex-shrink:0;
 }
 @keyframes pulse{
   0%{ box-shadow:0 0 0 0 rgba(127,227,161,.45); }
@@ -562,7 +579,6 @@ body::before{
 .scroll-hint svg{ animation:bob 2.2s var(--ease) infinite; }
 @keyframes bob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(3px); } }
 
-/* Intro animation after preloader auto-dismisses */
 .anim{ opacity:0; transform:translateY(20px); }
 body.is-entered .anim{
   opacity:1; transform:none;
@@ -571,14 +587,14 @@ body.is-entered .anim{
 }
 
 /* ============================================================================
-   4. DOORS — sticky horizontal wall
+   4. DOORS
    ============================================================================ */
 .doors{ position:relative; z-index:1; }
 .doors__sticky{
   position:sticky; top:0;
   height:100svh;
   display:flex; flex-direction:column; justify-content:center;
-  overflow:hidden;
+  overflow:visible;               /* allow the door leaf to swing */
   padding-top:var(--header-h);
 }
 .doors__head{
@@ -596,7 +612,7 @@ body.is-entered .anim{
 .doors__title em{ font-style:normal; color:var(--accent); }
 .doors__sub{ font-size:.8rem; color:var(--muted); max-width:26ch; }
 
-.doors__viewport{ width:100%; touch-action:pan-y; }
+.doors__viewport{ width:100%; overflow:hidden; touch-action:pan-y; }
 .doors__track{
   display:flex; gap:clamp(.85rem,1.6vw,1.4rem);
   padding-inline:var(--gutter);
@@ -604,7 +620,6 @@ body.is-entered .anim{
   will-change:transform;
 }
 
-/* A single door */
 .door{
   position:relative;
   flex:0 0 clamp(220px,24vw,300px);
@@ -612,6 +627,7 @@ body.is-entered .anim{
   border-radius:var(--radius-m);
   perspective:1200px;
   background:var(--bg-elev);
+  overflow:visible;
 }
 .door__room{
   position:absolute; inset:0; overflow:hidden;
@@ -619,10 +635,10 @@ body.is-entered .anim{
   display:flex; flex-direction:column; justify-content:space-between;
   padding:var(--s5);
   border:1px solid var(--line);
-  background:
-    linear-gradient(170deg,
-      color-mix(in srgb, var(--tint) 14%, var(--bg-elev)),
-      var(--bg-elev));
+  z-index:0;
+  background:linear-gradient(170deg,
+    color-mix(in srgb, var(--tint) 14%, var(--bg-elev)),
+    var(--bg-elev));
 }
 .door__room-top{
   display:flex; align-items:center; justify-content:space-between;
@@ -646,13 +662,14 @@ body.is-entered .anim{
 
 .door__leaf{
   position:absolute; inset:0;
+  z-index:1;
   border-radius:inherit;
   padding:var(--s5);
   display:flex; flex-direction:column; justify-content:space-between;
   background:var(--bg-elev-2);
   border:1px solid var(--line-strong);
   transform-origin:left center;
-  transition:transform .85s var(--ease), box-shadow .85s var(--ease);
+  transition:transform .8s var(--ease);
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
   will-change:transform;
@@ -667,8 +684,7 @@ body.is-entered .anim{
 .door:hover .door__leaf,
 .door:focus-within .door__leaf,
 .door.is-open .door__leaf{
-  transform:rotateY(-98deg);
-  box-shadow:50px 8px 60px -18px rgba(0,0,0,.85);
+  transform:rotateY(-100deg);
 }
 .door__num{
   font-family:var(--font-display); font-weight:700;
@@ -701,7 +717,7 @@ body.is-entered .anim{
 }
 
 /* ============================================================================
-   5. SHARED SECTION HEADINGS
+   5. SECTION HEADINGS
    ============================================================================ */
 .section{ position:relative; z-index:1; padding-block:clamp(3.5rem,8vw,6.5rem); }
 .section__head{
@@ -810,7 +826,7 @@ body.is-entered .anim{
 }
 .story__title em{ font-style:normal; color:var(--accent); }
 
-/* Slot-machine year roller */
+/* Slot-machine year roller — bulletproof clipping */
 .slot{
   display:flex;
   gap:.02em;
@@ -820,14 +836,25 @@ body.is-entered .anim{
   color:var(--accent);
   font-variant-numeric:tabular-nums;
 }
-.slot__col{ display:block; height:1em; overflow:hidden; }
-.slot__strip{
+.slot__col{
+  position:relative;
   display:block;
-  transition:transform .9s var(--ease-out);
+  width:.62em;
+  height:1em;
+  overflow:hidden;
+}
+.slot__strip{
+  position:absolute;
+  top:0; left:0; right:0;
+  display:block;
+  transition:transform .85s var(--ease-out);
   transform:translateY(calc(var(--d, 0) * -1em));
 }
 .slot__strip span{
-  display:block; height:1em; line-height:1; text-align:center;
+  display:block;
+  height:1em;
+  line-height:1em;
+  text-align:center;
 }
 
 .story__grid{
@@ -992,6 +1019,7 @@ body.is-entered .anim{
   padding:clamp(1.5rem,3.5vw,2.5rem);
   opacity:0; transform:translateY(20px) scale(.98);
   transition:opacity .4s var(--ease), transform .5s var(--ease);
+  -webkit-overflow-scrolling:touch;
 }
 .modal.is-open .modal__dialog{ opacity:1; transform:none; }
 
@@ -1001,6 +1029,7 @@ body.is-entered .anim{
   border:1px solid var(--line); display:grid; place-items:center;
   font-size:.85rem;
   transition:background .3s, transform .3s, border-color .3s;
+  z-index:2;
 }
 .modal__close:hover{ background:var(--bg-elev-2); transform:rotate(90deg); border-color:var(--line-strong); }
 
@@ -1025,6 +1054,7 @@ body.is-entered .anim{
   margin-bottom:var(--s5);
   padding-right:2.2rem;
 }
+.modal__title:focus{ outline:none; }
 
 .step{ display:none; }
 .step.is-active{ display:block; animation:stepIn .4s var(--ease) both; }
@@ -1065,12 +1095,8 @@ body.is-entered .anim{
 .field.has-error input, .field.has-error textarea{ border-color:#FF8B7B; }
 .field.has-error .field__error{ display:block; }
 
-.modal__error{
-  font-size:.72rem; color:#FF8B7B;
-  margin-top:var(--s3);
-}
+.modal__error{ font-size:.72rem; color:#FF8B7B; margin-top:var(--s3); }
 
-/* Honeypot — visually hidden but present for bots */
 .hp{
   position:absolute !important;
   left:-9999px; top:auto;
@@ -1103,27 +1129,66 @@ body.is-entered .anim{
   transition:opacity .8s var(--ease), transform .9s var(--ease);
 }
 
-/* Anchor offset for fixed header */
 section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
 
 /* ============================================================================
-   12. RESPONSIVE
+   12. RESPONSIVE — DESKTOP-FIRST FIXES
    ============================================================================ */
+
+/* Tablet / small desktop */
 @media (max-width:1024px){
   .hero__grid{ grid-template-columns:1fr; gap:clamp(2rem,5vw,3rem); }
   .hero__card-wrap{ order:-1; }
   .footer__grid{ grid-template-columns:1fr 1fr; }
 }
 
+/* Mobile — switch the door wall to a native horizontal carousel */
+@media (max-width:900px){
+  .doors{ height:auto !important; }
+  .doors__sticky{
+    position:static;
+    height:auto;
+    padding-block:clamp(3rem,7vw,4rem) clamp(2rem,4vw,3rem);
+  }
+  .doors__viewport{
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    padding-bottom:var(--s3);
+  }
+  .doors__viewport::-webkit-scrollbar{ display:none; }
+  .doors__track{
+    transform:none !important;
+    padding-inline:var(--gutter);
+  }
+  .door{
+    scroll-snap-align:center;
+    flex:0 0 78vw;
+    max-width:340px;
+    height:clamp(320px,52vh,420px);
+  }
+  /* On touch the leaf flips on tap instead of hover */
+  .door:hover .door__leaf{ transform:none; }
+  .door.is-open .door__leaf{ transform:rotateY(-100deg); }
+  .doors__hint{ display:none; }
+}
+
+/* Mobile layout fixes */
 @media (max-width:860px){
   .clock{ display:none; }
-  .header__right .btn{ display:none; }
+  .header__right > .btn{ display:none; }
   .story__grid{ grid-template-columns:1fr; }
   .story__aside{
-    position:sticky; top:var(--header-h);
-    flex-direction:row; align-items:baseline; gap:var(--s3);
+    position:sticky;
+    top:var(--header-h);
+    flex-direction:row;
+    align-items:baseline;
+    gap:var(--s3);
     background:var(--bg);
     padding-block:.7rem;
+    border-bottom:1px solid var(--line);
     z-index:5;
   }
   .tl{ grid-template-columns:1fr; gap:.35rem; }
@@ -1133,8 +1198,18 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
   .footer__grid{ grid-template-columns:1fr; }
   .hero__foot{ flex-direction:column; align-items:flex-start; }
   .doors__head{ flex-direction:column; align-items:flex-start; }
-  .menu-toggle span:not(.menu-toggle__bars span){ display:none; }
-  .menu-toggle{ padding:.5rem; border-radius:50%; }
+  .menu-toggle{ padding:.55rem; border-radius:50%; }
+  .menu-toggle__text{ display:none; }
+  .modal{ padding:0; }
+  .modal__dialog{
+    width:100%;
+    max-height:100svh;
+    border-radius:0;
+    border-left:0; border-right:0;
+    padding:1.5rem 1.25rem 2rem;
+  }
+  .modal__nav{ flex-wrap:wrap; }
+  .modal__note{ display:none; }
 }
 
 /* ============================================================================
@@ -1151,35 +1226,37 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
   .anim, .reveal{ opacity:1 !important; transform:none !important; }
   .cursor{ display:none !important; }
   body{ cursor:auto !important; }
+  .preloader__ring{ animation:none; }
 }
 </style>
 </head>
 
 <body class="is-locked">
 
-<!-- Skip link -->
 <a class="skip" href="#main">Skip to content</a>
 
-<!-- Custom cursor -->
 <div class="cursor" id="cursor" aria-hidden="true"></div>
 
-<!-- Scroll progress -->
 <div class="progress" id="progress" role="progressbar" aria-label="Page scroll progress"
      aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 
 <!-- ============================================================
-     1. PRELOADER — auto-transitions, no click gate
+     1. PRELOADER
      ============================================================ -->
 <div class="preloader" id="preloader" aria-label="Loading">
   <div class="preloader__inner">
     <div class="preloader__avatar">
-      <img src="profilewebsite.jpg" alt="" onerror="this.style.display='none'">
+      <span class="preloader__ring" aria-hidden="true"></span>
+      <span class="preloader__photo">
+        <img src="profilewebsite.jpg" alt="" onerror="this.style.display='none'">
+      </span>
     </div>
     <p class="preloader__label">Loading the card</p>
     <div class="preloader__count">
       <span id="loadCount">0</span><sup>%</sup>
     </div>
     <div class="preloader__bar"><i id="loadBar"></i></div>
+    <p class="preloader__foot">Prabhat Bhattarai · Independent Freelancer</p>
   </div>
 </div>
 
@@ -1199,7 +1276,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
         <span class="menu-toggle__bars" aria-hidden="true">
           <span></span><span></span><span></span>
         </span>
-        <span>Menu</span>
+        <span class="menu-toggle__text">Menu</span>
       </button>
 
       <span class="clock" aria-label="Local time">
@@ -1239,12 +1316,11 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
      ============================================================ -->
 <main id="main">
 
-  <!-- ============================ 3. HERO ============================ -->
+  <!-- ============================ HERO ============================ -->
   <section class="hero" id="top">
     <div class="wrap">
       <div class="hero__grid">
 
-        <!-- Copy -->
         <div class="hero__copy">
           <p class="hero__eyebrow anim" style="--d:0">Independent freelancer · Kathmandu</p>
 
@@ -1267,7 +1343,6 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
           </div>
         </div>
 
-        <!-- ID card with your photo -->
         <div class="hero__card-wrap anim" style="--d:2">
           <div class="card" id="card">
             <div class="card__head">
@@ -1303,7 +1378,6 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
 
       </div>
 
-      <!-- Hero foot -->
       <div class="hero__foot anim" style="--d:4">
         <span class="hero__foot-item"><span class="dot" aria-hidden="true"></span> Available for work</span>
         <span class="hero__foot-item">Remote-first, worldwide</span>
@@ -1318,7 +1392,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
     </div>
   </section>
 
-  <!-- ================= 4. ONE DOOR PER SKILL ================= -->
+  <!-- ================= ONE DOOR PER SKILL ================= -->
   <section class="doors" id="work">
     <div class="doors__sticky">
 
@@ -1332,7 +1406,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
 
           <article class="door" style="--tint: var(--skill-web);">
             <div class="door__room">
-              <div class="door__room-top"><span>Web</span><span>01</span></div>
+              <div class="door__room-top" aria-hidden="true"><span>Web</span><span>01</span></div>
               <div>
                 <h3 class="door__room-title">Web<br>Development</h3>
                 <a class="door__room-link" href="#web-dev">View projects →</a>
@@ -1347,7 +1421,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
 
           <article class="door" style="--tint: var(--skill-app);">
             <div class="door__room">
-              <div class="door__room-top"><span>Apps</span><span>02</span></div>
+              <div class="door__room-top" aria-hidden="true"><span>Apps</span><span>02</span></div>
               <div>
                 <h3 class="door__room-title">App<br>Development</h3>
                 <a class="door__room-link" href="#app-dev">View projects →</a>
@@ -1362,7 +1436,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
 
           <article class="door" style="--tint: var(--skill-uiux);">
             <div class="door__room">
-              <div class="door__room-top"><span>Product</span><span>03</span></div>
+              <div class="door__room-top" aria-hidden="true"><span>Product</span><span>03</span></div>
               <div>
                 <h3 class="door__room-title">UI/UX<br>Design</h3>
                 <a class="door__room-link" href="#uiux">View projects →</a>
@@ -1377,7 +1451,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
 
           <article class="door" style="--tint: var(--skill-graphic);">
             <div class="door__room">
-              <div class="door__room-top"><span>Brand</span><span>04</span></div>
+              <div class="door__room-top" aria-hidden="true"><span>Brand</span><span>04</span></div>
               <div>
                 <h3 class="door__room-title">Graphic<br>Design</h3>
                 <a class="door__room-link" href="#graphic">View projects →</a>
@@ -1392,7 +1466,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
 
           <article class="door" style="--tint: var(--skill-photo);">
             <div class="door__room">
-              <div class="door__room-top"><span>Light</span><span>05</span></div>
+              <div class="door__room-top" aria-hidden="true"><span>Light</span><span>05</span></div>
               <div>
                 <h3 class="door__room-title">Photo<br>graphy</h3>
                 <a class="door__room-link" href="#photography">View projects →</a>
@@ -1729,7 +1803,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
     </div>
   </section>
 
-  <!-- ================= 5. MY STORY ================= -->
+  <!-- ================= MY STORY ================= -->
   <section class="section story" id="story">
     <div class="wrap">
       <div class="story__head reveal">
@@ -1810,7 +1884,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
     </div>
   </section>
 
-  <!-- ================= 6. CTA ================= -->
+  <!-- ================= CTA ================= -->
   <section class="section cta" id="contact">
     <div class="wrap">
       <div class="cta__box reveal">
@@ -1929,7 +2003,6 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
           <span class="field__error">Please tell me your name.</span>
         </div>
 
-        <!-- Honeypot -->
         <div class="hp" aria-hidden="true">
           <label for="inTrap">Leave this empty</label>
           <input id="inTrap" name="website_url" type="text" tabindex="-1" autocomplete="off">
@@ -2033,15 +2106,13 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
 (function () {
   'use strict';
 
-  /* ------------------------------------------------------------------
-     Helpers
-  ------------------------------------------------------------------ */
   const $  = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
   const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isTouch = window.matchMedia('(hover: none)').matches;
+  const desktopMQ = window.matchMedia('(min-width: 901px)');
 
   /* ==================================================================
      1. PRELOADER — counts to 100% then auto-enters
@@ -2050,8 +2121,8 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
   const loadCount = $('#loadCount');
   const loadBar   = $('#loadBar');
 
-  const LOAD_DURATION = prefersReducedMotion ? 200 : 1900;
-  const HOLD_AT_100   = 450;   // brief pause so the user sees the complete counter
+  const LOAD_DURATION = prefersReducedMotion ? 200 : 2000;
+  const HOLD_AT_100   = 450;
 
   function enterSite() {
     preloader.classList.add('is-done');
@@ -2061,10 +2132,9 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
     setTimeout(() => {
       preloader.style.display = 'none';
       preloader.setAttribute('aria-hidden', 'true');
-    }, 800);
+    }, 900);
 
-    // Re-measure the horizontal door wall once the page is interactive
-    setTimeout(sizeDoors, 120);
+    setTimeout(sizeDoors, 150);
   }
 
   (function runLoader() {
@@ -2072,7 +2142,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
 
     function frame(now) {
       const t = clamp((now - start) / LOAD_DURATION, 0, 1);
-      const eased = 1 - Math.pow(1 - t, 3);   // easeOutCubic
+      const eased = 1 - Math.pow(1 - t, 3);
       const value = Math.round(eased * 100);
 
       loadCount.textContent = value;
@@ -2088,14 +2158,13 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
   })();
 
   /* ==================================================================
-     2. LIVE LOCAL CLOCK
+     2. LIVE CLOCK
      ================================================================== */
   const clockEl     = $('#clock');
   const clockFootEl = $('#clockFoot');
 
   function tickClock() {
-    const now = new Date();
-    const time = now.toLocaleTimeString([], {
+    const time = new Date().toLocaleTimeString([], {
       hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
     });
     if (clockEl) clockEl.textContent = time;
@@ -2115,15 +2184,13 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
     let cx = -100, cy = -100, tx = -100, ty = -100;
 
     document.addEventListener('mousemove', (e) => {
-      tx = e.clientX;
-      ty = e.clientY;
+      tx = e.clientX; ty = e.clientY;
     }, { passive: true });
 
     (function loop() {
       cx += (tx - cx) * 0.22;
       cy += (ty - cy) * 0.22;
-      cursor.style.transform =
-        `translate3d(${cx}px, ${cy}px, 0) translate(-50%, -50%)`;
+      cursor.style.transform = `translate3d(${cx}px, ${cy}px, 0) translate(-50%, -50%)`;
       requestAnimationFrame(loop);
     })();
 
@@ -2137,7 +2204,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
   }
 
   /* ==================================================================
-     4. MENU OVERLAY
+     4. MENU
      ================================================================== */
   const menuToggle = $('#menuToggle');
   const menu       = $('#menu');
@@ -2167,7 +2234,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
 
   $$('.menu__link', menu).forEach((link) => {
     link.addEventListener('click', () => {
-      if (link.hasAttribute('data-open-contact')) return; // modal handles it
+      if (link.hasAttribute('data-open-contact')) return;
       closeMenu();
     });
   });
@@ -2195,8 +2262,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
       const rect = hero.getBoundingClientRect();
       const px = (e.clientX - rect.left) / rect.width - 0.5;
       const py = (e.clientY - rect.top) / rect.height - 0.5;
-      card.style.transform =
-        `perspective(1100px) rotateY(${px * 9}deg) rotateX(${-py * 9}deg)`;
+      card.style.transform = `perspective(1100px) rotateY(${px * 9}deg) rotateX(${-py * 9}deg)`;
     });
 
     hero.addEventListener('mouseleave', () => {
@@ -2240,7 +2306,9 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
   }
 
   /* ==================================================================
-     8. DOORS — sticky horizontal wall
+     8. DOORS
+     Desktop: sticky vertical scroll → horizontal translate
+     Mobile : native horizontal scroll-snap carousel
      ================================================================== */
   const doorsSection  = $('#work');
   const doorsViewport = $('#doorsViewport');
@@ -2253,18 +2321,27 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
   function sizeDoors() {
     if (!doorsSection || !doorsTrack || !doorsViewport || !doorsSticky) return;
 
+    if (!desktopMQ.matches) {
+      doorsSection.style.height = '';
+      doorsTrack.style.transform = '';
+      doorsMaxShift = 0;
+      return;
+    }
+
     doorsStickyH  = doorsSticky.offsetHeight;
-    doorsMaxShift = Math.max(0, doorsTrack.offsetWidth - doorsViewport.clientWidth);
+    doorsMaxShift = Math.max(0, doorsTrack.scrollWidth - doorsViewport.clientWidth);
 
     doorsSection.style.height = (doorsStickyH + doorsMaxShift) + 'px';
     updateDoors();
   }
 
   function updateDoors() {
+    if (!desktopMQ.matches) return;
     if (!doorsSection || !doorsTrack || !doorsStickyH) return;
 
     const rect   = doorsSection.getBoundingClientRect();
     const travel = doorsSection.offsetHeight - doorsStickyH;
+
     if (travel <= 0) {
       doorsTrack.style.transform = 'translate3d(0,0,0)';
       return;
@@ -2274,50 +2351,14 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
     doorsTrack.style.transform = `translate3d(${-p * doorsMaxShift}px, 0, 0)`;
   }
 
-  /* Touch / pointer swipe maps onto vertical scroll so the sticky
-     section stays perfectly in sync with the wall's translation. */
-  if (doorsViewport) {
-    let startX = null, startY = null, dragging = false;
-
-    doorsViewport.addEventListener('pointerdown', (e) => {
-      if (e.pointerType === 'mouse') return;
-      startX = e.clientX;
-      startY = e.clientY;
-      dragging = false;
-    }, { passive: true });
-
-    doorsViewport.addEventListener('pointermove', (e) => {
-      if (startX === null) return;
-
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-
-      if (!dragging) {
-        if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy)) {
-          dragging = true;
-        } else {
-          return;
-        }
-      }
-
-      window.scrollBy(0, -dx);
-      startX = e.clientX;
-      startY = e.clientY;
-    }, { passive: true });
-
-    const endDrag = () => { startX = startY = null; dragging = false; };
-    doorsViewport.addEventListener('pointerup', endDrag);
-    doorsViewport.addEventListener('pointercancel', endDrag);
-    doorsViewport.addEventListener('pointerleave', endDrag);
-  }
-
   /* Tap-to-open on touch devices */
   $$('.door').forEach((door) => {
     door.addEventListener('click', (e) => {
       if (e.target.closest('a')) return;
-      if (window.matchMedia('(hover: none)').matches) {
-        door.classList.toggle('is-open');
-      }
+      if (!window.matchMedia('(hover: none)').matches) return;
+
+      $$('.door').forEach((d) => { if (d !== door) d.classList.remove('is-open'); });
+      door.classList.toggle('is-open');
     });
   });
 
@@ -2342,7 +2383,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
   }
 
   /* ==================================================================
-     10. TIMELINE + SLOT-MACHINE YEAR ROLLER
+     10. TIMELINE + SLOT-MACHINE YEAR
      ================================================================== */
   const slotEl  = $('#slot');
   const tlIndex = $('#tlIndex');
@@ -2400,7 +2441,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
   }
 
   /* ==================================================================
-     11. CONTACT MODAL — multi-step form
+     11. CONTACT MODAL
      ================================================================== */
   const modal        = $('#contactModal');
   const modalDialog  = $('.modal__dialog', modal);
@@ -2456,7 +2497,6 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
     btn.addEventListener('click', closeModal);
   });
 
-  /* Step navigation */
   function showStep(n) {
     currentStep = n;
 
@@ -2481,7 +2521,6 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
     }
   }
 
-  /* Field-level validation */
   function setError(fieldId, on) {
     const field = $('#' + fieldId);
     if (field) field.classList.toggle('has-error', on);
@@ -2525,7 +2564,6 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
     });
   });
 
-  /* Chips — multi-select for needs, single-select for budget/timeline */
   $$('.chip', modal).forEach((chip) => {
     chip.addEventListener('click', () => {
       const pressed = chip.getAttribute('aria-pressed') === 'true';
@@ -2537,7 +2575,6 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
           ? state.needs.filter((v) => v !== val)
           : [...state.needs, val];
 
-        // clear the "please choose" hint as soon as something is picked
         const err = $('#needsError');
         if (err && state.needs.length > 0) err.hidden = true;
       } else {
@@ -2551,18 +2588,13 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
     });
   });
 
-  /* Submit → mailto → success */
   const MY_EMAIL = 'prabhatbhattarai456@gmail.com';
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    // Honeypot — silently drop bots
     const trap = $('#inTrap');
-    if (trap && trap.value.trim() !== '') {
-      showStep('done');
-      return;
-    }
+    if (trap && trap.value.trim() !== '') { showStep('done'); return; }
 
     if (!validateStep(4)) { showStep(4); return; }
 
@@ -2587,7 +2619,6 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
 
     const mailto = `mailto:${MY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
-    // Open the user's mail client (uses an anchor so it never navigates away)
     const a = document.createElement('a');
     a.href = mailto;
     a.style.display = 'none';
@@ -2598,7 +2629,6 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
     showStep('done');
   });
 
-  /* Keyboard + focus trap */
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       if (modal.classList.contains('is-open')) closeModal();
@@ -2639,7 +2669,7 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
   if (backToTopBtn) backToTopBtn.addEventListener('click', scrollTop);
 
   /* ==================================================================
-     13. SCROLL ORCHESTRATION (single rAF)
+     13. SCROLL ORCHESTRATION
      ================================================================== */
   let ticking = false;
 
@@ -2660,17 +2690,13 @@ section[id]{ scroll-margin-top:calc(var(--header-h) + .75rem); }
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', () => {
-    sizeDoors();
-    onScroll();
-  });
+  window.addEventListener('resize', () => { sizeDoors(); onScroll(); });
 
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(sizeDoors);
   }
   window.addEventListener('load', sizeDoors);
 
-  // Initial paint
   sizeDoors();
   onScroll();
 
